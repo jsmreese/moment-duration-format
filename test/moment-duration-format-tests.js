@@ -127,4 +127,12 @@ $(document).ready(function() {
 			precision: 1
 		}), "51 days, 10.5 hours");
 	});
+	
+	test("Zero Value Duration", function () {
+		equal(moment.duration(0, "minutes").format("m"), "0");
+		equal(moment.duration(0, "minutes").format("mm"), "00");
+		equal(moment.duration(0, "minutes").format("m", -1), "0");
+		equal(moment.duration(0, "minutes").format("mm", -1), "00");
+		equal(moment.duration(0, "minutes").format("m", 1), "0.0");
+	});	
 });
