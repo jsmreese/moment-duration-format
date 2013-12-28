@@ -135,4 +135,26 @@ $(document).ready(function() {
 		equal(moment.duration(0, "minutes").format("mm", -1), "00");
 		equal(moment.duration(0, "minutes").format("m", 1), "0.0");
 	});	
+	
+	test("Default Template Function", function () {
+		equal(moment.duration(100, "milliseconds").format(), "0");
+		equal(moment.duration(100, "seconds").format(), "1:40");
+		equal(moment.duration(100, "minutes").format(), "1:40");
+		equal(moment.duration(100, "hours").format(), "4d 4h");
+		equal(moment.duration(100, "days").format(), "3m 10d");
+		equal(moment.duration(100, "weeks").format(), "23m 5d");
+		equal(moment.duration(100, "months").format(), "8y 4m");
+		equal(moment.duration(100, "years").format(), "100y");
+	});
+	
+	test("Custom Template Function", function () {
+		equal(moment.duration(100, "days").format(function () {
+			var types = this.types,
+				dur = this.duration;
+				
+			return _.map(types.slice(1, -2), function (type) {
+				return ((type === "months" || type === "milliseconds") ? type[0].toUpperCase() : type[0]) + " [" + type + "]";
+			}).join(", ");
+		}), "3 months, 1 weeks, 3 days, 0 hours, 0 minutes, 0 seconds");
+	});
 });
