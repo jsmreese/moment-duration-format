@@ -1,27 +1,24 @@
 {
-  "name": "moment-duration-format",
-  "version": "1.1.0",
-  "description": "A moment.js plugin for formatting durations.",
-  "main": "lib/moment-duration-format.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/ChiperSoft/moment-duration-format.git"
-  },
-  "keywords": [
-    "moment",
-    "duration",
-    "format"
-  ],
-  "author": "Jarvis Badgley <chiper@chipersoft.com> (http://chipersoft.com/)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ChiperSoft/moment-duration-format/issues"
-  },
-  "homepage": "https://github.com/ChiperSoft/moment-duration-format"
+	"name": "moment-duration-format",
+	"version": "1.1.0",
+	"description": "A moment.js plugin for formatting durations.",
+	"main": "lib/moment-duration-format.js",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/jsmreese/moment-duration-format.git"
+	},
+	"authors": [
+		"John Madhavan-Reese <jsmreese@pureshare.com> (http://pureshare.com/)",
+		"Jarvis Badgley <chiper@chipersoft.com>"
+	],
+	"keywords": [
+		"moment",
+		"duration",
+		"format"
+	],
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/jsmreese/moment-duration-format/issues"
+	},
+	"homepage": "https://github.com/jsmreese/moment-duration-format"
 }
