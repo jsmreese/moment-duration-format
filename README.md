@@ -6,7 +6,7 @@ This is a plugin to the Moment.js JavaScript date library to add comprehensive f
 
 Format template grammar is patterned on the existing Moment Date format template grammar, with a few modifications because durations are fundamentally different from dates.
 
-This plugin depends on `lodash` or `underscore`, and is tested with both libraries.
+This plugin depends on <a href="http://lodash.com/">Lo-Dash</a> or <a href="http://http://underscorejs.org//">Underscore</a>, and is tested with both libraries.
 
 ---
 

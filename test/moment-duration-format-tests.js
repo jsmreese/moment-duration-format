@@ -90,11 +90,11 @@ $(document).ready(function() {
 	});
 
 	test("Output To Greater Units", function () {
-		equal(moment.duration(1, "milliseconds").format("y", 15), "0.000000000001709");
-		equal(moment.duration(1, "milliseconds").format("M", 13), "0.0000000000858");
-		equal(moment.duration(1, "milliseconds").format("w", 12), "0.000000000653");
-		equal(moment.duration(1, "milliseconds").format("d", 11), "0.00000000157");
-		equal(moment.duration(1, "milliseconds").format("h", 10), "0.0000000777");
+		equal(moment.duration(1, "milliseconds").format("y", 15), "0.000000000031709");
+		equal(moment.duration(1, "milliseconds").format("M", 13), "0.0000000003858");
+		equal(moment.duration(1, "milliseconds").format("w", 12), "0.000000001653");
+		equal(moment.duration(1, "milliseconds").format("d", 11), "0.00000001157");
+		equal(moment.duration(1, "milliseconds").format("h", 10), "0.0000002777");
 		equal(moment.duration(1, "milliseconds").format("m", 7), "0.0000166");
 		equal(moment.duration(1, "milliseconds").format("s", 3), "0.001");
 		equal(moment.duration(1, "milliseconds").format("S"), "1");
@@ -156,5 +156,23 @@ $(document).ready(function() {
 				return ((type === "months" || type === "milliseconds") ? type[0].toUpperCase() : type[0]) + " [" + type + "]";
 			}).join(", ");
 		}), "3 months, 1 weeks, 3 days, 0 hours, 0 minutes, 0 seconds");
+	});
+	
+	test("Negative Durations", function () {
+		equal(moment.duration(-1, "years").format("y"), "-1");
+		equal(moment.duration(-1, "months").format("M"), "-1");
+		equal(moment.duration(-1, "weeks").format("w"), "-1");
+		equal(moment.duration(-1, "days").format("d"), "-1");
+		equal(moment.duration(-1, "hours").format("h"), "-1");
+		equal(moment.duration(-1, "minutes").format("m"), "-1");
+		equal(moment.duration(-1, "seconds").format("s"), "-1");
+		equal(moment.duration(-1, "milliseconds").format("S"), "-1");
+		equal(moment.duration(-1, "years").format("s"), "-31536000");
+		equal(moment.duration(-1, "seconds").format("y", 15), "-0.000000031709791");
+		equal(moment.duration(-65, "seconds").format("m:ss"), "-1:05");
+		equal(moment.duration(-65, "seconds").format("m:ss", 2), "-1:05.00");
+		equal(moment.duration(-65.667, "seconds").format("m:ss", 2), "-1:05.66");
+		equal(moment.duration(-65.667, "days").format("d", 2), "-65.66");
+		equal(moment.duration(-65.667, "days").format("d [days], h [hours]"), "-65 days, 16 hours");
 	});
 });
