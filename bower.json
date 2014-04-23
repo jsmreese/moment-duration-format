@@ -1,0 +1,24 @@
+{
+  "name": "moment-duration-format",
+  "version": "1.1.0",
+  "homepage": "https://github.com/ChiperSoft/moment-duration-format",
+  "authors": [
+    "Jarvis Badgley <chiper@chipersoft.com",
+    "John Madhavan-Reese"
+  ],
+  "description": "A moment.js plugin to add formatting to durations.",
+  "main": "lib/moment-duration-format",
+  "keywords": [
+    "moment",
+    "duration",
+    "format"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
