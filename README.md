@@ -20,6 +20,7 @@ This plugin depends on <a href="http://lodash.com/">Lo-Dash</a> or <a href="http
 
 ##### Browser
 `<script src="path/to/moment-duration-format.js"></script>`
+
 Be sure to include moment.js and lodash.js or underscore.js on your page before loading this plugin.
 
 ---
