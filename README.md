@@ -25,6 +25,8 @@ Be sure to include moment.js and lodash.js or underscore.js on your page before 
 
 ---
 
+### Usage
+
 The format function may be called with three optional arguments:
 ```
 moment.duration.format([template] [, precision] [, settings])
