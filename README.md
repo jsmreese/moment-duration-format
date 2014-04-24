@@ -16,7 +16,7 @@ This plugin depends on <a href="http://lodash.com/">Lo-Dash</a> or <a href="http
 `npm install moment-duration-format`
 
 ##### Bower
-`bowser install moment-duration-format`
+`bower install moment-duration-format`
 
 ##### Browser
 `<script src="path/to/moment-duration-format.js"></script>`
