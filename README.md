@@ -10,6 +10,20 @@ This plugin depends on <a href="http://lodash.com/">Lo-Dash</a> or <a href="http
 
 ---
 
+### Installation
+
+##### Node.js
+`npm install moment-duration-format`
+
+##### Bower
+`bowser install moment-duration-format`
+
+##### Browser
+`<script src="path/to/moment-duration-format.js"></script>`
+Be sure to include moment.js and lodash.js or underscore.js on your page before loading this plugin.
+
+---
+
 The format function may be called with three optional arguments:
 ```
 moment.duration.format([template] [, precision] [, settings])
