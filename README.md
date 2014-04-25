@@ -27,15 +27,26 @@ Be sure to include moment.js and lodash.js or underscore.js on your page before 
 
 ### Usage
 
-The format function may be called with three optional arguments:
+##### Module
+
+To use this plugin as a module, use the `require` function:
+```
+require("moment-duration-format");
+```
+
+The plugin does not export anything, so there is no need to assign the require output to a variable.
+
+The plugin depends on moment.js and lodash.js or underscore.js. These are not specified as package dependencies in the currently published plugin version.
+
+##### Arguments
+
+The duration format method may be called with three optional arguments:
 ```
 moment.duration.format([template] [, precision] [, settings])
 ```
 
-Both the `template` and `precision` arguments may be specified as part of a single `settings` object argument if desired.
-
-Within the `template` string, moment-token characters will be replaced with the duration value for that type.
-Moment-tokens maybe be customized (see test cases for examples), but the default token map is:
+`template` is a string. It is parsed for moment-token characters, which are replaced with the duration value for that type.
+Moment-tokens may be be customized (see test cases for examples), but the default token map is:
 ```
 years:   Y or y
 months:  M
@@ -47,8 +58,12 @@ seconds: s
 ms:      S
 ```
 
+`precision` is an integer. Positive precision defines the number of decimal digits to display. Negative precision will truncate the value to the left of the decimal point.
 
-Basic usage:
+Both the `template` and `precision` arguments may be specified as properties of a single `settings` object argument if desired, or they may be passed separately along with an optional settings object. 
+
+
+##### Basics
 ```
 moment.duration(123, "minutes").format();
 // "2:03:00"
@@ -82,4 +97,4 @@ moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: false });
 // or don't trim at all
 ```
 
-See the test cases and the default options for more thorough option descriptions.
+See the test cases and the default settings for more thorough option descriptions.
