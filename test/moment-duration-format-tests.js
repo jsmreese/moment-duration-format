@@ -149,10 +149,26 @@ $(document).ready(function() {
 	
 	test("Custom Template Function", function () {
 		equal(moment.duration(100, "days").format(function () {
+			// map
+			function map(array, callback) {
+				var index = 0,
+					max = array.length,
+					ret = [];
+
+				if (!array || !max) { return ret; }
+						
+				while (index < max) {
+					ret[index] = callback(array[index], index);
+					index += 1;
+				}
+				
+				return ret;
+			}
+			
 			var types = this.types,
 				dur = this.duration;
 				
-			return _.map(types.slice(1, -2), function (type) {
+			return map(types.slice(1, -2), function (type) {
 				return ((type === "months" || type === "milliseconds") ? type[0].toUpperCase() : type[0]) + " [" + type + "]";
 			}).join(", ");
 		}), "3 months, 1 weeks, 3 days, 0 hours, 0 minutes, 0 seconds");
