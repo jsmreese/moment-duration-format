@@ -6,7 +6,7 @@ This is a plugin to the Moment.js JavaScript date library to add comprehensive f
 
 Format template grammar is patterned on the existing Moment Date format template grammar, with a few modifications because durations are fundamentally different from dates.
 
-This plugin depends on <a href="http://lodash.com/">Lo-Dash</a> or <a href="http://http://underscorejs.org//">Underscore</a>, and is tested with both libraries.
+This plugin does not have any dependencies beyond Moment.js itself, and may be used in the browser and on the server.
 
 ---
 
@@ -21,7 +21,7 @@ This plugin depends on <a href="http://lodash.com/">Lo-Dash</a> or <a href="http
 ##### Browser
 `<script src="path/to/moment-duration-format.js"></script>`
 
-Be sure to include moment.js and lodash.js or underscore.js on your page before loading this plugin.
+When using this plugin in the browser, be sure to include moment.js on your page first.
 
 ---
 
@@ -36,7 +36,7 @@ require("moment-duration-format");
 
 The plugin does not export anything, so there is no need to assign the require output to a variable.
 
-The plugin depends on moment.js and lodash.js or underscore.js. These are not specified as package dependencies in the currently published plugin version.
+The plugin depends on moment.js, which is not specified as a package dependency in the currently published version.
 
 ##### Arguments
 
