@@ -79,7 +79,7 @@ seconds: s
 ms:      S
 ```
 
-Token characters may be customized (see below for an example).
+Token characters may be customized ([see below for an example](\#tokens)).
 
 Escape token characters within the template string using square brackets.
 ```
@@ -87,7 +87,7 @@ moment.duration(123, "minutes").format("h [hrs], m [min]");
 // "2 hrs, 3 min"
 ```
 
-Escape characters may also be customized (see below for an example).
+Escape characters may also be customized ([see below for an example](\#escape)).
 
 
 
