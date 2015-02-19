@@ -52,16 +52,30 @@ $(document).ready(function() {
 		equal(moment.duration(15, "seconds").format("m", 2), "0.25");
 		equal(moment.duration(20, "seconds").format("m", 3), "0.333");
 		equal(moment.duration(30, "seconds").format("m", 4), "0.5000");
-		equal(moment.duration(40, "seconds").format("m", 5), "0.66666");
-		equal(moment.duration(45, "seconds").format("m", 1), "0.7");
-		equal(moment.duration(59, "seconds").format("m", 0), "0");
-		equal(moment.duration(59, "seconds").format("m"), "0");
+		equal(moment.duration(40, "seconds").format("m", 5), "0.66667");
+		equal(moment.duration(59, "seconds").format("m", 0), "1");
+		equal(moment.duration(59, "seconds").format("m"), "1");
 	});
 
 	test("Negative Precision", function () {
+		equal(moment.duration(15, "seconds").format("s", -1), "20");
 		equal(moment.duration(123, "seconds").format("s", -2), "100");
 	});
 
+	test("Positive Precision with Trunc", function () {
+		equal(moment.duration(15, "seconds").format("m", 2, { trunc: true }), "0.25");
+		equal(moment.duration(20, "seconds").format("m", 3, { trunc: true }), "0.333");
+		equal(moment.duration(30, "seconds").format("m", 4, { trunc: true }), "0.5000");
+		equal(moment.duration(40, "seconds").format("m", 5, { trunc: true }), "0.66666");
+		equal(moment.duration(59, "seconds").format("m", 0, { trunc: true }), "0");
+		equal(moment.duration(59, "seconds").format("m", { trunc: true }), "0");
+	});
+
+	test("Negative Precision with Trunc", function () {
+		equal(moment.duration(15, "seconds").format("s", -1, { trunc: true }), "10");
+		equal(moment.duration(159, "seconds").format("s", -1, { trunc: true }), "150");
+	});
+	
 	test("Multiple Token Instances", function () {
 		equal(moment.duration(123, "seconds").format("s s s"), "123 123 123");
 		equal(moment.duration(123, "seconds").format("s s ssssss"), "123 123 000123");
@@ -90,20 +104,20 @@ $(document).ready(function() {
 	});
 
 	test("Output To Greater Units", function () {
-		equal(moment.duration(1, "milliseconds").format("y", 15), "0.000000000031709");
-		equal(moment.duration(1, "milliseconds").format("M", 13), "0.0000000003858");
-		equal(moment.duration(1, "milliseconds").format("w", 12), "0.000000001653");
-		equal(moment.duration(1, "milliseconds").format("d", 11), "0.00000001157");
-		equal(moment.duration(1, "milliseconds").format("h", 10), "0.0000002777");
-		equal(moment.duration(1, "milliseconds").format("m", 7), "0.0000166");
+		equal(moment.duration(1, "milliseconds").format("y", 13), "0.0000000000317");
+		equal(moment.duration(1, "milliseconds").format("M", 12), "0.000000000386");
+		equal(moment.duration(1, "milliseconds").format("w", 11), "0.00000000164");
+		equal(moment.duration(1, "milliseconds").format("d", 10), "0.0000000116");
+		equal(moment.duration(1, "milliseconds").format("h", 9), "0.000000278");
+		equal(moment.duration(1, "milliseconds").format("m", 7), "0.0000167");
 		equal(moment.duration(1, "milliseconds").format("s", 3), "0.001");
 		equal(moment.duration(1, "milliseconds").format("S"), "1");
 	});
 
 	test("Custom Token Types List", function () {
-		equal(moment.duration(12345, "seconds").format("d [days] m [minutes] h [(hours is not a token type now)]", {
+		equal(moment.duration(12345, "seconds").format("d [days] m [minutes] h [(hours is not a token type now)]", 2, {
 			types: "escape years months weeks days minutes seconds milliseconds general"
-		}), "205 minutes h (hours is not a token type now)");
+		}), "205.75 minutes h (hours is not a token type now)");
 	});
 
 	test("Custom Escape RegExp", function () {
@@ -125,7 +139,7 @@ $(document).ready(function() {
 			template: "d (days), h (hours)",
 			escape: /\((.+?)\)/,
 			precision: 1
-		}), "51 days, 10.5 hours");
+		}), "51 days, 10.6 hours");
 	});
 	
 	test("Zero Value Duration", function () {
@@ -184,11 +198,11 @@ $(document).ready(function() {
 		equal(moment.duration(-1, "seconds").format("s"), "-1");
 		equal(moment.duration(-1, "milliseconds").format("S"), "-1");
 		equal(moment.duration(-1, "years").format("s"), "-31536000");
-		equal(moment.duration(-1, "seconds").format("y", 15), "-0.000000031709791");
+		equal(moment.duration(-1, "seconds").format("y", 10), "-0.0000000317");
 		equal(moment.duration(-65, "seconds").format("m:ss"), "-1:05");
 		equal(moment.duration(-65, "seconds").format("m:ss", 2), "-1:05.00");
-		equal(moment.duration(-65.667, "seconds").format("m:ss", 2), "-1:05.66");
-		equal(moment.duration(-65.667, "days").format("d", 2), "-65.66");
+		equal(moment.duration(-65.667, "seconds").format("m:ss", 2), "-1:05.67");
+		equal(moment.duration(-65.667, "days").format("d", 2), "-65.67");
 		equal(moment.duration(-65.667, "days").format("d [days], h [hours]"), "-65 days, 16 hours");
 	});
 });
