@@ -205,4 +205,8 @@ $(document).ready(function() {
 		equal(moment.duration(-65.667, "days").format("d", 2), "-65.67");
 		equal(moment.duration(-65.667, "days").format("d [days], h [hours]"), "-65 days, 16 hours");
 	});
+	
+	test("Negative Durations and Trimming", function () {
+		equal(moment.duration(-42, "seconds").format("h:mm:ss"), "-42");
+	});
 });
