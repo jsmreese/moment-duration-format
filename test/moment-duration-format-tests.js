@@ -213,6 +213,7 @@ $(document).ready(function() {
 	test("Stop Trimming with the * Character", function () {
 		equal(moment.duration(15, "seconds").format("h:*mm:ss"), "0:15");
 		equal(moment.duration(15, "seconds").format("h:*mm:ss", { forceLength: true }), "00:15");
+		equal(moment.duration(15, "seconds").format("hh:*mm:ss"), "00:15");
 		equal(moment.duration(15, "seconds").format("*h:mm:ss"), "0:00:15");
 	});	
 });
