@@ -216,4 +216,12 @@ $(document).ready(function() {
 		equal(moment.duration(15, "seconds").format("hh:*mm:ss"), "00:15");
 		equal(moment.duration(15, "seconds").format("*h:mm:ss"), "0:00:15");
 	});	
+	
+	test("Decimal Separator", function () {
+		equal(moment.duration(1000, "seconds").format("h", { precision: 2 }), "0.28");
+		equal(moment.duration(1000, "seconds").format("h", { precision: 2, decimalSeparator: "," }), "0,28");
+		equal(moment.duration(1000, "seconds").format("h", { precision: 2, decimalSeparator: "abc" }), "0abc28");
+		equal(moment.duration(1000, "seconds").format("h", { precision: 2, decimalSeparator: function () { return this.template; } }), "0h28");
+		equal(moment.duration(1000, "seconds").format("h", { precision: 2, decimalSeparator: function () { return "abc"; } }), "0abc28");
+	});	
 });
