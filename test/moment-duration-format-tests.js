@@ -191,4 +191,10 @@ $(document).ready(function() {
 		equal(moment.duration(-65.667, "days").format("d", 2), "-65.66");
 		equal(moment.duration(-65.667, "days").format("d [days], h [hours]"), "-65 days, 16 hours");
 	});
+
+	test("Pluralisation support", function () {
+		equal(moment.duration(1, 'minutes').format('m [minutes?]'), '1 minute');
+		equal(moment.duration(2, 'minutes').format('m [minutes?]'), '2 minutes');
+		equal(moment.duration(1, 'year').format('m [minutes?]'), '525600 minutes');
+	});
 });
