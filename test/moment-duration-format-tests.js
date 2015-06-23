@@ -224,4 +224,10 @@ $(document).ready(function() {
 		equal(moment.duration(1000, "seconds").format("h", { precision: 2, decimalSeparator: function () { return this.template; } }), "0h28");
 		equal(moment.duration(1000, "seconds").format("h", { precision: 2, decimalSeparator: function () { return "abc"; } }), "0abc28");
 	});	
+
+	test("Pluralisation support", function () {
+		equal(moment.duration(1, 'minutes').format('m [minutes?]'), '1 minute');
+		equal(moment.duration(2, 'minutes').format('m [minutes?]'), '2 minutes');
+		equal(moment.duration(1, 'year').format('m [minutes?]'), '525600 minutes');
+	});
 });
