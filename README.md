@@ -167,6 +167,14 @@ moment.duration(123, "seconds").format("h:mm:ss", { forceLength: true });
 // "02:03"
 ```
 
+#### Largest
+
+Show only the largest `n` moment tokens that have values. All subsequent moment tokens will be trimmed. Set to a positive integer to enable. Not compatible with the `trim: "right"` option.
+
+```
+moment.duration(2.55, "days").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 });
+// "2 days, 13 hours"
+```
 
 ### Tokens
 
@@ -269,4 +277,3 @@ Default milliseconds token regexp: `/S+/`
 Default general token regexp: `/.+?/`
 
 Not sure why you'd want to redefine the general token regexp, but you can. Just make sure it's lazy so the other token expressions can do their jobs.
-

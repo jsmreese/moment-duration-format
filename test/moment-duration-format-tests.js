@@ -217,7 +217,11 @@ $(document).ready(function() {
 		equal(moment.duration(15, "seconds").format("*h:mm:ss"), "0:00:15");
 	});
 
-	test("Decimal Separator", function () {
+    test("Show only the largest `x` tokens", function () {
+        equal(moment.duration(1.55, "days").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "1 days, 13 hours");
+    });
+
+    test("Decimal Separator", function () {
 		equal(moment.duration(1000, "seconds").format("h", { precision: 2 }), "0.28");
 		equal(moment.duration(1000, "seconds").format("h", { precision: 2, decimalSeparator: "," }), "0,28");
 		equal(moment.duration(1000, "seconds").format("h", { precision: 2, decimalSeparator: "abc" }), "0abc28");
