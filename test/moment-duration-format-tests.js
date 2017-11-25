@@ -198,19 +198,24 @@ $(document).ready(function() {
 
     test("Show only the largest `x` tokens", function () {
         equal(moment.duration(1.55, "days").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "1 day, 13 hours");
+        equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "1 day, 0 hours");
+        equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 3 }), "1 day, 0 hours, 14 minutes");
     });
 
     test("Trim both", function () {
         equal(moment.duration(1, "days").format("M [months], d [days], h [hours], m [minutes], s [seconds]", { trim: "both" }), "1 day");
-        // `trim: both` with `largest`
-        equal(moment.duration(1.55, "days").format("M [months], d [days], h [hours], m [minutes], s [seconds]", { largest: 1, trim: "both" }), "1 day");
-        equal(moment.duration(1.5, "days").format("M [months], d [days], h [hours], m [minutes], s [seconds]", { largest: 3, trim: "both" }), "1 day, 12 hours");
         equal(moment.duration(90000, "seconds").format("y [years], *M [months], d [days], h [hours], *m [minutes], s [seconds]", { trim: "both" }), "0 months, 1 day, 1 hour, 0 minutes");
         equal(moment.duration(86460, "seconds").format("y [years], *M [months], d [days], h [hours], m [minutes], s [seconds]", { trim: "both" }), "0 months, 1 day, 0 hours, 1 minute");
         equal(moment.duration(86460, "seconds").format("y [years], *M [months], d [days], h [hours], m [minutes], *s [seconds]", { trim: "both" }), "0 months, 1 day, 0 hours, 1 minute, 0 seconds");
         equal(moment.duration(1, "days").format("y [years], M [months]", { trim: "both" }), "0 months");
         equal(moment.duration(0, "days").format("M [months], d [days], h [hours], m [minutes]", { trim: "both" }), "0 minutes");
     });
+
+    test("Trim both with largest", function () {
+        equal(moment.duration(1.55, "days").format("M [months], d [days], h [hours], m [minutes], s [seconds]", { largest: 1, trim: "both" }), "1 day");
+        equal(moment.duration(1.5, "days").format("M [months], d [days], h [hours], m [minutes], s [seconds]", { largest: 3, trim: "both" }), "1 day, 12 hours");
+    });
+
 
     test("Decimal Separator", function () {
 		equal(moment.duration(1000, "seconds").format("h", { precision: 2 }), "0.28");
@@ -283,6 +288,29 @@ $(document).ready(function() {
         equal(moment.duration(61, "s").format("m [minutes], s [seconds]", { precision: 1 }), "1 minute, 1.0 seconds");
     });
 
+    test("Automatic Locale-based units", function () {
+        equal(moment.duration(3661, "s").format("h _, m _, s _"), "1 hr, 1 min, 1 sec");
+        equal(moment.duration(3661, "s").format("h _, m _, s _", { singular: false }), "1 hrs, 1 mins, 1 secs");
+        equal(moment.duration(61, "s").format("m _, s _", { precision: 1 }), "1 min, 1.0 secs");
+        equal(moment.duration(1, "milliseconds").format("S _"), "1 msec");
+		equal(moment.duration(1, "seconds").format("s _"), "1 sec");
+		equal(moment.duration(1, "minutes").format("m _"), "1 min");
+		equal(moment.duration(1, "hours").format("h _"), "1 hr");
+		equal(moment.duration(1, "days").format("d _"), "1 dy");
+		equal(moment.duration(1, "weeks").format("w _"), "1 wk");
+		equal(moment.duration(1, "months").format("M _"), "1 mo");
+		equal(moment.duration(1, "years").format("y _"), "1 yr");
+
+        equal(moment.duration(1, "milliseconds").format("S __"), "1 millisecond");
+		equal(moment.duration(1, "seconds").format("s __"), "1 second");
+		equal(moment.duration(1, "minutes").format("m __"), "1 minute");
+		equal(moment.duration(1, "hours").format("h __"), "1 hour");
+		equal(moment.duration(1, "days").format("d __"), "1 day");
+		equal(moment.duration(1, "weeks").format("w __"), "1 week");
+		equal(moment.duration(1, "months").format("M __"), "1 month");
+		equal(moment.duration(1, "years").format("y __"), "1 year");
+    });
+
     test("leftUnits", function () {
         equal(moment.duration(0, "s").format("[seconds] s", { leftUnits: true }), "seconds 0");
         equal(moment.duration(1, "s").format("[seconds] s", { leftUnits: true }), "second 1");
@@ -300,9 +328,7 @@ $(document).ready(function() {
     // leftUnits with largest
     // leftUnits with trim: both and largest
     // leftUnits with trim: right and largest
+    // leftUnits with LocaleToken
     // floating point errors
     // no locale duration strings?
-
-    // Implement TODO:
-    // `largest` in trim functions
 });
