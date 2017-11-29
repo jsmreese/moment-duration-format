@@ -1,5 +1,6 @@
 $(document).ready(function() {
 	module("Moment Duration Format");
+    moment.duration.fn.format.defaults.userLocale = "en-US";
 
     var d = moment.duration(1234.55, "hours");
     d.subtract(51, "days");
@@ -53,9 +54,14 @@ $(document).ready(function() {
 		equal(moment.duration(20, "seconds").format("m", 3), "0.333");
 		equal(moment.duration(30, "seconds").format("m", 4), "0.5000");
 		equal(moment.duration(40, "seconds").format("m", 5), "0.66667");
-		equal(moment.duration(59, "seconds").format("m", 0), "1");
-		equal(moment.duration(59, "seconds").format("m"), "1");
 	});
+
+    test("Zero Precision", function () {
+        equal(moment.duration(59, "seconds").format("m", 0), "1");
+        equal(moment.duration(59, "seconds").format("m"), "1");
+        equal(moment.duration(59, "seconds").format("m", 0, { trunc: true }), "0");
+        equal(moment.duration(59, "seconds").format("m", { trunc: true }), "0");
+    });
 
 	test("Negative Precision", function () {
 		equal(moment.duration(15, "seconds").format("s", -1), "20");
@@ -67,8 +73,6 @@ $(document).ready(function() {
 		equal(moment.duration(20, "seconds").format("m", 3, { trunc: true }), "0.333");
 		equal(moment.duration(30, "seconds").format("m", 4, { trunc: true }), "0.5000");
 		equal(moment.duration(40, "seconds").format("m", 5, { trunc: true }), "0.66666");
-		equal(moment.duration(59, "seconds").format("m", 0, { trunc: true }), "0");
-		equal(moment.duration(59, "seconds").format("m", { trunc: true }), "0");
 	});
 
 	test("Negative Precision with Trunc", function () {
@@ -78,7 +82,7 @@ $(document).ready(function() {
 
 	test("Multiple Token Instances", function () {
 		equal(moment.duration(123, "seconds").format("s s s"), "123 123 123");
-		equal(moment.duration(123, "seconds").format("s s ssssss"), "123 123 000123");
+		equal(moment.duration(123, "seconds").format("s s ssssss"), "123 123 000,123");
 	});
 
 	test("Escape Tokens", function () {
@@ -97,16 +101,16 @@ $(document).ready(function() {
 		equal(moment.duration(1, "years").format("M"), "12");
 		equal(moment.duration(1, "years").format("w"), "52");
 		equal(moment.duration(1, "years").format("d"), "365");
-		equal(moment.duration(1, "years").format("h"), "8760");
-		equal(moment.duration(1, "years").format("m"), "525600");
-		equal(moment.duration(1, "years").format("s"), "31536000");
-		equal(moment.duration(1, "years").format("S"), "31536000000");
+		equal(moment.duration(1, "years").format("h"), "8,760");
+		equal(moment.duration(1, "years").format("m"), "525,600");
+		equal(moment.duration(1, "years").format("s"), "31,536,000");
+		equal(moment.duration(1, "years").format("S"), "31,536,000,000");
 	});
 
 	test("Output To Greater Units", function () {
 		equal(moment.duration(1, "milliseconds").format("y", 13), "0.0000000000317");
 		equal(moment.duration(1, "milliseconds").format("M", 12), "0.000000000380");
-		equal(moment.duration(1, "milliseconds").format("w", 11), "0.00000000164");
+		equal(moment.duration(1, "milliseconds").format("w", 14), "0.00000000165344");
 		equal(moment.duration(1, "milliseconds").format("d", 10), "0.0000000116");
 		equal(moment.duration(1, "milliseconds").format("h", 9), "0.000000278");
 		equal(moment.duration(1, "milliseconds").format("m", 7), "0.0000167");
@@ -176,7 +180,7 @@ $(document).ready(function() {
 		equal(moment.duration(-1, "minutes").format("m"), "-1");
 		equal(moment.duration(-1, "seconds").format("s"), "-1");
 		equal(moment.duration(-1, "milliseconds").format("S"), "-1");
-		equal(moment.duration(-1, "years").format("s"), "-31536000");
+		equal(moment.duration(-1, "years").format("s"), "-31,536,000");
 		equal(moment.duration(-1, "seconds").format("y", 10), "-0.0000000317");
 		equal(moment.duration(-65, "seconds").format("m:ss"), "-1:05");
 		equal(moment.duration(-65, "seconds").format("m:ss", 2), "-1:05.00");
@@ -215,15 +219,6 @@ $(document).ready(function() {
         equal(moment.duration(1.55, "days").format("M [months], d [days], h [hours], m [minutes], s [seconds]", { largest: 1, trim: "both" }), "1 day");
         equal(moment.duration(1.5, "days").format("M [months], d [days], h [hours], m [minutes], s [seconds]", { largest: 3, trim: "both" }), "1 day, 12 hours");
     });
-
-
-    test("Decimal Separator", function () {
-		equal(moment.duration(1000, "seconds").format("h", { precision: 2 }), "0.28");
-		equal(moment.duration(1000, "seconds").format("h", { precision: 2, decimalSeparator: "," }), "0,28");
-		equal(moment.duration(1000, "seconds").format("h", { precision: 2, decimalSeparator: "abc" }), "0abc28");
-		equal(moment.duration(1000, "seconds").format("h", { precision: 2, decimalSeparator: function () { return this.template; } }), "0h28");
-		equal(moment.duration(1000, "seconds").format("h", { precision: 2, decimalSeparator: function () { return "abc"; } }), "0abc28");
-	});
 
     test("Singular", function () {
         equal(moment.duration(0, "ms").format("S [milliseconds]"), "0 milliseconds");
@@ -321,6 +316,13 @@ $(document).ready(function() {
         equal(moment.duration(61, "s").format("[minutes] m, [seconds] s", { precision: 1, leftUnits: true }), "minute 1, seconds 1.0");
     });
 
+    test("userLocale and useGrouping", function () {
+		equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "en-GB", precision: 2 }), "100,000.10");
+        equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "en-GB", precision: 2, useGrouping: false }), "100000.10");
+        equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "de-DE", precision: 2 }), "100.000,10");
+        equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "de-DE", precision: 2, useGrouping: false }), "100000,10");
+	});
+
     // tests TODO:
     // leftUnits with trim: right
     // leftUnits with trim: left
@@ -328,7 +330,19 @@ $(document).ready(function() {
     // leftUnits with largest
     // leftUnits with trim: both and largest
     // leftUnits with trim: right and largest
-    // leftUnits with LocaleToken
+    // leftUnits with LocaleTokens
     // floating point errors
     // no locale duration strings?
+
+    // negative duration that is less than 1 (-0.5 minutes)
+
+    // document decimalSeparator removal
+    // add userLocale tests at the end with a GB(?) locale? Something with a comma for decimal separator...
+
+    // useGrouping = false
+
+    // negative duration with text as the first token (check negative sign position)
+    // largest with precision and sig figs
+
+    // ___ to LTF
 });
