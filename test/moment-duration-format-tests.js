@@ -191,6 +191,18 @@ $(document).ready(function() {
 		equal(moment.duration(-65.667, "seconds").format("m:ss", 2), "-1:05.67");
 		equal(moment.duration(-65.667, "days").format("d", 2), "-65.67");
 		equal(moment.duration(-65.667, "days").format("d [days], h [hours]"), "-65 days, 16 hours");
+        equal(moment.duration(-30, "seconds").format("m", 2), "-0.50");
+	});
+
+    test("Negative Durations that have zero value", function () {
+        equal(moment.duration(-29, "seconds").format("m"), "0");
+        equal(moment.duration(-30, "seconds").format("m"), "0");
+        equal(moment.duration(-31, "seconds").format("m", { trunc: true }), "0");
+        equal(moment.duration(-59, "seconds").format("m", { trunc: true }), "0");
+    });
+
+    test("Negative Durations with leading text", function () {
+		equal(moment.duration(-42, "seconds").format("[Leading Text] s", { trim: false }), "Leading Text -42");
 	});
 
 	test("Negative Durations and Trimming", function () {
@@ -367,15 +379,11 @@ $(document).ready(function() {
     // floating point errors
     // no locale duration strings?
 
-    // negative duration that is less than 1 (-0.5 minutes)
-
     // document decimalSeparator removal
     // add userLocale tests at the end with a GB(?) locale? Something with a comma for decimal separator...
 
-    // useGrouping = false
-
-    // negative duration with text as the first token (check negative sign position)
     // largest with precision and sig figs
 
-    // ___ to LTF
+    // add time separator string to localeData extension? How to access?
+    // multiple rules for plurals. See https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals
 });
