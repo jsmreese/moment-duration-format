@@ -323,6 +323,28 @@ $(document).ready(function() {
         equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "de-DE", precision: 2, useGrouping: false }), "100000,10");
 	});
 
+    test("useSignificantDigits", function () {
+		equal(moment.duration(99999, "seconds").format("s", { useSignificantDigits: true, precision: 2 }), "100,000");
+        equal(moment.duration(99.99, "seconds").format("s", { useSignificantDigits: true, precision: 3 }), "100");
+        equal(moment.duration(99.9944, "seconds").format("s", { useSignificantDigits: true, precision: 5 }), "99.994");
+        equal(moment.duration(99.944, "seconds").format("m [minutes], s [seconds]", { useSignificantDigits: true, precision: 3 }), "1 minute, 40 seconds");
+        equal(moment.duration(99.944, "seconds").format("m [minutes], s [seconds]", { useSignificantDigits: true, precision: 5 }), "1 minute, 39.94 seconds");
+        equal(moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, precision: 3 }), "1 day, 3 hours, 50 minutes");
+        equal(moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, precision: 5 }), "1 day, 3 hours, 46 minutes, 40 seconds");
+        equal(moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, precision: 6 }), "1 day, 3 hours, 46 minutes, 39 seconds");
+        equal(moment.duration(35, "hours").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, precision: 2 }), "1 day, 10 hours");
+        equal(moment.duration(39, "hours").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, precision: 2 }), "1 day, 20 hours");
+	});
+
+    test("useSignificantDigits and trunc", function () {
+        equal(moment.duration(99.99, "seconds").format("s", { useSignificantDigits: true, trunc: true, precision: 3 }), "99.9");
+        equal(moment.duration(99.944, "seconds").format("m [minutes], s [seconds]", { useSignificantDigits: true, trunc: true, precision: 3 }), "1 minute, 39 seconds");
+        equal(moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, trunc: true, precision: 5 }), "1 day, 3 hours, 46 minutes, 30 seconds");
+        equal(moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, trunc: true, precision: 3 }), "1 day, 3 hours, 40 minutes");
+        equal(moment.duration(35, "hours").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, trunc: true, precision: 2 }), "1 day, 10 hours");
+        equal(moment.duration(39, "hours").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, trunc: true, precision: 2 }), "1 day, 10 hours");
+    });
+
     // tests TODO:
     // leftUnits with trim: right
     // leftUnits with trim: left
