@@ -11,10 +11,14 @@ $(document).ready(function() {
 		equal(moment.duration(1, "seconds").format("s"), "1");
 		equal(moment.duration(1, "minutes").format("m"), "1");
 		equal(moment.duration(1, "hours").format("h"), "1");
+		equal(moment.duration(1, "hours").format("H"), "1");
 		equal(moment.duration(1, "days").format("d"), "1");
+		equal(moment.duration(1, "days").format("D"), "1");
 		equal(moment.duration(1, "weeks").format("w"), "1");
+		equal(moment.duration(1, "weeks").format("W"), "1");
 		equal(moment.duration(1, "months").format("M"), "1");
 		equal(moment.duration(1, "years").format("y"), "1");
+		equal(moment.duration(1, "years").format("Y"), "1");
 	});
 
 	test("Trim Left", function () {
