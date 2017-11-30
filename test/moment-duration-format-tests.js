@@ -200,6 +200,13 @@ $(document).ready(function() {
 		equal(moment.duration(15, "seconds").format("*h:mm:ss"), "0:00:15");
 	});
 
+    // https://github.com/jsmreese/moment-duration-format/issues/59
+    test("Rounding errors", function () {
+        equal(moment.duration(70300, "milliseconds").format("s", 1), "70.3");
+        equal(moment.duration(288957, "milliseconds").format("s", 1), "289.0");
+        equal(moment.duration(1087300, "milliseconds").format("s", 1), "1,087.3");
+    });
+
     test("Show only the largest `x` tokens", function () {
         equal(moment.duration(1.55, "days").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "1 day, 13 hours");
         equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "1 day, 0 hours");
