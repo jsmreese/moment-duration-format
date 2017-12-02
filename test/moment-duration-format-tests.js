@@ -243,72 +243,76 @@ $(document).ready(function() {
         equal(moment.duration(1.5, "days").format("M [months], d [days], h [hours], m [minutes], s [seconds]", { largest: 3, trim: "both" }), "1 day, 12 hours");
     });
 
-    test("Singular", function () {
+    test("useSingular", function () {
         equal(moment.duration(0, "ms").format("S [milliseconds]"), "0 milliseconds");
 		equal(moment.duration(1, "ms").format("S [milliseconds]"), "1 millisecond");
         equal(moment.duration(0, "ms").format("S [msecs]"), "0 msecs");
 		equal(moment.duration(1, "ms").format("S [msecs]"), "1 msec");
-        equal(moment.duration(1, "ms").format("S [milliseconds]", { singular: false }), "1 milliseconds");
+        equal(moment.duration(1, "ms").format("S [milliseconds]", { useSingular: false }), "1 milliseconds");
 
         equal(moment.duration(0, "s").format("s [seconds]"), "0 seconds");
         equal(moment.duration(1, "s").format("s [seconds]"), "1 second");
         equal(moment.duration(0, "s").format("s [secs]"), "0 secs");
         equal(moment.duration(1, "s").format("s [secs]"), "1 sec");
         equal(moment.duration(1, "s").format("s [seconds]", { precision: 1 }), "1.0 seconds");
-        equal(moment.duration(1, "s").format("s [seconds]", { singular: false }), "1 seconds");
+        equal(moment.duration(1, "s").format("s [seconds]", { useSingular: false }), "1 seconds");
 
         equal(moment.duration(0, "m").format("m [minutes]"), "0 minutes");
         equal(moment.duration(1, "m").format("m [minutes]"), "1 minute");
         equal(moment.duration(0, "m").format("m [mins]"), "0 mins");
         equal(moment.duration(1, "m").format("m [mins]"), "1 min");
         equal(moment.duration(1, "m").format("m [minutes]", { precision: 1 }), "1.0 minutes");
-        equal(moment.duration(1, "m").format("m [minutes]", { singular: false }), "1 minutes");
+        equal(moment.duration(1, "m").format("m [minutes]", { useSingular: false }), "1 minutes");
 
         equal(moment.duration(0, "h").format("h [hours]"), "0 hours");
         equal(moment.duration(1, "h").format("h [hours]"), "1 hour");
         equal(moment.duration(0, "h").format("h [hrs]"), "0 hrs");
         equal(moment.duration(1, "h").format("h [hrs]"), "1 hr");
         equal(moment.duration(1, "h").format("h [hours]", { precision: 1 }), "1.0 hours");
-        equal(moment.duration(1, "h").format("h [hours]", { singular: false }), "1 hours");
+        equal(moment.duration(1, "h").format("h [hours]", { useSingular: false }), "1 hours");
 
         equal(moment.duration(0, "d").format("d [days]"), "0 days");
         equal(moment.duration(1, "d").format("d [days]"), "1 day");
         equal(moment.duration(0, "d").format("d [dys]"), "0 dys");
         equal(moment.duration(1, "d").format("d [dys]"), "1 dy");
         equal(moment.duration(1, "d").format("d [days]", { precision: 1 }), "1.0 days");
-        equal(moment.duration(1, "d").format("d [days]", { singular: false }), "1 days");
+        equal(moment.duration(1, "d").format("d [days]", { useSingular: false }), "1 days");
 
         equal(moment.duration(0, "w").format("w [weeks]"), "0 weeks");
         equal(moment.duration(1, "w").format("w [weeks]"), "1 week");
         equal(moment.duration(0, "w").format("w [wks]"), "0 wks");
         equal(moment.duration(1, "w").format("w [wks]"), "1 wk");
         equal(moment.duration(1, "w").format("w [weeks]", { precision: 1 }), "1.0 weeks");
-        equal(moment.duration(1, "w").format("w [weeks]", { singular: false }), "1 weeks");
+        equal(moment.duration(1, "w").format("w [weeks]", { useSingular: false }), "1 weeks");
 
         equal(moment.duration(0, "months").format("M [months]"), "0 months");
         equal(moment.duration(1, "months").format("M [months]"), "1 month");
         equal(moment.duration(0, "months").format("M [mos]"), "0 mos");
         equal(moment.duration(1, "months").format("M [mos]"), "1 mo");
         equal(moment.duration(1, "months").format("M [months]", { precision: 1 }), "1.0 months");
-        equal(moment.duration(1, "months").format("M [months]", { singular: false }), "1 months");
+        equal(moment.duration(1, "months").format("M [months]", { useSingular: false }), "1 months");
 
         equal(moment.duration(0, "y").format("y [years]"), "0 years");
         equal(moment.duration(1, "y").format("y [years]"), "1 year");
         equal(moment.duration(0, "y").format("y [yrs]"), "0 yrs");
         equal(moment.duration(1, "y").format("y [yrs]"), "1 yr");
         equal(moment.duration(1, "y").format("y [years]", { precision: 1 }), "1.0 years");
-        equal(moment.duration(1, "y").format("y [years]", { singular: false }), "1 years");
+        equal(moment.duration(1, "y").format("y [years]", { useSingular: false }), "1 years");
 	});
 
-    test("Singular, multiple tokens", function () {
+    test("useSingular, multiple tokens", function () {
         equal(moment.duration(3661, "s").format("h [hours], m [minutes], s [seconds]"), "1 hour, 1 minute, 1 second");
-        equal(moment.duration(3661, "s").format("h [hours], m [minutes], s [seconds]", { singular: false }), "1 hours, 1 minutes, 1 seconds");
+        equal(moment.duration(3661, "s").format("h [hours], m [minutes], s [seconds]", { useSingular: false }), "1 hours, 1 minutes, 1 seconds");
         equal(moment.duration(61, "s").format("m [minutes], s [seconds]", { precision: 1 }), "1 minute, 1.0 seconds");
+    });
+
+    test("useSingular with rounding", function () {
+        equal(moment.duration(119, "seconds").format("m [minutes]")), "2 minutes");
     });
 
     test("Automatic Locale-based units", function () {
         equal(moment.duration(3661, "s").format("h _, m _, s _"), "1 hr, 1 min, 1 sec");
-        equal(moment.duration(3661, "s").format("h _, m _, s _", { singular: false }), "1 hrs, 1 mins, 1 secs");
+        equal(moment.duration(3661, "s").format("h _, m _, s _", { useSingular: false }), "1 hrs, 1 mins, 1 secs");
         equal(moment.duration(61, "s").format("m _, s _", { precision: 1 }), "1 min, 1.0 secs");
         equal(moment.duration(1, "milliseconds").format("S _"), "1 msec");
 		equal(moment.duration(1, "seconds").format("s _"), "1 sec");
@@ -329,14 +333,14 @@ $(document).ready(function() {
 		equal(moment.duration(1, "years").format("y __"), "1 year");
     });
 
-    test("leftUnits", function () {
-        equal(moment.duration(0, "s").format("[seconds] s", { leftUnits: true }), "seconds 0");
-        equal(moment.duration(1, "s").format("[seconds] s", { leftUnits: true }), "second 1");
-        equal(moment.duration(1, "s").format("[seconds] s", { precision: 1, leftUnits: true }), "seconds 1.0");
-        equal(moment.duration(1, "s").format("[seconds] s", { singular: false, leftUnits: true }), "seconds 1");
-        equal(moment.duration(3661, "s").format("[hours] h, [minutes] m, [seconds] s", { leftUnits: true }), "hour 1, minute 1, second 1");
-        equal(moment.duration(3661, "s").format("[hours] h, [minutes] m, [seconds] s", { singular: false, leftUnits: true }), "hours 1, minutes 1, seconds 1");
-        equal(moment.duration(61, "s").format("[minutes] m, [seconds] s", { precision: 1, leftUnits: true }), "minute 1, seconds 1.0");
+    test("useLeftUnits", function () {
+        equal(moment.duration(0, "s").format("[seconds] s", { useLeftUnits: true }), "seconds 0");
+        equal(moment.duration(1, "s").format("[seconds] s", { useLeftUnits: true }), "second 1");
+        equal(moment.duration(1, "s").format("[seconds] s", { precision: 1, useLeftUnits: true }), "seconds 1.0");
+        equal(moment.duration(1, "s").format("[seconds] s", { useSingular: false, useLeftUnits: true }), "seconds 1");
+        equal(moment.duration(3661, "s").format("[hours] h, [minutes] m, [seconds] s", { useLeftUnits: true }), "hour 1, minute 1, second 1");
+        equal(moment.duration(3661, "s").format("[hours] h, [minutes] m, [seconds] s", { useSingular: false, useLeftUnits: true }), "hours 1, minutes 1, seconds 1");
+        equal(moment.duration(61, "s").format("[minutes] m, [seconds] s", { precision: 1, useLeftUnits: true }), "minute 1, seconds 1.0");
     });
 
     test("userLocale and useGrouping", function () {
@@ -369,13 +373,13 @@ $(document).ready(function() {
     });
 
     // tests TODO:
-    // leftUnits with trim: right
-    // leftUnits with trim: left
-    // leftUnits with trim: both
-    // leftUnits with largest
-    // leftUnits with trim: both and largest
-    // leftUnits with trim: right and largest
-    // leftUnits with LocaleTokens
+    // useLeftUnits with trim: right
+    // useLeftUnits with trim: left
+    // useLeftUnits with trim: both
+    // useLeftUnits with largest
+    // useLeftUnits with trim: both and largest
+    // useLeftUnits with trim: right and largest
+    // useLeftUnits with LocaleTokens
     // floating point errors
     // no locale duration strings?
 

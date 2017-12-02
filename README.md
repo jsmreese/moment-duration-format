@@ -67,7 +67,7 @@ moment.duration(123, "minutes").format("h:mm");
 // "2:03"
 ```
 
-The template string is parsed for moment-token characters, which are replaced with the duration's value for each unit type. The default tokens are:
+The template string is parsed for moment token characters, which are replaced with the duration's value for each unit type. The moment tokens are:
 ```
 years:   Y or y
 months:  M
@@ -79,21 +79,36 @@ seconds: s
 ms:      S
 ```
 
-Token characters may be customized ([see below for an example](\#tokens)).
-
 Escape token characters within the template string using square brackets.
 ```
 moment.duration(123, "minutes").format("h [hrs], m [min]");
 // "2 hrs, 3 min"
 ```
 
-Escape characters may also be customized ([see below for an example](\#escape)).
+#### Token Length
 
+For some time duration formats, a zero-padded value is required. Use multiple token  characters together to create the correct amount of padding.
 
+```
+moment.duration(3661, "seconds").format("h:mm:ss");
+// "1:01:01"
+
+moment.duration(15, "seconds").format("ssss [s]");
+// "0015 s"
+```
+
+When the format template is trimmed, token length on the largest-magnitude rendered token can be trimmed as well.
+
+```
+moment.duration(123, "seconds").format("h:mm:ss");
+// "2:03"
+```
+
+See sections *trim* and *forceLength* below for more details.
 
 ### Precision
 
-`precision` (number) defines the number of digits to display for the final value.
+`precision` (number) defines the number of decimal fraction or integer digits to display for the final value.
 
 The default precison value is `0`.
 ```
@@ -101,16 +116,16 @@ moment.duration(123, "minutes").format("h [hrs]");
 // "2 hrs"
 ```
 
-Positive precision defines the number of digits to display to the right of the decimal point.
+Positive precision defines the number of decimal fraction digits to display.
 ```
 moment.duration(123, "minutes").format("h [hrs]", 2);
 // "2.04 hrs"
 ```
 
-Negative precision will truncate the value to the left of the decimal point.
+Negative precision defines the number of integer digits to truncate to zero.
 ```
-moment.duration(123, "minutes").format("m [min]", -1);
-// "120 min"
+moment.duration(223, "minutes").format("m [min]", -2);
+// "200 min"
 ```
 
 ### Settings
@@ -124,27 +139,99 @@ moment.duration(123, "minutes").format({ template: "h [hrs]", precision: 2 });
 // "2.04 hrs"
 ```
 
-#### Trim
+#### trim
 
-Leading tokens are automatically trimmed when they have no value.
+The default `trim` value is `"largest"`.
+
+Largest-magnitude tokens are automatically trimmed when they have no value.
 ```
 moment.duration(123, "minutes").format("d[d] h:mm:ss");
 // "2:03:00"
 ```
 
-To stop that behavior, set `{ trim: false }`.
+Trimming also functions when the format string is oriented with token magnitude increasing from left to right.
+```
+moment.duration(123, "minutes").format("s [seconds], m [minutes], h [hours], d [days]");
+// "0 seconds, 3 minutes, 2 hours"
+```
+
+To stop trimming altogether, set `{ trim: false }`.
 ```
 moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: false });
 // "0d 2:03:00"
 ```
 
-Use `{ trim: "right" }` to trim from the right.
+`trim` can be a string, a delimited list of strings, an array of strings, or a boolean. Accepted values are as follows:
+- `"large"` Trim largest-magnitude zero-value tokens until finding a token with a value, a token identified as `stopTrim`, or the final token of the format string.
+- `"small"` Trim smallest-magnitude zero-value tokens until finding a token with a value, a token identified as `stopTrim`, or the final token of the format string.
+- `"both"` Execute `"large"` trim then `"small"` trim.
+- `"mid"` Trim any zero-value tokens that are not the first or last tokens. Usually used in conjunction with `"large"` or `"both"`. e.g. `"large mid"` or `"both mid"`.
+- `"final"` Trim the final token if it is zero-value. Use this option with `"large"` or `"both"` to output an empty string when formatting a zero-value duration. e.g. `"large final"` or `"both final"`.
+- `"all"` Trim all zero-value tokens. Shorthand for `"both mid final"`.
+- `"left"` Maps to `"large"` to support this plugin's version 1 API.
+- `"right"` Maps to `"large"` to support this plugin's version 1 API.
+- `true` Maps to `"large"`.
+- `false` Disables trimming.
+
+#### stopTrim
+
+Trimming will stop when a token listed in this option is reached.
+
+Option value may be a moment token string, a delimited set of moment token strings, or an array of moment token strings. Alternatively, set `stopTrim` on tokens in the format template string directly using a "*" character before the moment token.
+
 ```
-moment.duration(123, "minutes").format("[seconds:] s -- [minutes:] m -- [hours:] h -- [days:] d", { trim: "right" });
-// "seconds: 0 -- minutes: 3 -- hours: 2"
+moment.duration(23, "minutes").format("d[d] h:mm:ss", { stopTrim: "h" });
+// "0:03:00"
+
+moment.duration(23, "minutes").format("d[d] *h:mm:ss");
+// "0:03:00"
 ```
 
-#### Force Length
+This option affects all trimming modes: `"large"`, `"small"`, `"mid"`, and `"final"`.
+
+```
+moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: "d m" });
+// "0 days, 2 hours, 0 minutes"
+
+moment.duration(2, "hours").format("y [years], *d [days], h [hours], *m [minutes], s [seconds]", { trim: "both" });
+// "0 days, 2 hours, 0 minutes"
+```
+
+#### largest
+
+Set `largest` to a positive integer to output only the `n` largest-magnitude moment tokens that have a value. All lesser-magnitude or zero-value moment tokens will be ignored. This option effectively runs `trim: "all"` before selecting the largest-magnitude tokens, and takes effect even when `trim: false` is used.
+
+```
+moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 });
+// "2 hours, 2 minutes"
+
+moment.duration(1216922, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", { largest: 2 });
+// "2 weeks, 2 hours"
+```
+
+#### trunc
+
+Default behavior rounds the final token value.
+
+```
+moment.duration(179, "seconds").format("m [minutes]");
+// "3 minutes"
+
+moment.duration(3780, "seconds").format("h [hours]", 1);
+// "1.1 hours"
+```
+
+Set `trunc` to `true` to truncate final token value. This was the default behavior in version 1 of this plugin.
+
+```
+moment.duration(179, "seconds").format("m [minutes]", { trunc: true });
+// "2 minutes"
+
+moment.duration(3780, "seconds").format("h [hours]", 1, { trunc: true });
+// "1.0 hours"
+```
+
+#### forceLength
 
 Force the first moment token with a value to render at full length, even when the template is trimmed and the first moment token has a length of 1. Sounds more complicated than it is.
 
@@ -153,7 +240,7 @@ moment.duration(123, "seconds").format("h:mm:ss");
 // "2:03"
 ```
 
-If you want minutes to always be rendered with two digits, you can set the first token to a length greater than 1 (this stops the automatic length trimming for the first token that has a value).
+If you want minutes to always be rendered with two digits, you can use a first token with a length greater than 1 (this stops the automatic token length trimming for the first token that has a value).
 
 ```
 moment.duration(123, "seconds").format("hh:mm:ss");
@@ -167,113 +254,150 @@ moment.duration(123, "seconds").format("h:mm:ss", { forceLength: true });
 // "02:03"
 ```
 
-#### Largest
+#### useSignificantDigits
 
-Show only the largest `n` moment tokens that have values. All subsequent moment tokens will be trimmed. Set to a positive integer to enable. Not compatible with the `trim: "right"` option.
+When `useSignificantDigits` is set to `true`, the `precision` option determines the maximum significant digits to be rendered. Precision must be a positive integer. Significant digits extend across unit types, e.g. `"6 hours 37.5 minutes"` represents `4` significant digits. Enabling this option causes token length to be ignored. See  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString.
 
-```
-moment.duration(2.55, "days").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 });
-// "2 days, 13 hours"
-```
+### Localization
 
-### Tokens
+Formatted numerical output is rendered using `toLocaleString`. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString.
 
-Moment tokens are defined as regular expressions, and may be customized. Token definitions may be passed in the settings object, but are more likely set on the defaults object.
+Unit names are detected using the locale set in moment.js, which can be different from the locale of user's environment. See https://momentjs.com/docs/#/i18n/.
 
-#### Escape
+The options below clearly do not yet address all i18n requirements for duration formatting (such as languages with [multiple forms of plural](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals)), but they are a significant step in the right direction.
 
-Default escape token regexp: `/\[(.+?)\]/`
+#### userLocale
 
-Define something other than square brackets as escape characters.
+Numerical output is rendered using the locale of the user's environment. Set the `userLocale` option to render numerical output using a different locale.
 
 ```
-moment.duration.fn.format.defaults.escape = /\((.+?)\)/;
-moment.duration(123, "seconds").format("m (minutes)", 2);
-// "2.04 minutes"
+moment.duration(1234567, "seconds").format("m [minutes]", 3);
+// "20,576.117 minutes"
+
+moment.duration(1234567, "seconds").format("m [minutes]", 3, { userLocale: "de-DE" });
+// "20.576,117 minutes"
 ```
 
-#### Years
+#### Extending Moment's `locale` object
 
-Default years token regexp: `/[Yy]+/`
+This plugin now extends moment.js's `locale` object with `durations` and `durationsShort` values. The `en` locale is included with this plugin. Other locales may be easily defined to provide auto-singularized and auto-localized unit labels in different languages. If the plugin cannot find the duration locale extensions for the active moment locale, those plugin features will not be active.
 
-Define years token for spanish language formatting.
-
-```
-moment.duration.fn.format.defaults.years = /[Aa]+/;
-moment.duration(123, "weeks").format("a [años]", 2);
-// "2.35 años"
-```
-
-#### Months
-
-Default months token regexp: `/M+/`
-
-Define months token to use only lower-case `m`.
+Below is the `en` locale extension.
 
 ```
-moment.duration.fn.format.defaults.months = /m+/;
-moment.duration(123, "weeks").format("m M", 2);
-// "28.36 M"
+context.updateLocale('en', {
+    durations: {
+        S: 'millisecond',
+        SS: 'milliseconds',
+        s: 'second',
+        ss: 'seconds',
+        m: 'minute',
+        mm: 'minutes',
+        h: 'hour',
+        hh: 'hours',
+        d: 'day',
+        dd: 'days',
+        w: 'week',
+        ww: 'weeks',
+        M: 'month',
+        MM: 'months',
+        y: 'year',
+        yy: 'years'
+    },
+    durationsShort: {
+        S: 'msec',
+        SS: 'msecs',
+        s: 'sec',
+        ss: 'secs',
+        m: 'min',
+        mm: 'mins',
+        h: 'hr',
+        hh: 'hrs',
+        d: 'dy',
+        dd: 'dys',
+        w: 'wk',
+        ww: 'wks',
+        M: 'mo',
+        MM: 'mos',
+        y: 'yr',
+        yy: 'yrs'
+    }
+});
 ```
 
-#### Weeks
+#### Auto-localized Unit Labels
 
-Default weeks token regexp: `/[Ww]+/`
+Once Moment's `locale` object is extended with `durations` and `durationsShort` values, the `_` character can be used to generate auto-localized unit labels in the formatted output.
 
-Define weeks token to use only lower-case `w`.
+A single underscore `_` will be replaced with the short duration unit label for its associated moment token.
 
-```
-moment.duration.fn.format.defaults.weeks = /w+/;
-moment.duration(123, "days").format("w W", 2);
-// "17.57 W"
-```
+A double underscore `__` will be replaced with the duration unit label for its associated moment token.
 
-#### Days
-
-Default days token regexp: `/[Dd]+/`
-
-Define days token to use only lower-case `d`.
+Auto-localized unit labels are singularized just as if they had appeared directly in the format template string.
 
 ```
-moment.duration.fn.format.defaults.days = /d+/;
-moment.duration(123, "hours").format("d D", 2);
-// "5.12 D"
+moment.duration(1, "minutes").format("m _");
+// "1 min"
+
+moment.duration(1, "minutes").format("m __");
+// "1 minute"
 ```
 
-#### Hours
+#### useSingular
 
-Default hours token regexp: `/[Hh]+/`
-
-Define hours token to use only lower-case `h`.
+The default behaviour automatically singularizes unit labels when they appear in the text associated with each moment token. The plural form of the unit name must appear in the format template. Long and short unit labels are singularized, based on the locale defined in moment.js.
 
 ```
-moment.duration.fn.format.defaults.hours = /h+/;
-moment.duration(123, "minutes").format("h H", 2);
-// "2.04 H"
+moment.duration(1, "minutes").format("m [minutes]");
+// "1 minute"
+
+moment.duration(1, "minutes").format("m [mins]");
+// "1 min"
 ```
 
-#### Minutes
-
-Default minutes token regexp: `/m+/`
-
-Define minutes token to use only lower-case `n`.
+Set `useSingular` to `false` to disable auto-singularizing.
 
 ```
-moment.duration.fn.format.defaults.minutes = /n+/;
-moment.duration(123, "seconds").format("n:ss");
-// "2:03"
+moment.duration(1, "minutes").format("m [minutes]", { useSingular: false });
+// "1 minutes"
+
+moment.duration(1, "minutes").format("m [mins]", { useSingular: false });
+// "1 mins"
 ```
 
-#### Seconds
+Singularization is not used when a value is rendered with decimal precision.
 
-Default seconds token regexp: `/s+/`
+```
+moment.duration(1, "minutes").format("m [minutes]", 2);
+// "1.00 minutes"
+```
 
-#### Milliseconds
+#### useLeftUnits
 
-Default milliseconds token regexp: `/S+/`
+The text to the right of each moment token in a format string is treated as that token's units for the purposes of trimming, singularizing, and auto-localizing. To properly singularize or localize a format string where the token/unit association is reversed, set `useLeftUnits` to `true`.
 
-#### General
+```
+moment.duration(7322, "seconds").format("_ h, _ m, _ s", { useLeftUnits: true });
+// "hrs 2, mins 2, secs 2"
+```
 
-Default general token regexp: `/.+?/`
+#### useGrouping
 
-Not sure why you'd want to redefine the general token regexp, but you can. Just make sure it's lazy so the other token expressions can do their jobs.
+Formatted numerical output is rendered using `toLocaleString` with the option `useGrouping` enabled. Set `useGrouping` to `false` to disable digit grouping.
+
+```
+moment.duration(1234, "seconds").format("s [seconds]");
+// "1,234 seconds"
+
+moment.duration(1234, "seconds").format("s [seconds]", { useGrouping: false });
+// "1234 seconds"
+```
+
+#### Decimal Separator
+
+Previous versions of the plugin used a `decimalSeparator` option. That option is no longer used and will have no effect. Decimal separators are rendered using `toLocalString`.
+
+```
+moment.duration(1234567, "seconds").format("m [minutes]", 3, { userLocale: "de-DE" });
+// "20.576,117 minutes"
+```
