@@ -37,7 +37,7 @@ To use this plugin as a module, use the `require` function:
 require("moment-duration-format");
 ```
 
-The plugin does not export anything, so there is no need to assign the require output to a variable.
+The plugin returns the init function so that duration format can be initialized on other moment instances.
 
 The plugin depends on moment.js, which is not specified as a package dependency in the currently published version.
 
