@@ -333,14 +333,87 @@ $(document).ready(function() {
 		equal(moment.duration(1, "years").format("y __"), "1 year");
     });
 
+    test("Locale missing durations and durationsShort", function () {
+        moment.locale('fr', {
+            months : 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
+            monthsShort : 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
+            monthsParseExact : true,
+            weekdays : 'dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi'.split('_'),
+            weekdaysShort : 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
+            weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
+            weekdaysParseExact : true,
+            longDateFormat : {
+                LT : 'HH:mm',
+                LTS : 'HH:mm:ss',
+                L : 'DD/MM/YYYY',
+                LL : 'D MMMM YYYY',
+                LLL : 'D MMMM YYYY HH:mm',
+                LLLL : 'dddd D MMMM YYYY HH:mm'
+            },
+            calendar : {
+                sameDay : '[Aujourd’hui à] LT',
+                nextDay : '[Demain à] LT',
+                nextWeek : 'dddd [à] LT',
+                lastDay : '[Hier à] LT',
+                lastWeek : 'dddd [dernier à] LT',
+                sameElse : 'L'
+            },
+            relativeTime : {
+                future : 'dans %s',
+                past : 'il y a %s',
+                s : 'quelques secondes',
+                m : 'une minute',
+                mm : '%d minutes',
+                h : 'une heure',
+                hh : '%d heures',
+                d : 'un jour',
+                dd : '%d jours',
+                M : 'un mois',
+                MM : '%d mois',
+                y : 'un an',
+                yy : '%d ans'
+            },
+            dayOfMonthOrdinalParse : /\d{1,2}(er|e)/,
+            ordinal : function (number) {
+                return number + (number === 1 ? 'er' : 'e');
+            },
+            meridiemParse : /PD|MD/,
+            isPM : function (input) {
+                return input.charAt(0) === 'M';
+            },
+            // In case the meridiem units are not separated around 12, then implement
+            // this function (look at locale/id.js for an example).
+            // meridiemHour : function (hour, meridiem) {
+            //     return /* 0-23 hour, given meridiem token and hour 1-12 */ ;
+            // },
+            meridiem : function (hours, minutes, isLower) {
+                return hours < 12 ? 'PD' : 'MD';
+            },
+            week : {
+                dow : 1, // Monday is the first day of the week.
+                doy : 4  // The week that contains Jan 4th is the first week of the year.
+            }
+        });
+        equal(moment.duration(3661, "s").format("h _, m _, s _"), "1 _, 1 _, 1 _");
+        equal(moment.duration(3661, "s").format("h __, m __, s __"), "1 __, 1 __, 1 __");
+        moment.locale("en");
+    });
+
     test("useLeftUnits", function () {
         equal(moment.duration(0, "s").format("[seconds] s", { useLeftUnits: true }), "seconds 0");
         equal(moment.duration(1, "s").format("[seconds] s", { useLeftUnits: true }), "second 1");
+        equal(moment.duration(0, "s").format("__ s", { useLeftUnits: true }), "seconds 0");
+        equal(moment.duration(1, "s").format("__ s", { useLeftUnits: true }), "second 1");
+        equal(moment.duration(0, "s").format("_ s", { useLeftUnits: true }), "secs 0");
+        equal(moment.duration(1, "s").format("_ s", { useLeftUnits: true }), "sec 1");
         equal(moment.duration(1, "s").format("[seconds] s", { precision: 1, useLeftUnits: true }), "seconds 1.0");
         equal(moment.duration(1, "s").format("[seconds] s", { useSingular: false, useLeftUnits: true }), "seconds 1");
         equal(moment.duration(3661, "s").format("[hours] h, [minutes] m, [seconds] s", { useLeftUnits: true }), "hour 1, minute 1, second 1");
         equal(moment.duration(3661, "s").format("[hours] h, [minutes] m, [seconds] s", { useSingular: false, useLeftUnits: true }), "hours 1, minutes 1, seconds 1");
         equal(moment.duration(61, "s").format("[minutes] m, [seconds] s", { precision: 1, useLeftUnits: true }), "minute 1, seconds 1.0");
+        equal(moment.duration(61, "minutes").format("__ d, __ h, __ m, __ s", { useLeftUnits: true, trim: "both" }), "hour 1, minute 1");
+        equal(moment.duration(61, "minutes").format("__ s, __ m, __ h, __ d", { useLeftUnits: true, trim: "both" }), "minute 1, hour 1");
+        equal(moment.duration(61, "minutes").format("__ s, __ m, __ h, __ d", { useLeftUnits: true, trim: "both", largest: 1 }), "hour 1");
     });
 
     test("userLocale and useGrouping", function () {
@@ -348,6 +421,7 @@ $(document).ready(function() {
         equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "en-GB", precision: 2, useGrouping: false }), "100000.10");
         equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "de-DE", precision: 2 }), "100.000,10");
         equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "de-DE", precision: 2, useGrouping: false }), "100000,10");
+        equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "en", precision: 2 }), "100,000.10");
 	});
 
     test("useSignificantDigits", function () {
@@ -430,18 +504,8 @@ $(document).ready(function() {
         equal(moment.duration(1234567, "seconds").format("m [minutes]", 3, { userLocale: "de-DE" }), "20.576,117 minutes");
     });
 
-
-
     // tests TODO:
-    // useLeftUnits with trim: right
-    // useLeftUnits with trim: left
-    // useLeftUnits with trim: both
-    // useLeftUnits with largest
-    // useLeftUnits with trim: both and largest
-    // useLeftUnits with trim: right and largest
-    // useLeftUnits with LocaleTokens
     // floating point errors
-    // no locale duration strings?
 
     // largest with precision and sig figs
 
