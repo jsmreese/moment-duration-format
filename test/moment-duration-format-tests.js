@@ -390,4 +390,9 @@ $(document).ready(function() {
 
     // add time separator string to localeData extension? How to access?
     // multiple rules for plurals. See https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals
+
+    // trim: large, small, mid, both, final, all, true, false, left, right
+    // stopTrim with trim options
+    // stopTrim with largest
+    // trunc with stopTrim and largest
 });

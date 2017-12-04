@@ -162,16 +162,82 @@ moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: false });
 ```
 
 `trim` can be a string, a delimited list of strings, an array of strings, or a boolean. Accepted values are as follows:
-- `"large"` Trim largest-magnitude zero-value tokens until finding a token with a value, a token identified as `stopTrim`, or the final token of the format string.
+- `"large"` Trim largest-magnitude zero-value tokens until finding a token with a value, a token identified as `stopTrim`, or the final token of the format string. This is the default `trim` value.
+```
+moment.duration(123, "minutes").format("d[d] h:mm:ss");
+// "2:03:00"
+
+moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: "large" });
+// "2:03:00"
+
+moment.duration(0, "minutes").format("d[d] h:mm:ss", { trim: "large" });
+// "0"
+```
 - `"small"` Trim smallest-magnitude zero-value tokens until finding a token with a value, a token identified as `stopTrim`, or the final token of the format string.
+```
+moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: "small" });
+// "0d 2:03"
+
+moment.duration(0, "minutes").format("d[d] h:mm:ss", { trim: "small" });
+// "0d"
+```
 - `"both"` Execute `"large"` trim then `"small"` trim.
+```
+moment.duration(123, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "both" });
+// "2h 3m"
+
+moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "both" });
+// "0s"
+```
 - `"mid"` Trim any zero-value tokens that are not the first or last tokens. Usually used in conjunction with `"large"` or `"both"`. e.g. `"large mid"` or `"both mid"`.
+```
+moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "mid" });
+// "0w 1d 1m 0s"
+
+moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "large mid" });
+// "1d 1m 0s"
+
+moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "small mid" });
+// "0w 1d 1m"
+
+moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "both mid" });
+// "1d 1m"
+
+moment.duration(0, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "both mid" });
+// "0s"
+```
 - `"final"` Trim the final token if it is zero-value. Use this option with `"large"` or `"both"` to output an empty string when formatting a zero-value duration. e.g. `"large final"` or `"both final"`.
+```
+moment.duration(0, "minutes").format("d[d] h:mm:ss", { trim: "large final" });
+// ""
+
+moment.duration(0, "minutes").format("d[d] h:mm:ss", { trim: "small final" });
+// ""
+
+moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "both final" });
+// ""
+```
 - `"all"` Trim all zero-value tokens. Shorthand for `"both mid final"`.
+```
+moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "all" });
+// ""
+```
 - `"left"` Maps to `"large"` to support this plugin's version 1 API.
 - `"right"` Maps to `"large"` to support this plugin's version 1 API.
 - `true` Maps to `"large"`.
 - `false` Disables trimming.
+
+#### largest
+
+Set `largest` to a positive integer to output only the `n` largest-magnitude moment tokens that have a value. All lesser-magnitude or zero-value moment tokens will be ignored. This option effectively runs `trim: "all"` before selecting the largest-magnitude tokens, and takes effect even when `trim: false` is used.
+
+```
+moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 });
+// "2 hours, 2 minutes"
+
+moment.duration(1216922, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", { largest: 2 });
+// "2 weeks, 2 hours"
+```
 
 #### stopTrim
 
@@ -197,16 +263,11 @@ moment.duration(2, "hours").format("y [years], *d [days], h [hours], *m [minutes
 // "0 days, 2 hours, 0 minutes"
 ```
 
-#### largest
-
-Set `largest` to a positive integer to output only the `n` largest-magnitude moment tokens that have a value. All lesser-magnitude or zero-value moment tokens will be ignored. This option effectively runs `trim: "all"` before selecting the largest-magnitude tokens, and takes effect even when `trim: false` is used.
+`stopTrim` does not affect the operation of `largest`.
 
 ```
-moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 });
-// "2 hours, 2 minutes"
-
-moment.duration(1216922, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", { largest: 2 });
-// "2 weeks, 2 hours"
+moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: "d m", largest: 2 });
+// "2 hours"
 ```
 
 #### trunc
@@ -229,6 +290,19 @@ moment.duration(179, "seconds").format("m [minutes]", { trunc: true });
 
 moment.duration(3780, "seconds").format("h [hours]", 1, { trunc: true });
 // "1.0 hours"
+```
+
+Using `trunc` can affect the operation of `trim` and `largest`.
+
+```
+moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", { trunc: true, trim: "both" });
+// "0 minutes"
+
+moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", { trunc: true, trim: "all" });
+// ""
+
+moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", { trunc: true, largest: 1 });
+// ""
 ```
 
 #### forceLength
