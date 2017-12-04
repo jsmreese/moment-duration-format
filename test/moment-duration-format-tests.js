@@ -372,6 +372,66 @@ $(document).ready(function() {
         equal(moment.duration(39, "hours").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, trunc: true, precision: 2 }), "1 day, 10 hours");
     });
 
+    test("Documentation examples", function () {
+        equal(moment.duration(123, "minutes").format(), "2:03:00");
+        equal(moment.duration(123, "months").format(), "10y 3m");
+        equal(moment.duration(123, "minutes").format("h:mm"), "2:03");
+        equal(moment.duration(123, "minutes").format("h [hrs], m [min]"), "2 hrs, 3 min");
+        equal(moment.duration(3661, "seconds").format("h:mm:ss"), "1:01:01");
+        equal(moment.duration(15, "seconds").format("ssss [s]"), "0015 s");
+        equal(moment.duration(123, "minutes").format("h [hrs]"), "2 hrs");
+        equal(moment.duration(123, "minutes").format("h [hrs]", 2), "2.04 hrs");
+        equal(moment.duration(223, "minutes").format("m [min]", -2), "200 min");
+        equal(moment.duration(123, "minutes").format({ template: "h [hrs]", precision: 2 }), "2.04 hrs");
+        equal(moment.duration(123, "minutes").format("s [seconds], m [minutes], h [hours], d [days]"), "0 seconds, 3 minutes, 2 hours");
+        equal(moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: false }), "0d 2:03:00");
+        equal(moment.duration(123, "minutes").format("d[d] h:mm:ss"), "2:03:00");
+        equal(moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: "large" }), "2:03:00");
+        equal(moment.duration(0, "minutes").format("d[d] h:mm:ss", { trim: "large" }), "0");
+        equal(moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: "small" }), "0d 2:03");
+        equal(moment.duration(0, "minutes").format("d[d] h:mm:ss", { trim: "small" }), "0d");
+        equal(moment.duration(123, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "both" }), "2h 3m");
+        equal(moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "both" }), "0s");
+        equal(moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "mid" }), "0w 1d 1m 0s");
+        equal(moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "large mid" }), "1d 1m 0s");
+        equal(moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "small mid" }), "0w 1d 1m");
+        equal(moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "both mid" }), "1d 1m");
+        equal(moment.duration(0, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "both mid" }), "0s");
+        equal(moment.duration(0, "minutes").format("d[d] h:mm:ss", { trim: "large final" }), "");
+        equal(moment.duration(0, "minutes").format("d[d] h:mm:ss", { trim: "small final" }), "");
+        equal(moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "both final" }), "");
+        equal(moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "all" }), "");
+        equal(moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "2 hours, 2 minutes");
+        equal(moment.duration(1216922, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "2 weeks, 2 hours");
+        equal(moment.duration(23, "minutes").format("d[d] h:mm:ss", { stopTrim: "h" }), "0:03:00");
+        equal(moment.duration(23, "minutes").format("d[d] *h:mm:ss"), "0:03:00");
+        equal(moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: "d m" }), "0 days, 2 hours, 0 minutes");
+        equal(moment.duration(2, "hours").format("y [years], *d [days], h [hours], *m [minutes], s [seconds]", { trim: "both" }), "0 days, 2 hours, 0 minutes");
+        equal(moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: "d m", largest: 2 }), "2 hours");
+        equal(moment.duration(179, "seconds").format("m [minutes]"), "3 minutes");
+        equal(moment.duration(3780, "seconds").format("h [hours]", 1), "1.1 hours");
+        equal(moment.duration(179, "seconds").format("m [minutes]", { trunc: true }), "2 minutes");
+        equal(moment.duration(3780, "seconds").format("h [hours]", 1, { trunc: true }), "1.0 hours");
+        equal(moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", { trunc: true, trim: "both" }), "0 minutes");
+        equal(moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", { trunc: true, trim: "all" }), "");
+        equal(moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", { trunc: true, largest: 1 }), "");
+        equal(moment.duration(123, "seconds").format("h:mm:ss"), "2:03");
+        equal(moment.duration(123, "seconds").format("hh:mm:ss"), "02:03");
+        equal(moment.duration(123, "seconds").format("h:mm:ss", { forceLength: true }), "02:03");
+        equal(moment.duration(1234567, "seconds").format("m [minutes]", 3), "20,576.117 minutes");
+        equal(moment.duration(1, "minutes").format("m [minutes]"), "1 minute");
+        equal(moment.duration(1, "minutes").format("m [mins]"), "1 min");
+        equal(moment.duration(1, "minutes").format("m [minutes]", { useSingular: false }), "1 minutes");
+        equal(moment.duration(1, "minutes").format("m [mins]", { useSingular: false }), "1 mins");
+        equal(moment.duration(1, "minutes").format("m [minutes]", 2), "1.00 minutes");
+        equal(moment.duration(7322, "seconds").format("_ h, _ m, _ s", { useLeftUnits: true }), "hrs 2, mins 2, secs 2");
+        equal(moment.duration(1234, "seconds").format("s [seconds]"), "1,234 seconds");
+        equal(moment.duration(1234, "seconds").format("s [seconds]", { useGrouping: false }), "1234 seconds");
+        equal(moment.duration(1234567, "seconds").format("m [minutes]", 3, { userLocale: "de-DE" }), "20.576,117 minutes");
+    });
+
+
+
     // tests TODO:
     // useLeftUnits with trim: right
     // useLeftUnits with trim: left
@@ -383,16 +443,8 @@ $(document).ready(function() {
     // floating point errors
     // no locale duration strings?
 
-    // document decimalSeparator removal
-    // add userLocale tests at the end with a GB(?) locale? Something with a comma for decimal separator...
-
     // largest with precision and sig figs
 
     // add time separator string to localeData extension? How to access?
     // multiple rules for plurals. See https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals
-
-    // trim: large, small, mid, both, final, all, true, false, left, right
-    // stopTrim with trim options
-    // stopTrim with largest
-    // trunc with stopTrim and largest
 });

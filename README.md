@@ -332,6 +332,23 @@ moment.duration(123, "seconds").format("h:mm:ss", { forceLength: true });
 
 When `useSignificantDigits` is set to `true`, the `precision` option determines the maximum significant digits to be rendered. Precision must be a positive integer. Significant digits extend across unit types, e.g. `"6 hours 37.5 minutes"` represents `4` significant digits. Enabling this option causes token length to be ignored. See  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString.
 
+Setting `trunc` affects the operation of `useSignificantDigits`.
+```
+moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, precision: 3 });
+// "1 day, 3 hours, 50 minutes"
+
+moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, precision: 3, trunc: true });
+// "1 day, 3 hours, 40 minutes"
+
+moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, precision: 5 });
+// "1 day, 3 hours, 46 minutes, 40 seconds"
+
+moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, trunc: true, precision: 5 });
+// "1 day, 3 hours, 46 minutes, 30 seconds"
+
+moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, precision: 6 }), "1 day, 3 hours, 46 minutes, 39 seconds");
+```
+
 ### Localization
 
 Formatted numerical output is rendered using `toLocaleString`. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString.
