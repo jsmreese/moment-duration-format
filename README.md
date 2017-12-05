@@ -162,7 +162,8 @@ moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: false });
 ```
 
 `trim` can be a string, a delimited list of strings, an array of strings, or a boolean. Accepted values are as follows:
-- `"large"` Trim largest-magnitude zero-value tokens until finding a token with a value, a token identified as `stopTrim`, or the final token of the format string. This is the default `trim` value.
+- `"large"`
+Trim largest-magnitude zero-value tokens until finding a token with a value, a token identified as `stopTrim`, or the final token of the format string. This is the default `trim` value.
 ```
 moment.duration(123, "minutes").format("d[d] h:mm:ss");
 // "2:03:00"
@@ -173,7 +174,8 @@ moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: "large" });
 moment.duration(0, "minutes").format("d[d] h:mm:ss", { trim: "large" });
 // "0"
 ```
-- `"small"` Trim smallest-magnitude zero-value tokens until finding a token with a value, a token identified as `stopTrim`, or the final token of the format string.
+- `"small"`
+Trim smallest-magnitude zero-value tokens until finding a token with a value, a token identified as `stopTrim`, or the final token of the format string.
 ```
 moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: "small" });
 // "0d 2:03"
@@ -189,7 +191,8 @@ moment.duration(123, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "both" });
 moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "both" });
 // "0s"
 ```
-- `"mid"` Trim any zero-value tokens that are not the first or last tokens. Usually used in conjunction with `"large"` or `"both"`. e.g. `"large mid"` or `"both mid"`.
+- `"mid"`
+Trim any zero-value tokens that are not the first or last tokens. Usually used in conjunction with `"large"` or `"both"`. e.g. `"large mid"` or `"both mid"`.
 ```
 moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "mid" });
 // "0w 1d 1m 0s"
@@ -206,7 +209,8 @@ moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "bot
 moment.duration(0, "minutes").format("w[w] d[d] h[h] m[m] s[s]", { trim: "both mid" });
 // "0s"
 ```
-- `"final"` Trim the final token if it is zero-value. Use this option with `"large"` or `"both"` to output an empty string when formatting a zero-value duration. e.g. `"large final"` or `"both final"`.
+- `"final"`
+Trim the final token if it is zero-value. Use this option with `"large"` or `"both"` to output an empty string when formatting a zero-value duration. e.g. `"large final"` or `"both final"`.
 ```
 moment.duration(0, "minutes").format("d[d] h:mm:ss", { trim: "large final" });
 // ""
@@ -217,15 +221,20 @@ moment.duration(0, "minutes").format("d[d] h:mm:ss", { trim: "small final" });
 moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "both final" });
 // ""
 ```
-- `"all"` Trim all zero-value tokens. Shorthand for `"both mid final"`.
+- `"all"`
+Trim all zero-value tokens. Shorthand for `"both mid final"`.
 ```
 moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "all" });
 // ""
 ```
-- `"left"` Maps to `"large"` to support this plugin's version 1 API.
-- `"right"` Maps to `"large"` to support this plugin's version 1 API.
-- `true` Maps to `"large"`.
-- `false` Disables trimming.
+- `"left"`
+Maps to `"large"` to support this plugin's version 1 API.
+- `"right"`
+Maps to `"large"` to support this plugin's version 1 API.
+- `true`
+Maps to `"large"`.
+- `false`
+Disables trimming.
 
 #### largest
 
@@ -371,12 +380,12 @@ moment.duration(1234567, "seconds").format("m [minutes]", 3, { userLocale: "de-D
 
 #### Extending Moment's `locale` object
 
-This plugin now extends moment.js's `locale` object with `durations` and `durationsShort` values. The `en` locale is included with this plugin. Other locales may be easily defined to provide auto-singularized and auto-localized unit labels in different languages. If the plugin cannot find the duration locale extensions for the active moment locale, those plugin features will not be active.
+This plugin now extends moment.js's `locale` object with `durations` and `durationsShort` values. The `en` locale is included with this plugin. Other locales may be easily defined to provide auto-singularized and auto-localized unit labels in different languages. If the plugin cannot find the duration locale extensions for the active moment locale, the plugin will replace any `_` or `__` template text with the `en` locale unit label.
 
 Below is the `en` locale extension.
 
 ```
-context.updateLocale('en', {
+moment.updateLocale('en', {
     durations: {
         S: 'millisecond',
         SS: 'milliseconds',
@@ -393,7 +402,10 @@ context.updateLocale('en', {
         M: 'month',
         MM: 'months',
         y: 'year',
-        yy: 'years'
+        yy: 'years',
+        HMS: 'h:mm:ss',
+        HM: 'h:mm',
+        MS: 'm:ss'
     },
     durationsShort: {
         S: 'msec',
@@ -426,12 +438,31 @@ A double underscore `__` will be replaced with the duration unit label for its a
 
 Auto-localized unit labels are singularized just as if they had appeared directly in the format template string.
 
+#### Auto-localized Time Notation
+
+Durations can also be formatted with a localized time notation.
+
+The string `_HMS_` is repalced with a localized `h:mm:ss` notation.
+
+The string `_HM_` is repalced with a localized `h:mm` notation.
+
+The string `_MS_` is repalced with a localized `m:ss` notation.
+
 ```
 moment.duration(1, "minutes").format("m _");
 // "1 min"
 
 moment.duration(1, "minutes").format("m __");
 // "1 minute"
+
+moment.duration(3661, "seconds").format("_HMS_");
+// "1:01:01"
+
+moment.duration(3661, "seconds").format("_HM_");
+// "1:01"
+
+moment.duration(61, "seconds").format("_MS_");
+// "1:01"
 ```
 
 #### useSingular

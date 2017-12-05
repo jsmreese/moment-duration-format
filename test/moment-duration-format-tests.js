@@ -333,6 +333,12 @@ $(document).ready(function() {
 		equal(moment.duration(1, "years").format("y __"), "1 year");
     });
 
+    test("Automatic Locale-based time notation", function () {
+        equal(moment.duration(3661, "seconds").format("_HMS_"), "1:01:01");
+        equal(moment.duration(3661, "seconds").format("_HM_"), "1:01");
+        equal(moment.duration(61, "seconds").format("_MS_"), "1:01");
+    });
+
     test("Locale missing durations and durationsShort", function () {
         moment.locale('fr', {
             months : 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
@@ -394,8 +400,11 @@ $(document).ready(function() {
                 doy : 4  // The week that contains Jan 4th is the first week of the year.
             }
         });
-        equal(moment.duration(3661, "s").format("h _, m _, s _"), "1 _, 1 _, 1 _");
-        equal(moment.duration(3661, "s").format("h __, m __, s __"), "1 __, 1 __, 1 __");
+        equal(moment.duration(3661, "s").format("h _, m _, s _"), "1 hr, 1 min, 1 sec");
+        equal(moment.duration(3661, "s").format("h __, m __, s __"), "1 hours, 1 minutes, 1 seconds");
+        equal(moment.duration(3661, "seconds").format("_HMS_"), "1:01:01");
+        equal(moment.duration(3661, "seconds").format("_HM_"), "1:01");
+        equal(moment.duration(61, "seconds").format("_MS_"), "1:01");
         moment.locale("en");
     });
 
@@ -509,6 +518,9 @@ $(document).ready(function() {
 
     // largest with precision and sig figs
 
-    // add time separator string to localeData extension? How to access?
-    // multiple rules for plurals. See https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals
+    // Add API to output `<1 minute` (and even `>1 minute`?)
+
+    // Default format function docs and tests. Disambiguify based on magnitude of duration. See https://github.com/jsmreese/moment-duration-format/issues/14
+
+    // trim leading/trailing dot (.)
 });
