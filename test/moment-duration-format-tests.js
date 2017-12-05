@@ -29,6 +29,7 @@ $(document).ready(function() {
 	test("Trim Right", function () {
 		equal(moment.duration(1, "seconds").format("s m", { trim: "right" }), "1");
 		equal(moment.duration(1, "minutes").format("s m h", { trim: "right" }), "0 1");
+		equal(moment.duration({ years: 2, months: 0 }).format("Y [years] M [months]", { trim: "right" }), "2 years");
 	});
 
 	test("Trim False", function () {
