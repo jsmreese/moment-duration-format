@@ -314,9 +314,60 @@ moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", { trun
 // ""
 ```
 
+#### minValue
+
+Use `minValue` to render generalized output for small duration values, e.g. `"<5 minutes"`. `minValue` must be a positive integer and is applied to the least-magnitude moment token in the format template. This option affects the operation of `trim`, and is affected by `trunc`. If the minValue is `1`, the output will be singularized.
+
+```
+moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1 });
+// "< 1 minute"
+
+moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trim: "both" });
+// "< 1 minute"
+
+moment.duration(7229, "seconds").format("h [hours], m [minutes]", { minValue: 1, trim: "both" });
+// "2 hours"
+
+moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trunc: true, trim: "all" });
+// ""
+```
+
+`minValue` can be used with negative durations, where it has the same effect on the least-magnitude moment token's absolute value.
+
+```
+moment.duration(-59, "seconds").format("h [hours], m [minutes]", { minValue: 1 });
+// "> -1 minute"
+```
+
+When `minValue` is reached, only the least-magnitude moment token is output, regardless of `trim` and `largest`.
+
+```
+moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trim: false, largest: 2 });
+// "< 1 minute"
+```
+
+#### maxValue
+
+Use `maxValue` to render generalized output for large duration values, e.g. `">60 days"`. `maxValue` must be a positive integer and is applied to the greatest-magnitude moment token in the format template. As with `minValue`, this option affects the operation of `trim`, is affected by `trunc`, will singularize output if the value is `1`, and can be used with negative durations.
+
+```
+moment.duration(15, "days").format("w [weeks]", { maxValue: 2 });
+// "> 2 weeks"
+
+moment.duration(-15, "days").format("w [weeks]]", { maxValue: 2 });
+// "< -2 weeks"
+```
+
+When `maxValue` is reached, only the greatest-magnitude moment token is output, regardless of `trim` and `largest`.
+
+```
+moment.duration(15, "days").format("w [weeks], d [days]", { maxValue: 2, trim: false, largest: 2 });
+// "> 2 weeks"
+```
+
 #### forceLength
 
-Force the first moment token with a value to render at full length, even when the template is trimmed and the first moment token has a length of 1. Sounds more complicated than it is.
+Force the first moment token with a value to render at full length, even when the template is trimmed and the first moment token has a length of `1`. Sounds more complicated than it is.
 
 ```
 moment.duration(123, "seconds").format("h:mm:ss");
@@ -428,6 +479,8 @@ moment.updateLocale('en', {
 });
 ```
 
+Localized unit labels (`s`, `ss`, `m`, `mm`, etc.) are replaced after tokens are parsed, so they need not be escaped. Time format definitions (`HMS`, `HM`, and `MS`) are replaced before tokens are parsed and need to be properly escaped, e.g. `MS: 'mm\[m\]ss\[s\]'`, if that were the way a minute/second duration value were written for a particular locale..
+
 #### Auto-localized Unit Labels
 
 Once Moment's `locale` object is extended with `durations` and `durationsShort` values, the `_` character can be used to generate auto-localized unit labels in the formatted output.
@@ -487,7 +540,7 @@ moment.duration(1, "minutes").format("m [mins]", { useSingular: false });
 // "1 mins"
 ```
 
-Singularization is not used when a value is rendered with decimal precision.
+Singularizing is not used when a value is rendered with decimal precision.
 
 ```
 moment.duration(1, "minutes").format("m [minutes]", 2);
@@ -517,7 +570,7 @@ moment.duration(1234, "seconds").format("s [seconds]", { useGrouping: false });
 
 #### Decimal Separator
 
-Previous versions of the plugin used a `decimalSeparator` option. That option is no longer used and will have no effect. Decimal separators are rendered using `toLocalString`.
+Previous versions of the plugin used a `decimalSeparator` option. That option is no longer used and will have no effect. Decimal separators are rendered using `toLocalString` and the user's locale.
 
 ```
 moment.duration(1234567, "seconds").format("m [minutes]", 3, { userLocale: "de-DE" });

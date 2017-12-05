@@ -513,14 +513,27 @@ $(document).ready(function() {
         equal(moment.duration(1234567, "seconds").format("m [minutes]", 3, { userLocale: "de-DE" }), "20.576,117 minutes");
     });
 
+    test("minValue and maxValue", function () {
+        equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1 }), "< 1 minute");
+        equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trim: "both" }), "< 1 minute");
+        equal(moment.duration(3629, "seconds").format("h [hours], m [minutes]", { minValue: 1, trim: "both" }), "1 hour");
+        equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trunc: true, trim: "all" }), "");
+        equal(moment.duration(-59, "seconds").format("h [hours], m [minutes]", { minValue: 1 }), "> -1 minute");
+        equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trim: false, largest: 2 }), "< 1 minute");
+        equal(moment.duration(15, "days").format("w [weeks]", { maxValue: 2 }), "> 2 weeks");
+        equal(moment.duration(-15, "days").format("w [weeks]]", { maxValue: 2 }), "< -2 weeks");
+        equal(moment.duration(15, "days").format("w [weeks], d [days]", { maxValue: 2, trim: false, largest: 2 }), "> 2 weeks");
+    });
+
     // tests TODO:
     // floating point errors
 
-    // largest with precision and sig figs
+    // largest with precision and sig figs.
+    // What happens when largest could be `1 day 0.5 hours` instead of `1 day 30 minutes`.
 
     // Add API to output `<1 minute` (and even `>1 minute`?)
 
     // Default format function docs and tests. Disambiguify based on magnitude of duration. See https://github.com/jsmreese/moment-duration-format/issues/14
 
-    // trim leading/trailing dot (.)
+    // document trimming of leading/trailing dot (.), space, colon, or comma
 });
