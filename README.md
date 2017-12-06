@@ -49,6 +49,7 @@ var momentDurationSetup = require("moment-duration-format");
 momentDurationSetup(moment)
 // typeof moment.duration().format === function
 // => true
+```
 
 ### Basics
 
