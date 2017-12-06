@@ -12,6 +12,8 @@ This plugin does not have any dependencies beyond Moment.js itself, and may be u
 
 ## Installation
 
+The plugin depends on moment.js, which is not specified as a package dependency in the currently published version.
+
 **Node.js**
 
 `npm install moment-duration-format`
@@ -24,23 +26,28 @@ This plugin does not have any dependencies beyond Moment.js itself, and may be u
 
 `<script src="path/to/moment-duration-format.js"></script>`
 
-When using this plugin in the browser, be sure to include moment.js on your page first.
-
 ---
 
 ## Usage
 
+This plugin will always try to install itself on the `root.moment` instance, if it exists.
+
+This plugin will install its setup function to `root.momentDurationFormatSetup` so that it may be later called on any moment instance.
+
+### Browser
+
+When using this plugin in the browser, if you do not include moment.js on your page first, you need to manually call `window.momentDurationFormatSetup` on your moment instance once it is created.
+
 ### Module
 
-To use this plugin as a module, use the `require` function:
+To use this plugin as a module, use the `require` function.
+
 ```
 var moment = require("moment");
 var momentDurationFormatSetup = require("moment-duration-format");
 ```
 
-The plugin returns the init function so that duration format can be initialized on other moment instances.
-
-The plugin depends on moment.js, which is not specified as a package dependency in the currently published version.
+The plugin exports the init function so that duration format can be initialized on other moment instances.
 
 To use this plugin with any other moment.js package, for example `moment-timezone`, manually call the exported setup function to install the plugin into the desired package.
 
