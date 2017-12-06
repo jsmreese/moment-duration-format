@@ -33,13 +33,22 @@ When using this plugin in the browser, be sure to include moment.js on your page
 ### Module
 
 To use this plugin as a module, use the `require` function:
+
 ```
+var moment = require("moment");
 require("moment-duration-format");
 ```
 
-The plugin does not export anything, so there is no need to assign the require output to a variable.
+Using the plugin with standard `moment.js` package should work out of the box and not require any further setup.
 
-The plugin depends on moment.js, which is not specified as a package dependency in the currently published version.
+To use it with any other `moment.js` package, for example `moment-timezone`, manually call the exported setup function to install the plugin into `moment`, as following:
+
+```
+var moment = require("moment-timezone");
+var momentDurationSetup = require("moment-duration-format");
+momentDurationSetup(moment)
+// typeof moment.duration().format === function
+// => true
 
 ### Basics
 
