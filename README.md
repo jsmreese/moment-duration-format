@@ -34,12 +34,24 @@ When using this plugin in the browser, be sure to include moment.js on your page
 
 To use this plugin as a module, use the `require` function:
 ```
-require("moment-duration-format");
+var moment = require("moment");
+var momentDurationFormatSetup = require("moment-duration-format");
 ```
 
 The plugin returns the init function so that duration format can be initialized on other moment instances.
 
 The plugin depends on moment.js, which is not specified as a package dependency in the currently published version.
+
+To use this plugin with any other moment.js package, for example `moment-timezone`, manually call the exported setup function to install the plugin into the desired package.
+
+```
+var moment = require("moment-timezone");
+var momentDurationFormatSetup = require("moment-duration-format");
+
+momentDurationFormatSetup(moment);
+typeof moment.duration.fn.format === "function"
+// true
+```
 
 ### Basics
 
