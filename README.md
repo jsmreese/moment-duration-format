@@ -69,7 +69,7 @@ moment.duration(123, "minutes").format();
 // "2:03:00"
 
 moment.duration(123, "months").format();
-// "10y 3m"
+// "10 years, 3 months"
 ```
 
 The duration format method may be called with three optional arguments:
@@ -112,8 +112,8 @@ For some time duration formats, a zero-padded value is required. Use multiple to
 moment.duration(3661, "seconds").format("h:mm:ss");
 // "1:01:01"
 
-moment.duration(15, "seconds").format("ssss [s]");
-// "0015 s"
+moment.duration(15, "seconds").format("sss [s]");
+// "015 s"
 ```
 
 When the format template is trimmed, token length on the largest-magnitude rendered token can be trimmed as well.
@@ -124,6 +124,16 @@ moment.duration(123, "seconds").format("h:mm:ss");
 ```
 
 See sections *trim* and *forceLength* below for more details.
+
+Tokens can appear multiple times in the format template, but all instances must share the same length. If they do not, all instances will be rendered at the length of the first token of that type.
+
+```
+moment.duration(15, "seconds").format("ssss sss ss s");
+// "0015 0015 0015 0015"
+
+moment.duration(15, "seconds").format("s ss sss ssss");
+// "15 15 15 15"
+```
 
 ### Precision
 
@@ -138,7 +148,7 @@ moment.duration(123, "minutes").format("h [hrs]");
 Positive precision defines the number of decimal fraction digits to display.
 ```
 moment.duration(123, "minutes").format("h [hrs]", 2);
-// "2.04 hrs"
+// "2.05 hrs"
 ```
 
 Negative precision defines the number of integer digits to truncate to zero.
@@ -155,7 +165,7 @@ Both the `template` and `precision` arguments may be specified as properties of 
 
 ```
 moment.duration(123, "minutes").format({ template: "h [hrs]", precision: 2 });
-// "2.04 hrs"
+// "2.05 hrs"
 ```
 
 #### trim
@@ -257,7 +267,7 @@ Disables trimming.
 
 #### largest
 
-Set `largest` to a positive integer to output only the `n` largest-magnitude moment tokens that have a value. All lesser-magnitude or zero-value moment tokens will be ignored. This option effectively runs `trim: "all"` before selecting the largest-magnitude tokens, and takes effect even when `trim: false` is used.
+Set `largest` to a positive integer to output only the `n` largest-magnitude moment tokens that have a value. All lesser-magnitude or zero-value moment tokens will be ignored. Using the `largest` option overrides `trim` to `"all"` and disables `stopTrim`. This option takes effect even when `trim: false` is used.
 
 ```
 moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 });
@@ -275,10 +285,10 @@ Option value may be a moment token string, a delimited set of moment token strin
 
 ```
 moment.duration(23, "minutes").format("d[d] h:mm:ss", { stopTrim: "h" });
-// "0:03:00"
+// "0:23:00"
 
 moment.duration(23, "minutes").format("d[d] *h:mm:ss");
-// "0:03:00"
+// "0:23:00"
 ```
 
 This option affects all trimming modes: `"large"`, `"small"`, `"mid"`, and `"final"`.
@@ -291,7 +301,7 @@ moment.duration(2, "hours").format("y [years], *d [days], h [hours], *m [minutes
 // "0 days, 2 hours, 0 minutes"
 ```
 
-`stopTrim` does not affect the operation of `largest`.
+`stopTrim` is disabled when using `largest`.
 
 ```
 moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: "d m", largest: 2 });
@@ -335,7 +345,7 @@ moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", { trun
 
 #### minValue
 
-Use `minValue` to render generalized output for small duration values, e.g. `"<5 minutes"`. `minValue` must be a positive integer and is applied to the least-magnitude moment token in the format template. This option affects the operation of `trim`, and is affected by `trunc`. If the minValue is `1`, the output will be singularized.
+Use `minValue` to render generalized output for small duration values, e.g. `"< 5 minutes"`. `minValue` must be a positive integer and is applied to the least-magnitude moment token in the format template. This option affects the operation of `trim`, and is affected by `trunc`. If the minValue is `1`, the output will be singularized.
 
 ```
 moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1 });
@@ -367,7 +377,7 @@ moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, t
 
 #### maxValue
 
-Use `maxValue` to render generalized output for large duration values, e.g. `">60 days"`. `maxValue` must be a positive integer and is applied to the greatest-magnitude moment token in the format template. As with `minValue`, this option affects the operation of `trim`, is affected by `trunc`, will singularize output if the value is `1`, and can be used with negative durations.
+Use `maxValue` to render generalized output for large duration values, e.g. `"> 60 days"`. `maxValue` must be a positive integer and is applied to the greatest-magnitude moment token in the format template. As with `minValue`, this option affects the operation of `trim`, is affected by `trunc`, will singularize output if the value is `1`, and can be used with negative durations.
 
 ```
 moment.duration(15, "days").format("w [weeks]", { maxValue: 2 });

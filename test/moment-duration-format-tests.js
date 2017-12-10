@@ -39,6 +39,8 @@ $(document).ready(function() {
 	test("Token Length", function () {
 		equal(moment.duration(1, "seconds").format("ss"), "01");
 		equal(moment.duration(1, "minutes").format("mm ss"), "01 00");
+        equal(moment.duration(15, "seconds").format("ssss sss ss s", { useGrouping: false }), "0015 0015 0015 0015");
+        equal(moment.duration(15, "seconds").format("s ss sss ssss"), "15 15 15 15");
 	});
 
 	test("Left Trimmed First Token Length", function () {
@@ -86,7 +88,8 @@ $(document).ready(function() {
 
 	test("Multiple Token Instances", function () {
 		equal(moment.duration(123, "seconds").format("s s s"), "123 123 123");
-		equal(moment.duration(123, "seconds").format("s s ssssss"), "123 123 000,123");
+		equal(moment.duration(123, "seconds").format("s s ssssss"), "123 123 123");
+        equal(moment.duration(123, "seconds").format("ssssss s s"), "000,123 000,123 000,123");
 	});
 
 	test("Escape Tokens", function () {
@@ -138,14 +141,14 @@ $(document).ready(function() {
 	});
 
 	test("Default Template Function", function () {
-		equal(moment.duration(100, "milliseconds").format(), "0");
+		equal(moment.duration(100, "milliseconds").format(), "100 milliseconds");
 		equal(moment.duration(100, "seconds").format(), "1:40");
-		equal(moment.duration(100, "minutes").format(), "1:40");
-		equal(moment.duration(100, "hours").format(), "4d 4h");
-		equal(moment.duration(100, "days").format(), "3m 9d");
-		equal(moment.duration(100, "weeks").format(), "22m 30d");
-		equal(moment.duration(100, "months").format(), "8y 4m");
-		equal(moment.duration(100, "years").format(), "100y");
+		equal(moment.duration(100, "minutes").format(), "1:40:00");
+		equal(moment.duration(100, "hours").format(), "4 days, 4 hours");
+		equal(moment.duration(100, "days").format(), "3 months, 9 days");
+		equal(moment.duration(100, "weeks").format(), "1 year, 10 months, 30 days");
+		equal(moment.duration(100, "months").format(), "8 years, 4 months");
+		equal(moment.duration(100, "years").format(), "100 years");
 	});
 
 	test("Custom Template Function", function () {
@@ -196,8 +199,8 @@ $(document).ready(function() {
 
     test("Negative Durations that have zero value", function () {
         equal(moment.duration(-29, "seconds").format("m"), "0");
-        equal(moment.duration(-30, "seconds").format("m"), "0");
-        equal(moment.duration(-31, "seconds").format("m", { trunc: true }), "0");
+        equal(moment.duration(-30, "seconds").format("m"), "-1");
+        equal(moment.duration(-30, "seconds").format("m", { trunc: true }), "0");
         equal(moment.duration(-59, "seconds").format("m", { trunc: true }), "0");
     });
 
@@ -225,8 +228,8 @@ $(document).ready(function() {
 
     test("Show only the largest `x` tokens", function () {
         equal(moment.duration(1.55, "days").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "1 day, 13 hours");
-        equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "1 day, 0 hours");
-        equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 3 }), "1 day, 0 hours, 14 minutes");
+        equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "1 day, 14 minutes");
+        equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 3 }), "1 day, 14 minutes, 24 seconds");
     });
 
     test("Trim both", function () {
@@ -284,7 +287,9 @@ $(document).ready(function() {
         equal(moment.duration(1, "w").format("w [wks]"), "1 wk");
         equal(moment.duration(1, "w").format("w [weeks]", { precision: 1 }), "1.0 weeks");
         equal(moment.duration(1, "w").format("w [weeks]", { useSingular: false }), "1 weeks");
+    });
 
+    test("useSingular Months and Years", function () {
         equal(moment.duration(0, "months").format("M [months]"), "0 months");
         equal(moment.duration(1, "months").format("M [months]"), "1 month");
         equal(moment.duration(0, "months").format("M [mos]"), "0 mos");
@@ -307,7 +312,11 @@ $(document).ready(function() {
     });
 
     test("useSingular with rounding", function () {
-        equal(moment.duration(119, "seconds").format("m [minutes]")), "2 minutes");
+        equal(moment.duration(119, "seconds").format("m [minutes]"), "2 minutes");
+        equal(moment.duration(1.25, "s").format("s [secs]"), "1 sec");
+        equal(moment.duration(1.5, "s").format("s [secs]"), "2 secs");
+        equal(moment.duration(1.75, "s").format("s [secs]"), "2 secs");
+        equal(moment.duration(2, "s").format("s [secs]"), "2 secs");
     });
 
     test("Automatic Locale-based units", function () {
@@ -401,7 +410,7 @@ $(document).ready(function() {
             }
         });
         equal(moment.duration(3661, "s").format("h _, m _, s _"), "1 hr, 1 min, 1 sec");
-        equal(moment.duration(3661, "s").format("h __, m __, s __"), "1 hours, 1 minutes, 1 seconds");
+        equal(moment.duration(3661, "s").format("h __, m __, s __"), "1 hour, 1 minute, 1 second");
         equal(moment.duration(3661, "seconds").format("_HMS_"), "1:01:01");
         equal(moment.duration(3661, "seconds").format("_HM_"), "1:01");
         equal(moment.duration(61, "seconds").format("_MS_"), "1:01");
@@ -457,15 +466,15 @@ $(document).ready(function() {
 
     test("Documentation examples", function () {
         equal(moment.duration(123, "minutes").format(), "2:03:00");
-        equal(moment.duration(123, "months").format(), "10y 3m");
+        equal(moment.duration(123, "months").format(), "10 years, 3 months");
         equal(moment.duration(123, "minutes").format("h:mm"), "2:03");
         equal(moment.duration(123, "minutes").format("h [hrs], m [min]"), "2 hrs, 3 min");
         equal(moment.duration(3661, "seconds").format("h:mm:ss"), "1:01:01");
-        equal(moment.duration(15, "seconds").format("ssss [s]"), "0015 s");
+        equal(moment.duration(15, "seconds").format("sss [s]"), "015 s");
         equal(moment.duration(123, "minutes").format("h [hrs]"), "2 hrs");
-        equal(moment.duration(123, "minutes").format("h [hrs]", 2), "2.04 hrs");
+        equal(moment.duration(123, "minutes").format("h [hrs]", 2), "2.05 hrs");
         equal(moment.duration(223, "minutes").format("m [min]", -2), "200 min");
-        equal(moment.duration(123, "minutes").format({ template: "h [hrs]", precision: 2 }), "2.04 hrs");
+        equal(moment.duration(123, "minutes").format({ template: "h [hrs]", precision: 2 }), "2.05 hrs");
         equal(moment.duration(123, "minutes").format("s [seconds], m [minutes], h [hours], d [days]"), "0 seconds, 3 minutes, 2 hours");
         equal(moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: false }), "0d 2:03:00");
         equal(moment.duration(123, "minutes").format("d[d] h:mm:ss"), "2:03:00");
@@ -486,8 +495,8 @@ $(document).ready(function() {
         equal(moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "all" }), "");
         equal(moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "2 hours, 2 minutes");
         equal(moment.duration(1216922, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "2 weeks, 2 hours");
-        equal(moment.duration(23, "minutes").format("d[d] h:mm:ss", { stopTrim: "h" }), "0:03:00");
-        equal(moment.duration(23, "minutes").format("d[d] *h:mm:ss"), "0:03:00");
+        equal(moment.duration(23, "minutes").format("d[d] h:mm:ss", { stopTrim: "h" }), "0:23:00");
+        equal(moment.duration(23, "minutes").format("d[d] *h:mm:ss"), "0:23:00");
         equal(moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: "d m" }), "0 days, 2 hours, 0 minutes");
         equal(moment.duration(2, "hours").format("y [years], *d [days], h [hours], *m [minutes], s [seconds]", { trim: "both" }), "0 days, 2 hours, 0 minutes");
         equal(moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: "d m", largest: 2 }), "2 hours");
@@ -521,19 +530,24 @@ $(document).ready(function() {
         equal(moment.duration(-59, "seconds").format("h [hours], m [minutes]", { minValue: 1 }), "> -1 minute");
         equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trim: false, largest: 2 }), "< 1 minute");
         equal(moment.duration(15, "days").format("w [weeks]", { maxValue: 2 }), "> 2 weeks");
-        equal(moment.duration(-15, "days").format("w [weeks]]", { maxValue: 2 }), "< -2 weeks");
+        equal(moment.duration(-15, "days").format("w [weeks]", { maxValue: 2 }), "< -2 weeks");
         equal(moment.duration(15, "days").format("w [weeks], d [days]", { maxValue: 2, trim: false, largest: 2 }), "> 2 weeks");
+    });
+
+    test("stopTrim", function () {
+        equal(moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: ["d", "m"] }), "0 days, 2 hours, 0 minutes");
+        equal(moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: ["d", "m"], largest: 2 }), "2 hours");
     });
 
     // tests TODO:
     // floating point errors
 
-    // largest with precision and sig figs.
-    // What happens when largest could be `1 day 0.5 hours` instead of `1 day 30 minutes`.
-
-    // Add API to output `<1 minute` (and even `>1 minute`?)
-
     // Default format function docs and tests. Disambiguify based on magnitude of duration. See https://github.com/jsmreese/moment-duration-format/issues/14
 
     // document trimming of leading/trailing dot (.), space, colon, or comma
+
+    // move time-notation locale extensions to their own section?
+    // plural / singular function, updated API. Pass whole and decimal value to the function, get back label? Pass label, whole, decimal values, get back new label?
+
+    // test invalid duration (see https://momentjs.com/docs/#/durations/)
 });
