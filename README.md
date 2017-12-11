@@ -638,11 +638,11 @@ moment.duration(2, "minutes").format("m __");
 
 Durations can also be formatted with a localized time notation.
 
-The string `_HMS_` is repalced with a localized `h:mm:ss` notation.
+The string `_HMS_` is replaced with a localized `hour/minute/second` time notation, e.g. `h:mm:ss`.
 
-The string `_HM_` is repalced with a localized `h:mm` notation.
+The string `_HM_` is replaced with a localized `hour/minute` time notation, e.g. `h:mm`.
 
-The string `_MS_` is repalced with a localized `m:ss` notation.
+The string `_MS_` is replaced with a localized `minute/second` time notation, e.g. `m:ss`.
 
 ```javascript
 moment.duration(3661, "seconds").format("_HMS_");
