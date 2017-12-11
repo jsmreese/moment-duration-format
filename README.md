@@ -127,22 +127,22 @@ Token length of `2` for milliseconds is a special case, most likely used to rend
 
 ```javascript
 moment.duration(9, "milliseconds").format("mm:ss:SS", {
-	 trim: false
+     trim: false
 });
 // "00:00:00"
 
 moment.duration(10, "milliseconds").format("mm:ss:SS", {
-	 trim: false
+     trim: false
 });
 // "00:00:01"
 
 moment.duration(999, "milliseconds").format("mm:ss:SS", {
-	 trim: false
+     trim: false
 });
 // "00:00:99"
 
 moment.duration(1011, "milliseconds").format("mm:ss:SS", {
-	 trim: false
+     trim: false
 });
 // "00:01:01"
 ```
@@ -212,14 +212,14 @@ moment.duration(123, "minutes").format("s [seconds], m [minutes], h [hours], d [
 To stop trimming altogether, set `{ trim: false }`.
 ```javascript
 moment.duration(123, "minutes").format("d[d] h:mm:ss", {
-	 trim: false
+     trim: false
 });
 // "0d 2:03:00"
 ```
 
 `trim` can be a string, a delimited list of strings, an array of strings, or a boolean. Accepted values are as follows:
 
-- #####`"large"`
+- ##### `"large"`
 
 Trim largest-magnitude zero-value tokens until finding a token with a value, a token identified as `stopTrim`, or the final token of the format string. This is the default `trim` value.
 
@@ -228,28 +228,28 @@ moment.duration(123, "minutes").format("d[d] h:mm:ss");
 // "2:03:00"
 
 moment.duration(123, "minutes").format("d[d] h:mm:ss", {
-	 trim: "large"
+     trim: "large"
 });
 // "2:03:00"
 
 moment.duration(0, "minutes").format("d[d] h:mm:ss", {
-	 trim: "large"
+     trim: "large"
 });
 // "0"
 ```
 
-- #####`"small"`
+- ##### `"small"`
 
 Trim smallest-magnitude zero-value tokens until finding a token with a value, a token identified as `stopTrim`, or the final token of the format string.
 
 ```javascript
 moment.duration(123, "minutes").format("d[d] h:mm:ss", {
-	 trim: "small"
+     trim: "small"
 });
 // "0d 2:03"
 
 moment.duration(0, "minutes").format("d[d] h:mm:ss", {
-	 trim: "small"
+     trim: "small"
 });
 // "0d"
 ```
@@ -260,92 +260,92 @@ Execute `"large"` trim then `"small"` trim.
 
 ```javascript
 moment.duration(123, "minutes").format("d[d] h[h] m[m] s[s]", {
-	 trim: "both"
+     trim: "both"
 });
 // "2h 3m"
 
 moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", {
-	 trim: "both"
+     trim: "both"
 });
 // "0s"
 ```
 
-- #####`"mid"`
+- ##### `"mid"`
 
 Trim any zero-value tokens that are not the first or last tokens. Usually used in conjunction with `"large"` or `"both"`. e.g. `"large mid"` or `"both mid"`.
 
 ```javascript
 moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", {
-	 trim: "mid"
+     trim: "mid"
 });
 // "0w 1d 1m 0s"
 
 moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", {
-	 trim: "large mid"
+     trim: "large mid"
 });
 // "1d 1m 0s"
 
 moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", {
-	 trim: "small mid"
+     trim: "small mid"
 });
 // "0w 1d 1m"
 
 moment.duration(1441, "minutes").format("w[w] d[d] h[h] m[m] s[s]", {
-	 trim: "both mid"
+     trim: "both mid"
 });
 // "1d 1m"
 
 moment.duration(0, "minutes").format("w[w] d[d] h[h] m[m] s[s]", {
-	 trim: "both mid"
+     trim: "both mid"
 });
 // "0s"
 ```
 
-- #####`"final"`
+- ##### `"final"`
 
 Trim the final token if it is zero-value. Use this option with `"large"` or `"both"` to output an empty string when formatting a zero-value duration. e.g. `"large final"` or `"both final"`.
 
 ```javascript
 moment.duration(0, "minutes").format("d[d] h:mm:ss", {
-	 trim: "large final"
+     trim: "large final"
 });
 // ""
 
 moment.duration(0, "minutes").format("d[d] h:mm:ss", {
-	 trim: "small final"
+     trim: "small final"
 });
 // ""
 
 moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", {
-	 trim: "both final"
+     trim: "both final"
 });
 // ""
 ```
 
-- #####`"all"`
+- ##### `"all"`
 
 Trim all zero-value tokens. Shorthand for `"both mid final"`.
 
 ```javascript
 moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", {
-	 trim: "all"
+     trim: "all"
 });
 // ""
 ```
 
-- #####`"left"`
+- ##### `"left"`
 
 Maps to `"large"` to support this plugin's version 1 API.
 
-- #####`"right"`
+- ##### `"right"`
 
 Maps to `"large"` to support this plugin's version 1 API.
 
-- #####`true`
+- ##### `true`
 
 Maps to `"large"`.
 
-- #####`false`
+- ##### `false`
 
 Disables trimming.
 
@@ -355,12 +355,12 @@ Set `largest` to a positive integer to output only the `n` largest-magnitude mom
 
 ```javascript
 moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", {
-	 largest: 2
+     largest: 2
 });
 // "2 hours, 2 minutes"
 
 moment.duration(1216922, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", {
-	 largest: 2
+     largest: 2
 });
 // "2 weeks, 2 hours"
 ```
@@ -373,7 +373,7 @@ Option value may be a moment token string, a delimited set of moment token strin
 
 ```javascript
 moment.duration(23, "minutes").format("d[d] h:mm:ss", {
-	 stopTrim: "h"
+     stopTrim: "h"
 });
 // "0:23:00"
 
@@ -385,13 +385,13 @@ This option affects all trimming modes: `"large"`, `"small"`, `"mid"`, and `"fin
 
 ```javascript
 moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", {
-	 trim: "both",
+     trim: "both",
      stopTrim: "d m"
 });
 // "0 days, 2 hours, 0 minutes"
 
 moment.duration(2, "hours").format("y [years], *d [days], h [hours], *m [minutes], s [seconds]", {
-	 trim: "both"
+     trim: "both"
 });
 // "0 days, 2 hours, 0 minutes"
 ```
@@ -400,7 +400,7 @@ moment.duration(2, "hours").format("y [years], *d [days], h [hours], *m [minutes
 
 ```javascript
 moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", {
-	 trim: "both",
+     trim: "both",
      stopTrim: "d m",
      largest: 2
 });
@@ -423,12 +423,12 @@ Set `trunc` to `true` to truncate final token value. This was the default behavi
 
 ```javascript
 moment.duration(179, "seconds").format("m [minutes]", {
-	 trunc: true
+     trunc: true
 });
 // "2 minutes"
 
 moment.duration(3780, "seconds").format("h [hours]", 1, {
-	 trunc: true
+     trunc: true
 });
 // "1.0 hours"
 ```
@@ -437,19 +437,19 @@ Using `trunc` can affect the operation of `trim` and `largest`.
 
 ```javascript
 moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", {
-	 trunc: true,
+     trunc: true,
      trim: "both"
 });
 // "0 minutes"
 
 moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", {
-	 trunc: true,
+     trunc: true,
      trim: "all"
 });
 // ""
 
 moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", {
-	 trunc: true,
+     trunc: true,
      largest: 1
 });
 // ""
@@ -461,24 +461,24 @@ Use `minValue` to render generalized output for small duration values, e.g. `"< 
 
 ```javascript
 moment.duration(59, "seconds").format("h [hours], m [minutes]", {
-	 minValue: 1
+     minValue: 1
 });
 // "< 1 minute"
 
 moment.duration(59, "seconds").format("h [hours], m [minutes]", {
-	 minValue: 1,
+     minValue: 1,
      trim: "both"
 });
 // "< 1 minute"
 
 moment.duration(7229, "seconds").format("h [hours], m [minutes]", {
-	 minValue: 1,
+     minValue: 1,
      trim: "both"
 });
 // "2 hours"
 
 moment.duration(59, "seconds").format("h [hours], m [minutes]", {
-	 minValue: 1,
+     minValue: 1,
      trunc: true,
      trim: "all"
 });
@@ -489,7 +489,7 @@ moment.duration(59, "seconds").format("h [hours], m [minutes]", {
 
 ```javascript
 moment.duration(-59, "seconds").format("h [hours], m [minutes]", {
-	 minValue: 1
+     minValue: 1
 });
 // "> -1 minute"
 ```
@@ -498,7 +498,7 @@ When `minValue` is reached, only the least-magnitude moment token is output, reg
 
 ```javascript
 moment.duration(59, "seconds").format("h [hours], m [minutes]", {
-	 minValue: 1,
+     minValue: 1,
      trim: false,
      largest: 2
 });
@@ -511,12 +511,12 @@ Use `maxValue` to render generalized output for large duration values, e.g. `"> 
 
 ```javascript
 moment.duration(15, "days").format("w [weeks]", {
-	 maxValue: 2
+     maxValue: 2
 });
 // "> 2 weeks"
 
 moment.duration(-15, "days").format("w [weeks]]", {
-	 maxValue: 2
+     maxValue: 2
 });
 // "< -2 weeks"
 ```
@@ -525,7 +525,7 @@ When `maxValue` is reached, only the greatest-magnitude moment token is output, 
 
 ```javascript
 moment.duration(15, "days").format("w [weeks], d [days]", {
-	 maxValue: 2,
+     maxValue: 2,
      trim: false,
      largest: 2
 });
@@ -552,7 +552,7 @@ Or you can use `{ forceLength: true }`.
 
 ```javascript
 moment.duration(123, "seconds").format("h:mm:ss", {
-	 forceLength: true
+     forceLength: true
 });
 // "02:03"
 ```
@@ -564,33 +564,33 @@ When `useSignificantDigits` is set to `true`, the `precision` option determines 
 Setting `trunc` affects the operation of `useSignificantDigits`.
 ```javascript
 moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", {
-	 useSignificantDigits: true,
+     useSignificantDigits: true,
      precision: 3
 });
 // "1 day, 3 hours, 50 minutes"
 
 moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", {
-	 useSignificantDigits: true,
+     useSignificantDigits: true,
      precision: 3,
      trunc: true
 });
 // "1 day, 3 hours, 40 minutes"
 
 moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", {
-	 useSignificantDigits: true,
+     useSignificantDigits: true,
      precision: 5
 });
 // "1 day, 3 hours, 46 minutes, 40 seconds"
 
 moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", {
-	 useSignificantDigits: true,
+     useSignificantDigits: true,
      trunc: true,
      precision: 5
 });
 // "1 day, 3 hours, 46 minutes, 30 seconds"
 
 moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", {
-	 useSignificantDigits: true,
+     useSignificantDigits: true,
      precision: 6
 });
 // "1 day, 3 hours, 46 minutes, 39 seconds"
@@ -613,7 +613,7 @@ moment.duration(1234567, "seconds").format("m [minutes]", 3);
 // "20,576.117 minutes"
 
 moment.duration(1234567, "seconds").format("m [minutes]", 3, {
-	 userLocale: "de-DE"
+     userLocale: "de-DE"
 });
 // "20.576,117 minutes"
 ```
@@ -671,12 +671,12 @@ Set `useSingular` to `false` to disable auto-singularizing.
 
 ```javascript
 moment.duration(1, "minutes").format("m [minutes]", {
-	 useSingular: false
+     useSingular: false
 });
 // "1 minutes"
 
 moment.duration(1, "minutes").format("m [mins]", {
-	 useSingular: false
+     useSingular: false
 });
 // "1 mins"
 ```
@@ -694,7 +694,7 @@ The text to the right of each moment token in a format string is treated as that
 
 ```javascript
 moment.duration(7322, "seconds").format("_ h, _ m, _ s", {
-	 useLeftUnits: true
+     useLeftUnits: true
 });
 // "hrs 2, mins 2, secs 2"
 ```
@@ -708,7 +708,7 @@ moment.duration(1234, "seconds").format("s [seconds]");
 // "1,234 seconds"
 
 moment.duration(1234, "seconds").format("s [seconds]", {
-	 useGrouping: false
+     useGrouping: false
 });
 // "1234 seconds"
 ```
@@ -719,7 +719,7 @@ Previous versions of the plugin used a `decimalSeparator` option. That option is
 
 ```javascript
 moment.duration(1234567, "seconds").format("m [minutes]", 3, {
-	 userLocale: "de-DE"
+     userLocale: "de-DE"
 });
 // "20.576,117 minutes"
 ```
