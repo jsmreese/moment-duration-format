@@ -116,14 +116,28 @@ moment.duration(15, "seconds").format("sss [s]");
 // "015 s"
 ```
 
-When the format template is trimmed, token length on the largest-magnitude rendered token can be trimmed as well.
+When the format template is trimmed, token length on the largest-magnitude rendered token can be trimmed as well. See sections *trim* and *forceLength* below for more details.
 
 ```
 moment.duration(123, "seconds").format("h:mm:ss");
 // "2:03"
 ```
 
-See sections *trim* and *forceLength* below for more details.
+Token length of `2` for milliseconds is a special case, most likely used to render milliseconds as part of a timer output, such as `mm:ss:SS`. In this case, the milliseconds value is padded to three digits then truncated from the left to render a two digit output.
+
+```
+moment.duration(9, "milliseconds").format("mm:ss:SS", { trim: false });
+// "00:00:00"
+
+moment.duration(10, "milliseconds").format("mm:ss:SS", { trim: false });
+// "00:00:01"
+
+moment.duration(999, "milliseconds").format("mm:ss:SS", { trim: false });
+// "00:00:99"
+
+moment.duration(1011, "milliseconds").format("mm:ss:SS", { trim: false });
+// "00:01:01"
+```
 
 Tokens can appear multiple times in the format template, but all instances must share the same length. If they do not, all instances will be rendered at the length of the first token of that type.
 

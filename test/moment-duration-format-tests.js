@@ -539,6 +539,19 @@ $(document).ready(function() {
         equal(moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: ["d", "m"], largest: 2 }), "2 hours");
     });
 
+    test("Milliseconds token length === 2", function () {
+        equal(moment.duration(1003141).format("mm:ss:SS", { trim: false, precision: 0 }), "16:43:14");
+        equal(moment.duration(1003145).format("mm:ss:SS", { trim: false, precision: 0 }), "16:43:14");
+        equal(moment.duration(1003149).format("mm:ss:SS", { trim: false, precision: 0 }), "16:43:14");
+        equal(moment.duration(1003101).format("mm:ss:SS", { trim: false, precision: 0 }), "16:43:10");
+        equal(moment.duration(1003099).format("mm:ss:SS", { trim: false, precision: 0 }), "16:43:09");
+        equal(moment.duration(1003091).format("mm:ss:SS", { trim: false, precision: 0 }), "16:43:09");
+        equal(moment.duration(9, "milliseconds").format("mm:ss:SS", { trim: false }), "00:00:00");
+        equal(moment.duration(10, "milliseconds").format("mm:ss:SS", { trim: false }), "00:00:01");
+        equal(moment.duration(999, "milliseconds").format("mm:ss:SS", { trim: false }), "00:00:99");
+        equal(moment.duration(1011, "milliseconds").format("mm:ss:SS", { trim: false }), "00:01:01");
+    });
+
     // tests TODO:
     // floating point errors
 
