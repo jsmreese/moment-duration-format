@@ -266,7 +266,7 @@ moment.duration(123, "minutes").format({
 
 #### trim
 
-The default `trim` value is `"largest"`.
+The default `trim` behaviour is `"large"`.
 
 Largest-magnitude tokens are automatically trimmed when they have no value.
 ```javascript
@@ -413,6 +413,10 @@ Maps to `"large"` to support this plugin's version 1 API.
 Maps to `"large"` to support this plugin's version 1 API.
 
 - ##### `true`
+
+Maps to `"large"`.
+
+- ##### `null`
 
 Maps to `"large"`.
 
@@ -669,9 +673,9 @@ moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [s
 
 ### Localization
 
-Formatted numerical output is rendered using [`toLocaleString`](see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString).
+Formatted numerical output is rendered using [`toLocaleString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString).
 
-Unit names are now auto-singularized and auto-localized, and are detected using the locale set in moment.js, which can be different from the locale of user's environment (see https://momentjs.com/docs/#/i18n/), and custom extensions to the locale object definition from moment.js (see below).
+Unit labels are now auto-singularized and auto-localized. Unit labels are detected using the [locale set in moment.js](https://momentjs.com/docs/#/i18n/), which can be different from the locale of user's environment, as well as custom extensions to the moment.js locale object definition (see below).
 
 The options below clearly do not yet address all i18n requirements for duration formatting (such as languages with [multiple forms of plural](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals)), but they are a significant step in the right direction.
 
@@ -689,7 +693,7 @@ moment.duration(1234567, "seconds").format("m [minutes]", 3, {
 // "20.576,117 minutes"
 ```
 
-#### Auto-localized Unit Labels
+#### Auto-Localized Unit Labels
 
 The `_` character can be used to generate auto-localized unit labels in the formatted output.
 
@@ -705,7 +709,7 @@ moment.duration(2, "minutes").format("m __");
 // "2 minutes"
 ```
 
-#### Auto-localized Time Notation
+#### Auto-Localized Time Notation
 
 Durations can also be formatted with a localized time notation.
 
@@ -797,7 +801,7 @@ moment.duration(1234567, "seconds").format("m [minutes]", 3, {
 
 #### Extending Moment's `locale` object
 
-This plugin now extends moment.js's `locale` object with `durations` and `durationsShort` values. The `en` locale is included with this plugin. Other locales may be easily defined to provide auto-singularized and auto-localized unit labels in different languages. If the plugin cannot find the duration locale extensions for the active moment locale, the plugin will replace any `_` or `__` template text with the `en` locale unit label.
+This plugin now extends moment.js's `locale` object with `durations` and `durationsShort` values. The `en` locale is included with this plugin. Other locales may be easily defined to provide auto-singularized and auto-localized unit labels in different languages. If the plugin cannot find the duration locale extensions for the active moment locale, the plugin will replace any `_` or `__` template text with the unit label from the `en` locale.
 
 Below is the `en` locale extension.
 
@@ -846,4 +850,4 @@ moment.updateLocale('en', {
 });
 ```
 
-Unit labels from the above object (`hour`, `hours`, etc.) are replaced after tokens are parsed, so they need not be escaped. Time format definitions (`durations.HMS`, `durations.HM`, and `durations.MS`) are replaced before tokens are parsed and need to be properly escaped, e.g. `MS: 'mm\[m\]ss\[s\]'`, if that were the way a minute/second duration value were written for a particular locale.
+Unit labels from the above object (`hour`, `hours`, etc.) are replaced after tokens are parsed, so they need not be escaped. Time format definitions (`durations.HMS`, `durations.HM`, and `durations.MS`) are replaced before tokens are parsed and need to be properly escaped, e.g. `MS: 'mm\[m\]ss\[s\]' // "02m57s"`, if that were the way a minute/second duration value should be written for a particular locale.
