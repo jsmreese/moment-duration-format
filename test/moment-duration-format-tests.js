@@ -2,10 +2,6 @@ $(document).ready(function() {
 	module("Moment Duration Format");
     moment.duration.fn.format.defaults.userLocale = "en-US";
 
-    var d = moment.duration(1234.55, "hours");
-    d.subtract(51, "days");
-    console.log(d.as("hours"));
-
 	test("Basic Use", function () {
 		equal(moment.duration(1, "milliseconds").format("S"), "1");
 		equal(moment.duration(1, "seconds").format("s"), "1");
@@ -574,8 +570,6 @@ $(document).ready(function() {
     });
 
     // tests TODO:
-    // floating point errors
-
     // move time-notation locale extensions to their own section?
     // plural / singular function, updated API. Pass whole and decimal value to the function, get back label? Pass label, whole, decimal values, get back new label?
 });
