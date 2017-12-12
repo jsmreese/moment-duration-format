@@ -87,13 +87,15 @@ var invalidDuration = moment.duration(NaN, "second");
 invalidDuration.isValid();
 // false
 
-invalidDuration.format("s");
-// "0"
+invalidDuration.format();
+// "0 seconds"
 ```
 
 ### Template
 
 `template` (string|function) is the string used to create the formatted output, or a function that returns the string to be used as the format template.
+
+#### Template String
 
 ```javascript
 moment.duration(123, "minutes").format("h:mm");
@@ -174,6 +176,57 @@ moment.duration(15, "seconds").format("ssss sss ss s");
 moment.duration(15, "seconds").format("s ss sss ssss");
 // "15 15 15 15"
 ```
+
+#### Default Template Function
+
+The default template function attempts to format a duration based on its magnitude. The larger the duration value, the larger the units of the formatted output will be.
+
+For some duration values, the default template function will default `trim` to `"both"` if that option is not set in the settings object (more on that below).
+
+The default template function uses auto-localized unit labels (more on that below, also).
+
+```javascript
+moment.duration(100, "milliseconds").format();
+// "100 milliseconds"
+
+moment.duration(100, "seconds").format();
+// "1:40"
+
+moment.duration(100, "days").format();
+// "3 months, 9 days"
+
+moment.duration(100, "weeks").format();
+// "1 year, 10 months, 30 days"
+
+moment.duration(100, "months").format();
+// "8 years, 4 months"
+```
+
+#### Custom Template Function
+
+Use a custom template function if you need runtime control over the template string. Template functions are executed with a `this` binding of the settings object, and have access to the underlying duration object via `this.duration`. Any of the settings may be accessed or modified by the template function.
+
+This custom template function uses a different template based on the value of the duration:
+
+```javascript
+function customTemplate() {
+    return this.duration.asSeconds() >= 86400 ? "w [weeks], d [days]" : "hh:mm:ss";
+}
+
+moment.duration(65, 'seconds').format(customTemplate, {
+    trim: false
+});
+// "00:01:05"
+
+moment.duration(1347840, 'seconds').format(customTemplate, {
+    trim: false
+});
+// "2 weeks, 2 days"
+```
+
+#### Punctuation Trimming
+
+To ensure user-friendly formatted output, punctuation characters are trimmed from the beginning and end of the formatted output. Specifically, leading and trailing period `.`, comma `,`, colon `:`, and space ` ` characters are removed.
 
 ### Precision
 

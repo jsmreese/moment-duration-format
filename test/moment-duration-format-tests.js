@@ -176,6 +176,18 @@ $(document).ready(function() {
 				return ((type === "months" || type === "milliseconds") ? type[0].toUpperCase() : type[0]) + " [" + type + "]";
 			}).join(", ");
 		}), "3 months, 1 week, 2 days, 0 hours, 0 minutes, 0 seconds");
+
+        function customTemplate() {
+            return this.duration.asSeconds() >= 86400 ? "w [weeks], d [days]" : "hh:mm:ss";
+        }
+
+        equal(moment.duration(65, 'seconds').format(customTemplate, {
+            trim: false
+        }), "00:01:05");
+
+        equal(moment.duration(1347840, 'seconds').format(customTemplate, {
+            trim: false
+        }), "2 weeks, 2 days");
 	});
 
 	test("Negative Durations", function () {
@@ -558,18 +570,12 @@ $(document).ready(function() {
     });
 
     test("Invalid durations", function () {
-        equal(moment.duration(NaN, "second").format("s"), "0");
+        equal(moment.duration(NaN, "second").format(), "0 seconds");
     });
 
     // tests TODO:
     // floating point errors
 
-    // Default format function docs and tests. Disambiguify based on magnitude of duration. See https://github.com/jsmreese/moment-duration-format/issues/14
-
-    // document trimming of leading/trailing dot (.), space, colon, or comma
-
     // move time-notation locale extensions to their own section?
     // plural / singular function, updated API. Pass whole and decimal value to the function, get back label? Pass label, whole, decimal values, get back new label?
-
-    // test invalid duration (see https://momentjs.com/docs/#/durations/)
 });
