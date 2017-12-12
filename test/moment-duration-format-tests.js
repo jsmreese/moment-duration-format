@@ -552,6 +552,15 @@ $(document).ready(function() {
         equal(moment.duration(1011, "milliseconds").format("mm:ss:SS", { trim: false }), "00:01:01");
     });
 
+    test("Remove leading/trailing space, comma, colon, dot", function () {
+        equal(moment.duration(1, "second").format(".s "), "1");
+        equal(moment.duration(1, "second").format(":s,"), "1");
+    });
+
+    test("Invalid durations", function () {
+        equal(moment.duration(NaN, "second").format("s"), "0");
+    });
+
     // tests TODO:
     // floating point errors
 

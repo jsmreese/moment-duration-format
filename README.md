@@ -77,6 +77,20 @@ The duration format method may be called with three optional arguments:
 moment.duration.format([template] [, precision] [, settings])
 ```
 
+#### Invalid Durations
+
+Invalid durations are treated as having a value of `0` for formatting.
+
+```javascript
+var invalidDuration = moment.duration(NaN, "second");
+
+invalidDuration.isValid();
+// false
+
+invalidDuration.format("s");
+// "0"
+```
+
 ### Template
 
 `template` (string|function) is the string used to create the formatted output, or a function that returns the string to be used as the format template.
@@ -123,6 +137,8 @@ moment.duration(123, "seconds").format("h:mm:ss");
 // "2:03"
 ```
 
+##### Milliseconds Token Length
+
 Token length of `2` for milliseconds is a special case, most likely used to render milliseconds as part of a timer output, such as `mm:ss:SS`. In this case, the milliseconds value is padded to three digits then truncated from the left to render a two digit output.
 
 ```javascript
@@ -146,6 +162,8 @@ moment.duration(1011, "milliseconds").format("mm:ss:SS", {
 });
 // "00:01:01"
 ```
+
+#### Multiple Token Instances
 
 Tokens can appear multiple times in the format template, but all instances must share the same length. If they do not, all instances will be rendered at the length of the first token of that type.
 
