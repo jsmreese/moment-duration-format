@@ -894,31 +894,6 @@ This locale uses a single token `"s"` for the singular label, a double token `"s
 
 Unit labels are replaced after the format template string is tokenized, so they need not be escaped. Time-notation templates are replaced before the format template string is tokenized, so they must be escaped.
 
-The function for `durationPluralKey` is passed three arguments:
-
-- `token`
-
-String. A single character representing the unit type.
-
-```
-years:   y
-months:  M
-weeks:   w
-days:    d
-hours:   h
-minutes: m
-seconds: s
-ms:      S
-```
-
-- `integerValue`
-
-Number. The integer portion of the token's value.
-
-- `decimalValue`
-
-Number. The decimal fraction portion of the token's value.
-
 ```javascript
 moment.updateLocale('sample', {
     durationLabelsLong: {
@@ -966,3 +941,28 @@ moment.updateLocale('sample', {
     }
 });
 ```
+
+The function for `durationPluralKey` is passed three arguments:
+
+- `token`
+
+String. A single character representing the unit type.
+
+```
+years:   y
+months:  M
+weeks:   w
+days:    d
+hours:   h
+minutes: m
+seconds: s
+ms:      S
+```
+
+- `integerValue`
+
+Number. The integer portion of the token's value.
+
+- `decimalValue`
+
+Number. The decimal fraction portion of the token's value.
