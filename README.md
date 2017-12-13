@@ -103,6 +103,7 @@ moment.duration(123, "minutes").format("h:mm");
 ```
 
 The template string is parsed for moment token characters, which are replaced with the duration's value for each unit type. The moment tokens are:
+
 ```
 years:   Y or y
 months:  M
@@ -117,7 +118,7 @@ ms:      S
 Escape token characters within the template string using square brackets.
 ```javascript
 moment.duration(123, "minutes").format("h [hrs], m [min]");
-// "2 hrs, 3 min"
+// "2 hrs, 3 mins"
 ```
 
 #### Token Length
@@ -247,7 +248,7 @@ moment.duration(123, "minutes").format("h [hrs]", 2);
 Negative precision defines the number of integer digits to truncate to zero.
 ```javascript
 moment.duration(223, "minutes").format("m [min]", -2);
-// "200 min"
+// "200 mins"
 ```
 
 ### Settings
@@ -675,9 +676,9 @@ moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [s
 
 Formatted numerical output is rendered using [`toLocaleString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString).
 
-Unit labels are now auto-singularized and auto-localized. Unit labels are detected using the [locale set in moment.js](https://momentjs.com/docs/#/i18n/), which can be different from the locale of user's environment, as well as custom extensions to the moment.js locale object definition (see below).
+Unit labels are automatically localized and pluralized. Unit labels are detected using the [locale set in moment.js](https://momentjs.com/docs/#/i18n/), which can be different from the locale of user's environment. This plugin uses custom extensions to the moment.js locale object, which can be easily added for any locale (see below).
 
-The options below clearly do not yet address all i18n requirements for duration formatting (such as languages with [multiple forms of plural](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals)), but they are a significant step in the right direction.
+It's likely that the options below do not address every i18n requirement for duration formatting (the plugin hasn't been tested on languages that are written from right to left, for instance), but they are a significant step in the right direction and support languages with [multiple forms of plural](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals)).
 
 #### userLocale
 
@@ -699,7 +700,7 @@ The `_` character can be used to generate auto-localized unit labels in the form
 
 A single underscore `_` will be replaced with the short duration unit label for its associated moment token.
 
-A double underscore `__` will be replaced with the duration unit label for its associated moment token.
+A double underscore `__` will be replaced with the standard duration unit label for its associated moment token.
 
 ```javascript
 moment.duration(2, "minutes").format("m _");
@@ -708,6 +709,8 @@ moment.duration(2, "minutes").format("m _");
 moment.duration(2, "minutes").format("m __");
 // "2 minutes"
 ```
+
+These are the default `"en"` locale options for unit labels. Unit label types and even the `"_"` character usage can be customized in the locale object extensions (see below).
 
 #### Auto-Localized Time Notation
 
@@ -730,9 +733,11 @@ moment.duration(61, "seconds").format("_MS_");
 // "1:01"
 ```
 
-#### useSingular
+These are the default `"en"` locale options for duration time notation templates. Additional templates may be created in the locale object extensions (see below).
 
-Unit labels are automatically singularized when they appear in the text associated with each moment token. The plural form of the unit name must appear in the format template. Long and short unit labels are singularized, based on the locale defined in moment.js.
+#### usePlural
+
+Unit label pluralization is automatically corrected when unit labels appear in the text associated with each moment token. The default `"en"` locale extension includes long and short unit labels, and a basic pluralization function. Unit labels, unit label types, and the pluralization function can be customized for a locale (see below).
 
 ```javascript
 moment.duration(1, "minutes").format("m [minutes]");
@@ -740,23 +745,39 @@ moment.duration(1, "minutes").format("m [minutes]");
 
 moment.duration(1, "minutes").format("m [mins]");
 // "1 min"
+
+moment.duration(2, "minutes").format("m [minute]");
+// "2 minutes"
+
+moment.duration(2, "minutes").format("m [min]");
+// "2 mins"
 ```
 
-Set `useSingular` to `false` to disable auto-singularizing.
+Set `usePlural` to `false` to disable auto-correction of pluralization.
 
 ```javascript
 moment.duration(1, "minutes").format("m [minutes]", {
-    useSingular: false
+    usePlural: false
 });
 // "1 minutes"
 
 moment.duration(1, "minutes").format("m [mins]", {
-    useSingular: false
+    usePlural: false
 });
 // "1 mins"
+
+moment.duration(2, "minutes").format("m [minute]", {
+    usePlural: false
+});
+// "2 minute"
+
+moment.duration(2, "minutes").format("m [min]", {
+    usePlural: false
+});
+// "2 min"
 ```
 
-Singularizing is not used when a value is rendered with decimal precision.
+The default pluralization function for the `"en"` locale outputs a plural unit name when a value is rendered with decimal precision.
 
 ```javascript
 moment.duration(1, "minutes").format("m [minutes]", 2);
@@ -765,7 +786,7 @@ moment.duration(1, "minutes").format("m [minutes]", 2);
 
 #### useLeftUnits
 
-The text to the right of each moment token in a format string is treated as that token's units for the purposes of trimming, singularizing, and localizing. To properly singularize or localize a format string where the token/unit association is reversed, set `useLeftUnits` to `true`.
+The text to the right of each moment token in a template string is treated as that token's units for the purposes of trimming, pluralizing, and localizing. To properly process a template string where the token/unit association is reversed, set `useLeftUnits` to `true`.
 
 ```javascript
 moment.duration(7322, "seconds").format("_ h, _ m, _ s", {
@@ -801,14 +822,13 @@ moment.duration(1234567, "seconds").format("m [minutes]", 3, {
 
 #### Extending Moment's `locale` object
 
-This plugin now extends moment.js's `locale` object with `durations` and `durationsShort` values. The `en` locale is included with this plugin. Other locales may be easily defined to provide auto-singularized and auto-localized unit labels in different languages. If the plugin cannot find the duration locale extensions for the active moment locale, the plugin will replace any `_` or `__` template text with the unit label from the `en` locale.
+This plugin now extends the moment.js `locale` object with duration labels, duration label types, duration time-notation templates, and a pluralization function. The `"en"` locale is included with this plugin. Other locales may be  defined using the moment.js locale API to provide auto-pluralized and auto-localized unit labels in different languages. If the plugin cannot find the duration locale extensions for the active moment locale, the plugin will fall back to the `"en"` locale.
 
-Below is the `en` locale extension.
+Below is the default `"en"` locale extension.
 
 ```javascript
 moment.updateLocale('en', {
-
-    durations: {
+    durationLabelsStandard: {
         S: 'millisecond',
         SS: 'milliseconds',
         s: 'second',
@@ -824,12 +844,9 @@ moment.updateLocale('en', {
         M: 'month',
         MM: 'months',
         y: 'year',
-        yy: 'years',
-        HMS: 'h:mm:ss',
-        HM: 'h:mm',
-        MS: 'm:ss'
+        yy: 'years'
     },
-    durationsShort: {
+    durationLabelsShort: {
         S: 'msec',
         SS: 'msecs',
         s: 'sec',
@@ -846,8 +863,106 @@ moment.updateLocale('en', {
         MM: 'mos',
         y: 'yr',
         yy: 'yrs'
+    },
+    durationTimeTemplates: {
+        HMS: 'h:mm:ss',
+        HM: 'h:mm',
+        MS: 'm:ss'
+    },
+    durationLabelTypes: [
+        { type: "standard", string: "__" },
+        { type: "short", string: "_" }
+    ],
+    durationPluralKey: function (token, integerValue, decimalValue) {
+        // Singular for a value of `1`, but not for `1.0`.
+        if (integerValue === 1 && decimalValue === null) {
+            return token;
+        }
+
+        return token + token;
     }
 });
 ```
 
-Unit labels from the above object (`hour`, `hours`, etc.) are replaced after tokens are parsed, so they need not be escaped. Time format definitions (`durations.HMS`, `durations.HM`, and `durations.MS`) are replaced before tokens are parsed and need to be properly escaped, e.g. `MS: 'mm\[m\]ss\[s\]' // "02m57s"`, if that were the way a minute/second duration value should be written for a particular locale.
+##### Creating a new Moment `locale` extension
+
+The duration extensions for a new locale might look something like the following example, which includes an additional unit label type, a custom time-notation template, and an additional form of plural.
+
+New types of duration labels must have a key that begins with `durationLabels` and must be enumerated in `durationLabelTypes`.
+
+This locale uses a single token `"s"` for the singular label, a double token `"ss"` for the plural label when the value is `2`, and a triple token `"sss"` for the plural lable for values greater than `3`. For brevity, only labels for the `seconds` type are included.
+
+Unit labels are replaced after the format template string is tokenized, so they need not be escaped. Time-notation templates are replaced before the format template string is tokenized, so they must be escaped.
+
+The function for `durationPluralKey` is passed three arguments:
+
+- `token`
+
+String. A single character representing the unit type.
+
+```
+years:   y
+months:  M
+weeks:   w
+days:    d
+hours:   h
+minutes: m
+seconds: s
+ms:      S
+```
+
+- `integerValue`
+
+Number. The integer portion of the token's value.
+
+- `decimalValue`
+
+Number. The decimal fraction portion of the token's value.
+
+```javascript
+moment.updateLocale('sample', {
+    durationLabelsLong: {
+        s: 'singular long second',
+        ss: 'first long plural seconds',
+        sss: 'next long plural seconds'
+        // ...
+    },
+    durationLabelsStandard: {
+        s: 'singular second',
+        ss: 'first plural seconds',
+        sss: 'next plural seconds'
+        // ...
+    },
+    durationLabelsShort: {
+        s: 'singular sec',
+        ss: 'first plural secs',
+        sss: 'next plural secs'
+        // ...
+    },
+    durationTimeTemplates: {
+        HS: 'hh[h].ssss[s]'
+        // ...
+    },
+    durationLabelTypes: [
+        { type: "long", string: "___" },
+        { type: "standard", string: "__" },
+        { type: "short", string: "_" }
+    ],
+    durationPluralKey: function (token, integerValue, decimalValue) {
+        // Decimal value does not affect unit label for this locale.
+
+        // "xxx" for > 2.
+        if (integerValue > 2) {
+            return token + token + token;
+        }
+
+        // "x" for === 1.
+        if (integerValue === 1) {
+            return token;
+        }
+
+        // "xx" for others.
+        return token + token;
+    }
+});
+```

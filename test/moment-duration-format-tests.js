@@ -96,7 +96,7 @@ $(document).ready(function() {
 	test("All Moment Tokens", function () {
 		// obviously a duration of 100,000,000,013 ms will vary in the number of days based on leap years, etc.
 		// this test ensures the internal duration/format math remains consistent
-		equal(moment.duration(100000000013, "ms").format("y[y] M[mo] w[w] d[d] h[h] m[m] s[s] S[ms]"), "3y 2mo 0w 0d 9h 46m 40s 13ms");
+		equal(moment.duration(100000000013, "ms").format("y[y] M[mo] w[w] d[d] h[h] m[m] s[s] S[ms]"), "3y 2mos 0w 0d 9h 46m 40s 13ms");
 	});
 
 	test("Output To Lesser Units", function () {
@@ -254,72 +254,72 @@ $(document).ready(function() {
         equal(moment.duration(1.5, "days").format("M [months], d [days], h [hours], m [minutes], s [seconds]", { largest: 3, trim: "both" }), "1 day, 12 hours");
     });
 
-    test("useSingular", function () {
+    test("usePlural", function () {
         equal(moment.duration(0, "ms").format("S [milliseconds]"), "0 milliseconds");
 		equal(moment.duration(1, "ms").format("S [milliseconds]"), "1 millisecond");
         equal(moment.duration(0, "ms").format("S [msecs]"), "0 msecs");
 		equal(moment.duration(1, "ms").format("S [msecs]"), "1 msec");
-        equal(moment.duration(1, "ms").format("S [milliseconds]", { useSingular: false }), "1 milliseconds");
+        equal(moment.duration(1, "ms").format("S [milliseconds]", { usePlural: false }), "1 milliseconds");
 
         equal(moment.duration(0, "s").format("s [seconds]"), "0 seconds");
         equal(moment.duration(1, "s").format("s [seconds]"), "1 second");
         equal(moment.duration(0, "s").format("s [secs]"), "0 secs");
         equal(moment.duration(1, "s").format("s [secs]"), "1 sec");
         equal(moment.duration(1, "s").format("s [seconds]", { precision: 1 }), "1.0 seconds");
-        equal(moment.duration(1, "s").format("s [seconds]", { useSingular: false }), "1 seconds");
+        equal(moment.duration(1, "s").format("s [seconds]", { usePlural: false }), "1 seconds");
 
         equal(moment.duration(0, "m").format("m [minutes]"), "0 minutes");
         equal(moment.duration(1, "m").format("m [minutes]"), "1 minute");
         equal(moment.duration(0, "m").format("m [mins]"), "0 mins");
         equal(moment.duration(1, "m").format("m [mins]"), "1 min");
         equal(moment.duration(1, "m").format("m [minutes]", { precision: 1 }), "1.0 minutes");
-        equal(moment.duration(1, "m").format("m [minutes]", { useSingular: false }), "1 minutes");
+        equal(moment.duration(1, "m").format("m [minutes]", { usePlural: false }), "1 minutes");
 
         equal(moment.duration(0, "h").format("h [hours]"), "0 hours");
         equal(moment.duration(1, "h").format("h [hours]"), "1 hour");
         equal(moment.duration(0, "h").format("h [hrs]"), "0 hrs");
         equal(moment.duration(1, "h").format("h [hrs]"), "1 hr");
         equal(moment.duration(1, "h").format("h [hours]", { precision: 1 }), "1.0 hours");
-        equal(moment.duration(1, "h").format("h [hours]", { useSingular: false }), "1 hours");
+        equal(moment.duration(1, "h").format("h [hours]", { usePlural: false }), "1 hours");
 
         equal(moment.duration(0, "d").format("d [days]"), "0 days");
         equal(moment.duration(1, "d").format("d [days]"), "1 day");
         equal(moment.duration(0, "d").format("d [dys]"), "0 dys");
         equal(moment.duration(1, "d").format("d [dys]"), "1 dy");
         equal(moment.duration(1, "d").format("d [days]", { precision: 1 }), "1.0 days");
-        equal(moment.duration(1, "d").format("d [days]", { useSingular: false }), "1 days");
+        equal(moment.duration(1, "d").format("d [days]", { usePlural: false }), "1 days");
 
         equal(moment.duration(0, "w").format("w [weeks]"), "0 weeks");
         equal(moment.duration(1, "w").format("w [weeks]"), "1 week");
         equal(moment.duration(0, "w").format("w [wks]"), "0 wks");
         equal(moment.duration(1, "w").format("w [wks]"), "1 wk");
         equal(moment.duration(1, "w").format("w [weeks]", { precision: 1 }), "1.0 weeks");
-        equal(moment.duration(1, "w").format("w [weeks]", { useSingular: false }), "1 weeks");
+        equal(moment.duration(1, "w").format("w [weeks]", { usePlural: false }), "1 weeks");
     });
 
-    test("useSingular Months and Years", function () {
+    test("usePlural Months and Years", function () {
         equal(moment.duration(0, "months").format("M [months]"), "0 months");
         equal(moment.duration(1, "months").format("M [months]"), "1 month");
         equal(moment.duration(0, "months").format("M [mos]"), "0 mos");
         equal(moment.duration(1, "months").format("M [mos]"), "1 mo");
         equal(moment.duration(1, "months").format("M [months]", { precision: 1 }), "1.0 months");
-        equal(moment.duration(1, "months").format("M [months]", { useSingular: false }), "1 months");
+        equal(moment.duration(1, "months").format("M [months]", { usePlural: false }), "1 months");
 
         equal(moment.duration(0, "y").format("y [years]"), "0 years");
         equal(moment.duration(1, "y").format("y [years]"), "1 year");
         equal(moment.duration(0, "y").format("y [yrs]"), "0 yrs");
         equal(moment.duration(1, "y").format("y [yrs]"), "1 yr");
         equal(moment.duration(1, "y").format("y [years]", { precision: 1 }), "1.0 years");
-        equal(moment.duration(1, "y").format("y [years]", { useSingular: false }), "1 years");
+        equal(moment.duration(1, "y").format("y [years]", { usePlural: false }), "1 years");
 	});
 
-    test("useSingular, multiple tokens", function () {
+    test("usePlural, multiple tokens", function () {
         equal(moment.duration(3661, "s").format("h [hours], m [minutes], s [seconds]"), "1 hour, 1 minute, 1 second");
-        equal(moment.duration(3661, "s").format("h [hours], m [minutes], s [seconds]", { useSingular: false }), "1 hours, 1 minutes, 1 seconds");
+        equal(moment.duration(3661, "s").format("h [hours], m [minutes], s [seconds]", { usePlural: false }), "1 hours, 1 minutes, 1 seconds");
         equal(moment.duration(61, "s").format("m [minutes], s [seconds]", { precision: 1 }), "1 minute, 1.0 seconds");
     });
 
-    test("useSingular with rounding", function () {
+    test("usePlural with rounding", function () {
         equal(moment.duration(119, "seconds").format("m [minutes]"), "2 minutes");
         equal(moment.duration(1.25, "s").format("s [secs]"), "1 sec");
         equal(moment.duration(1.5, "s").format("s [secs]"), "2 secs");
@@ -329,7 +329,7 @@ $(document).ready(function() {
 
     test("Automatic Locale-based units", function () {
         equal(moment.duration(3661, "s").format("h _, m _, s _"), "1 hr, 1 min, 1 sec");
-        equal(moment.duration(3661, "s").format("h _, m _, s _", { useSingular: false }), "1 hrs, 1 mins, 1 secs");
+        equal(moment.duration(3661, "s").format("h _, m _, s _", { usePlural: false }), "1 hr, 1 min, 1 sec");
         equal(moment.duration(61, "s").format("m _, s _", { precision: 1 }), "1 min, 1.0 secs");
         equal(moment.duration(1, "milliseconds").format("S _"), "1 msec");
 		equal(moment.duration(1, "seconds").format("s _"), "1 sec");
@@ -356,7 +356,7 @@ $(document).ready(function() {
         equal(moment.duration(61, "seconds").format("_MS_"), "1:01");
     });
 
-    test("Locale missing durations and durationsShort", function () {
+    test("Locale missing durations labels", function () {
         moment.locale('fr', {
             months : 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
             monthsShort : 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
@@ -433,9 +433,9 @@ $(document).ready(function() {
         equal(moment.duration(0, "s").format("_ s", { useLeftUnits: true }), "secs 0");
         equal(moment.duration(1, "s").format("_ s", { useLeftUnits: true }), "sec 1");
         equal(moment.duration(1, "s").format("[seconds] s", { precision: 1, useLeftUnits: true }), "seconds 1.0");
-        equal(moment.duration(1, "s").format("[seconds] s", { useSingular: false, useLeftUnits: true }), "seconds 1");
+        equal(moment.duration(1, "s").format("[seconds] s", { usePlural: false, useLeftUnits: true }), "seconds 1");
         equal(moment.duration(3661, "s").format("[hours] h, [minutes] m, [seconds] s", { useLeftUnits: true }), "hour 1, minute 1, second 1");
-        equal(moment.duration(3661, "s").format("[hours] h, [minutes] m, [seconds] s", { useSingular: false, useLeftUnits: true }), "hours 1, minutes 1, seconds 1");
+        equal(moment.duration(3661, "s").format("[hours] h, [minutes] m, [seconds] s", { usePlural: false, useLeftUnits: true }), "hours 1, minutes 1, seconds 1");
         equal(moment.duration(61, "s").format("[minutes] m, [seconds] s", { precision: 1, useLeftUnits: true }), "minute 1, seconds 1.0");
         equal(moment.duration(61, "minutes").format("__ d, __ h, __ m, __ s", { useLeftUnits: true, trim: "both" }), "hour 1, minute 1");
         equal(moment.duration(61, "minutes").format("__ s, __ m, __ h, __ d", { useLeftUnits: true, trim: "both" }), "minute 1, hour 1");
@@ -476,12 +476,12 @@ $(document).ready(function() {
         equal(moment.duration(123, "minutes").format(), "2:03:00");
         equal(moment.duration(123, "months").format(), "10 years, 3 months");
         equal(moment.duration(123, "minutes").format("h:mm"), "2:03");
-        equal(moment.duration(123, "minutes").format("h [hrs], m [min]"), "2 hrs, 3 min");
+        equal(moment.duration(123, "minutes").format("h [hrs], m [min]"), "2 hrs, 3 mins");
         equal(moment.duration(3661, "seconds").format("h:mm:ss"), "1:01:01");
         equal(moment.duration(15, "seconds").format("sss [s]"), "015 s");
         equal(moment.duration(123, "minutes").format("h [hrs]"), "2 hrs");
         equal(moment.duration(123, "minutes").format("h [hrs]", 2), "2.05 hrs");
-        equal(moment.duration(223, "minutes").format("m [min]", -2), "200 min");
+        equal(moment.duration(223, "minutes").format("m [min]", -2), "200 mins");
         equal(moment.duration(123, "minutes").format({ template: "h [hrs]", precision: 2 }), "2.05 hrs");
         equal(moment.duration(123, "minutes").format("s [seconds], m [minutes], h [hours], d [days]"), "0 seconds, 3 minutes, 2 hours");
         equal(moment.duration(123, "minutes").format("d[d] h:mm:ss", { trim: false }), "0d 2:03:00");
@@ -521,13 +521,27 @@ $(document).ready(function() {
         equal(moment.duration(1234567, "seconds").format("m [minutes]", 3), "20,576.117 minutes");
         equal(moment.duration(1, "minutes").format("m [minutes]"), "1 minute");
         equal(moment.duration(1, "minutes").format("m [mins]"), "1 min");
-        equal(moment.duration(1, "minutes").format("m [minutes]", { useSingular: false }), "1 minutes");
-        equal(moment.duration(1, "minutes").format("m [mins]", { useSingular: false }), "1 mins");
+        equal(moment.duration(1, "minutes").format("m [minutes]", { usePlural: false }), "1 minutes");
+        equal(moment.duration(1, "minutes").format("m [mins]", { usePlural: false }), "1 mins");
         equal(moment.duration(1, "minutes").format("m [minutes]", 2), "1.00 minutes");
         equal(moment.duration(7322, "seconds").format("_ h, _ m, _ s", { useLeftUnits: true }), "hrs 2, mins 2, secs 2");
         equal(moment.duration(1234, "seconds").format("s [seconds]"), "1,234 seconds");
         equal(moment.duration(1234, "seconds").format("s [seconds]", { useGrouping: false }), "1234 seconds");
         equal(moment.duration(1234567, "seconds").format("m [minutes]", 3, { userLocale: "de-DE" }), "20.576,117 minutes");
+    });
+
+    test("Pluralize singular unit labels", function () {
+        equal(moment.duration(2, "minutes").format("m [minute]"), "2 minutes");
+
+        equal(moment.duration(2, "minutes").format("m [min]"), "2 mins");
+
+        equal(moment.duration(2, "minutes").format("m [minute]", {
+            usePlural: false
+        }), "2 minute");
+
+        equal(moment.duration(2, "minutes").format("m [min]", {
+            usePlural: false
+        }), "2 min");
     });
 
     test("minValue and maxValue", function () {
@@ -569,7 +583,132 @@ $(document).ready(function() {
         equal(moment.duration(NaN, "second").format(), "0 seconds");
     });
 
+    test("Custom Locale labels, label types, pluralizer", function () {
+        // Borowing moment's "fr" locale.
+        moment.locale('test', {
+            months : 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
+            monthsShort : 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
+            monthsParseExact : true,
+            weekdays : 'dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi'.split('_'),
+            weekdaysShort : 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
+            weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
+            weekdaysParseExact : true,
+            longDateFormat : {
+                LT : 'HH:mm',
+                LTS : 'HH:mm:ss',
+                L : 'DD/MM/YYYY',
+                LL : 'D MMMM YYYY',
+                LLL : 'D MMMM YYYY HH:mm',
+                LLLL : 'dddd D MMMM YYYY HH:mm'
+            },
+            calendar : {
+                sameDay : '[Aujourd’hui à] LT',
+                nextDay : '[Demain à] LT',
+                nextWeek : 'dddd [à] LT',
+                lastDay : '[Hier à] LT',
+                lastWeek : 'dddd [dernier à] LT',
+                sameElse : 'L'
+            },
+            relativeTime : {
+                future : 'dans %s',
+                past : 'il y a %s',
+                s : 'quelques secondes',
+                m : 'une minute',
+                mm : '%d minutes',
+                h : 'une heure',
+                hh : '%d heures',
+                d : 'un jour',
+                dd : '%d jours',
+                M : 'un mois',
+                MM : '%d mois',
+                y : 'un an',
+                yy : '%d ans'
+            },
+            dayOfMonthOrdinalParse : /\d{1,2}(er|e)/,
+            ordinal : function (number) {
+                return number + (number === 1 ? 'er' : 'e');
+            },
+            meridiemParse : /PD|MD/,
+            isPM : function (input) {
+                return input.charAt(0) === 'M';
+            },
+            // In case the meridiem units are not separated around 12, then implement
+            // this function (look at locale/id.js for an example).
+            // meridiemHour : function (hour, meridiem) {
+            //     return /* 0-23 hour, given meridiem token and hour 1-12 */ ;
+            // },
+            meridiem : function (hours, minutes, isLower) {
+                return hours < 12 ? 'PD' : 'MD';
+            },
+            week : {
+                dow : 1, // Monday is the first day of the week.
+                doy : 4  // The week that contains Jan 4th is the first week of the year.
+            },
+            durationLabelsLong: {
+                s: 'sec1.Long',
+                ss: 'sec2.Long',
+                sss: 'sec3.Long',
+                m: 'min1.Long',
+                mm: 'min2.Long',
+                mmm: 'min3.Long'
+            },
+            durationLabelsStandard: {
+                s: 'sec1.Standard',
+                ss: 'sec2.Standard',
+                sss: 'sec3.Standard',
+                m: 'min1.Standard',
+                mm: 'min2.Standard',
+                mmm: 'min3.Standard'
+            },
+            durationLabelsShort: {
+                s: 'sec1.Short',
+                ss: 'sec2.Short',
+                sss: 'sec3.Short',
+                m: 'min1.Short',
+                mm: 'min2.Short',
+                mmm: 'min3.Short'
+            },
+            durationTimeTemplates: {
+                MS: 'mmm:sss'
+            },
+            durationLabelTypes: [
+                { type: "long", string: "___" },
+                { type: "standard", string: "__" },
+                { type: "short", string: "_" }
+            ],
+            durationPluralKey: function (token, integerValue, decimalValue) {
+                // Decimal value does not affect plural label.
+
+                // "xxx" for > 2.
+                if (integerValue > 2) {
+                    return token + token + token;
+                }
+
+                // "x" for === 1.
+                if (integerValue === 1) {
+                    return token;
+                }
+
+                // "xx" for others.
+                return token + token;
+            }
+        });
+        equal(moment.duration(61, "s").format("m _, s _"), "1 min1.Short, 1 sec1.Short");
+        equal(moment.duration(61, "s").format("m __, s __"), "1 min1.Standard, 1 sec1.Standard");
+        equal(moment.duration(61, "s").format("m ___, s ___"), "1 min1.Long, 1 sec1.Long");
+        equal(moment.duration(122, "s").format("m _, s _"), "2 min2.Short, 2 sec2.Short");
+        equal(moment.duration(122, "s").format("m __, s __"), "2 min2.Standard, 2 sec2.Standard");
+        equal(moment.duration(122, "s").format("m ___, s ___"), "2 min2.Long, 2 sec2.Long");
+        equal(moment.duration(183, "s").format("m _, s _"), "3 min3.Short, 3 sec3.Short");
+        equal(moment.duration(183, "s").format("m __, s __"), "3 min3.Standard, 3 sec3.Standard");
+        equal(moment.duration(183, "s").format("m ___, s ___"), "3 min3.Long, 3 sec3.Long");
+        equal(moment.duration(61, "seconds").format("_MS_"), "001:001");
+        moment.locale("en");
+    });
+
+
     // tests TODO:
-    // move time-notation locale extensions to their own section?
-    // plural / singular function, updated API. Pass whole and decimal value to the function, get back label? Pass label, whole, decimal values, get back new label?
+
+    // Document updated plural API and locale extensions.
+    // Write tests for updated API that include a 3-way plural with an additional label type.
 });
