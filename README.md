@@ -682,7 +682,7 @@ It's likely that the options below do not address every i18n requirement for dur
 
 #### userLocale
 
-Numerical output is rendered using the locale of the user's environment. Set the `userLocale` option to render numerical output using a different locale.
+Numerical output is rendered using the locale set in moment.js, retrieved via `moment.locale()`. Set the `userLocale` option to render numerical output using a different locale.
 
 ```javascript
 moment.duration(1234567, "seconds").format("m [minutes]", 3);
