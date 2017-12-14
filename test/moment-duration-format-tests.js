@@ -17,6 +17,15 @@ $(document).ready(function() {
 		equal(moment.duration(1, "years").format("Y"), "1");
 	});
 
+    test("Trim errors from years/months to weeks/days", function () {
+        equal(moment.duration(1, "year").format("y [years], d [days], h [hours]"), "1 year, 0 days, 0 hours");
+        equal(moment.duration(1, "year").format("y [years], M [months], d [days], h [hours]"), "1 year, 0 months, 0 days, 0 hours");
+        equal(moment.duration(1, "year").format("y [years], w [weeks], d [days], h [hours]"), "1 year, 0 weeks, 0 days, 0 hours");
+        equal(moment.duration(1, "year").format("y [years], h [hours]"), "1 year, 0 hours");
+        equal(moment.duration(1, "month").format("M [months], d [days]"), "1 month, 0 days");
+        equal(moment.duration(1, "month").format("M [months], w [weeks]"), "1 month, 0 weeks");
+    });
+
 	test("Trim Left", function () {
 		equal(moment.duration(1, "seconds").format("m s"), "1");
 		equal(moment.duration(1, "minutes").format("h m s"), "1 0");
