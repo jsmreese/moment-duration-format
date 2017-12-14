@@ -715,9 +715,29 @@ $(document).ready(function() {
         moment.locale("en");
     });
 
-
-    // tests TODO:
-
-    // Document updated plural API and locale extensions.
-    // Write tests for updated API that include a 3-way plural with an additional label type.
+    test("moment.duration.format", function () {
+        equal(moment.duration.format([
+            moment.duration(1, "second"),
+            moment.duration(1, "minute"),
+            moment.duration(1, "hour")],
+            "d [days] hh:mm:ss"
+        ), ["00:00:01", "00:01:00", "01:00:00"]);
+        equal(moment.duration.format([
+            moment.duration(1, "second"),
+            moment.duration(1, "minute")],
+            "d [days] hh:mm:ss"
+        ), ["00:01", "01:00"]);
+        equal(moment.duration.format([
+            moment.duration(1, "second"),
+            moment.duration(1, "minute"),
+            moment.duration(1, "day")],
+            "d [days] hh:mm:ss"
+        ), ["0 days 00:00:01", "0 days 00:01:00", "1 day 00:00:00"]);
+        equal(moment.duration.format([
+            moment.duration(1, "minute"),
+            moment.duration(1, "day")],
+            "y [years], d [days], h [hours], m [minutes], s [seconds]",
+            { trim: "both" }
+        ), ["0 days, 0 hours, 1 minute", "1 day, 0 hours, 0 minutes"]);
+    });
 });
