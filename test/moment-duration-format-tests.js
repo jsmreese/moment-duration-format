@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	module("Moment Duration Format");
+	module("moment.duration.fn.format");
     moment.duration.fn.format.defaults.userLocale = "en-US";
 
 	test("Basic Use", function () {
@@ -594,7 +594,7 @@ $(document).ready(function() {
 
     test("Custom Locale labels, label types, pluralizer", function () {
         // Borowing moment's "fr" locale.
-        moment.locale('test', {
+        moment.locale('test_custom_all', {
             months : 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
             monthsShort : 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
             monthsParseExact : true,
@@ -715,29 +715,333 @@ $(document).ready(function() {
         moment.locale("en");
     });
 
-    test("moment.duration.format", function () {
-        equal(moment.duration.format([
+    test("Custom Locale Pluralizer Only", function () {
+        // Borowing moment's "fr" locale.
+        moment.locale('test_custom_plural', {
+            months : 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
+            monthsShort : 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
+            monthsParseExact : true,
+            weekdays : 'dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi'.split('_'),
+            weekdaysShort : 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
+            weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
+            weekdaysParseExact : true,
+            longDateFormat : {
+                LT : 'HH:mm',
+                LTS : 'HH:mm:ss',
+                L : 'DD/MM/YYYY',
+                LL : 'D MMMM YYYY',
+                LLL : 'D MMMM YYYY HH:mm',
+                LLLL : 'dddd D MMMM YYYY HH:mm'
+            },
+            calendar : {
+                sameDay : '[Aujourd’hui à] LT',
+                nextDay : '[Demain à] LT',
+                nextWeek : 'dddd [à] LT',
+                lastDay : '[Hier à] LT',
+                lastWeek : 'dddd [dernier à] LT',
+                sameElse : 'L'
+            },
+            relativeTime : {
+                future : 'dans %s',
+                past : 'il y a %s',
+                s : 'quelques secondes',
+                m : 'une minute',
+                mm : '%d minutes',
+                h : 'une heure',
+                hh : '%d heures',
+                d : 'un jour',
+                dd : '%d jours',
+                M : 'un mois',
+                MM : '%d mois',
+                y : 'un an',
+                yy : '%d ans'
+            },
+            dayOfMonthOrdinalParse : /\d{1,2}(er|e)/,
+            ordinal : function (number) {
+                return number + (number === 1 ? 'er' : 'e');
+            },
+            meridiemParse : /PD|MD/,
+            isPM : function (input) {
+                return input.charAt(0) === 'M';
+            },
+            // In case the meridiem units are not separated around 12, then implement
+            // this function (look at locale/id.js for an example).
+            // meridiemHour : function (hour, meridiem) {
+            //     return /* 0-23 hour, given meridiem token and hour 1-12 */ ;
+            // },
+            meridiem : function (hours, minutes, isLower) {
+                return hours < 12 ? 'PD' : 'MD';
+            },
+            week : {
+                dow : 1, // Monday is the first day of the week.
+                doy : 4  // The week that contains Jan 4th is the first week of the year.
+            },
+            durationPluralKey: function (token, integerValue, decimalValue) {
+                // Decimal value does not affect plural label.
+
+                // "x" for === 1.
+                if (integerValue === 1 && decimalValue === 0) {
+                    return token;
+                }
+
+                // "xx" for others.
+                return token + token;
+            }
+        });
+        equal(moment.duration(60, "s").format("m _", 1), "1.0 min");
+        equal(moment.duration(60, "s").format("m __", 1), "1.0 minute");
+        equal(moment.duration(66, "s").format("m _", 1), "1.1 mins");
+        equal(moment.duration(66, "s").format("m __", 1), "1.1 minutes");
+        moment.locale("en");
+    });
+
+    test("Custom Locale Standard Labels Only", function () {
+        // Borowing moment's "fr" locale.
+        moment.locale('test_custom_labels', {
+            months : 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
+            monthsShort : 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
+            monthsParseExact : true,
+            weekdays : 'dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi'.split('_'),
+            weekdaysShort : 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
+            weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
+            weekdaysParseExact : true,
+            longDateFormat : {
+                LT : 'HH:mm',
+                LTS : 'HH:mm:ss',
+                L : 'DD/MM/YYYY',
+                LL : 'D MMMM YYYY',
+                LLL : 'D MMMM YYYY HH:mm',
+                LLLL : 'dddd D MMMM YYYY HH:mm'
+            },
+            calendar : {
+                sameDay : '[Aujourd’hui à] LT',
+                nextDay : '[Demain à] LT',
+                nextWeek : 'dddd [à] LT',
+                lastDay : '[Hier à] LT',
+                lastWeek : 'dddd [dernier à] LT',
+                sameElse : 'L'
+            },
+            relativeTime : {
+                future : 'dans %s',
+                past : 'il y a %s',
+                s : 'quelques secondes',
+                m : 'une minute',
+                mm : '%d minutes',
+                h : 'une heure',
+                hh : '%d heures',
+                d : 'un jour',
+                dd : '%d jours',
+                M : 'un mois',
+                MM : '%d mois',
+                y : 'un an',
+                yy : '%d ans'
+            },
+            dayOfMonthOrdinalParse : /\d{1,2}(er|e)/,
+            ordinal : function (number) {
+                return number + (number === 1 ? 'er' : 'e');
+            },
+            meridiemParse : /PD|MD/,
+            isPM : function (input) {
+                return input.charAt(0) === 'M';
+            },
+            // In case the meridiem units are not separated around 12, then implement
+            // this function (look at locale/id.js for an example).
+            // meridiemHour : function (hour, meridiem) {
+            //     return /* 0-23 hour, given meridiem token and hour 1-12 */ ;
+            // },
+            meridiem : function (hours, minutes, isLower) {
+                return hours < 12 ? 'PD' : 'MD';
+            },
+            week : {
+                dow : 1, // Monday is the first day of the week.
+                doy : 4  // The week that contains Jan 4th is the first week of the year.
+            },
+            durationLabelsStandard: {
+                m: "standard.minute",
+                mm: "standard.minutes"
+            }
+        });
+        equal(moment.duration(60, "s").format("m _"), "1 min");
+        equal(moment.duration(60, "s").format("m __"), "1 standard.minute");
+        equal(moment.duration(120, "s").format("m _"), "2 mins");
+        equal(moment.duration(120, "s").format("m __"), "2 standard.minutes");
+        moment.locale("en");
+    });
+
+    test("Custom Locale Label Types Only", function () {
+        // Borowing moment's "fr" locale.
+        moment.locale('test_custom_types', {
+            months : 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
+            monthsShort : 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
+            monthsParseExact : true,
+            weekdays : 'dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi'.split('_'),
+            weekdaysShort : 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
+            weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
+            weekdaysParseExact : true,
+            longDateFormat : {
+                LT : 'HH:mm',
+                LTS : 'HH:mm:ss',
+                L : 'DD/MM/YYYY',
+                LL : 'D MMMM YYYY',
+                LLL : 'D MMMM YYYY HH:mm',
+                LLLL : 'dddd D MMMM YYYY HH:mm'
+            },
+            calendar : {
+                sameDay : '[Aujourd’hui à] LT',
+                nextDay : '[Demain à] LT',
+                nextWeek : 'dddd [à] LT',
+                lastDay : '[Hier à] LT',
+                lastWeek : 'dddd [dernier à] LT',
+                sameElse : 'L'
+            },
+            relativeTime : {
+                future : 'dans %s',
+                past : 'il y a %s',
+                s : 'quelques secondes',
+                m : 'une minute',
+                mm : '%d minutes',
+                h : 'une heure',
+                hh : '%d heures',
+                d : 'un jour',
+                dd : '%d jours',
+                M : 'un mois',
+                MM : '%d mois',
+                y : 'un an',
+                yy : '%d ans'
+            },
+            dayOfMonthOrdinalParse : /\d{1,2}(er|e)/,
+            ordinal : function (number) {
+                return number + (number === 1 ? 'er' : 'e');
+            },
+            meridiemParse : /PD|MD/,
+            isPM : function (input) {
+                return input.charAt(0) === 'M';
+            },
+            // In case the meridiem units are not separated around 12, then implement
+            // this function (look at locale/id.js for an example).
+            // meridiemHour : function (hour, meridiem) {
+            //     return /* 0-23 hour, given meridiem token and hour 1-12 */ ;
+            // },
+            meridiem : function (hours, minutes, isLower) {
+                return hours < 12 ? 'PD' : 'MD';
+            },
+            week : {
+                dow : 1, // Monday is the first day of the week.
+                doy : 4  // The week that contains Jan 4th is the first week of the year.
+            },
+            durationLabelTypes: [
+                { type: "standard", string: "##" },
+                { type: "short", string: "#" }
+            ]
+        });
+        equal(moment.duration(60, "s").format("m #"), "1 min");
+        equal(moment.duration(60, "s").format("m ##"), "1 minute");
+        equal(moment.duration(120, "s").format("m #"), "2 mins");
+        equal(moment.duration(120, "s").format("m ##"), "2 minutes");
+        moment.locale("en");
+    });
+
+    module("moment.duration.format");
+
+    test("Basic Use", function () {
+        deepEqual(moment.duration.format([
             moment.duration(1, "second"),
             moment.duration(1, "minute"),
             moment.duration(1, "hour")],
             "d [days] hh:mm:ss"
-        ), ["00:00:01", "00:01:00", "01:00:00"]);
-        equal(moment.duration.format([
+        ), ["0:00:01", "0:01:00", "1:00:00"]);
+        deepEqual(moment.duration.format([
             moment.duration(1, "second"),
             moment.duration(1, "minute")],
             "d [days] hh:mm:ss"
-        ), ["00:01", "01:00"]);
-        equal(moment.duration.format([
+        ), ["0:01", "1:00"]);
+        deepEqual(moment.duration.format([
             moment.duration(1, "second"),
             moment.duration(1, "minute"),
             moment.duration(1, "day")],
             "d [days] hh:mm:ss"
         ), ["0 days 00:00:01", "0 days 00:01:00", "1 day 00:00:00"]);
-        equal(moment.duration.format([
+    });
+
+    test("trim", function () {
+        deepEqual(moment.duration.format([
+            moment.duration(1, "minute"),
+            moment.duration(1, "day")],
+            "y [years], d [days], h [hours], m [minutes], s [seconds]",
+            { trim: false }
+        ), ["0 years, 0 days, 0 hours, 1 minute, 0 seconds", "0 years, 1 day, 0 hours, 0 minutes, 0 seconds"]);
+        deepEqual(moment.duration.format([
+            moment.duration(1, "minute"),
+            moment.duration(1, "day")],
+            "y [years], d [days], h [hours], m [minutes], s [seconds]",
+            { trim: "large" }
+        ), ["0 days, 0 hours, 1 minute, 0 seconds", "1 day, 0 hours, 0 minutes, 0 seconds"]);
+        deepEqual(moment.duration.format([
             moment.duration(1, "minute"),
             moment.duration(1, "day")],
             "y [years], d [days], h [hours], m [minutes], s [seconds]",
             { trim: "both" }
-        ), ["0 days, 0 hours, 1 minute", "1 day, 0 hours, 0 minutes"]);
+        ), ["0 days, 1 minute", "1 day, 0 minutes"]);
+        deepEqual(moment.duration.format([
+            moment.duration(1, "minute"),
+            moment.duration(1, "day"),
+            moment.duration(1, "year")],
+            "y [years], d [days], h [hours], m [minutes], s [seconds]",
+            { trim: "all" }
+        ), ["0 years, 0 days, 0 hours, 1 minute", "0 years, 1 day, 0 hours, 0 minutes", "1 year, 0 days, 0 hours, 0 minutes"]);
+        deepEqual(moment.duration.format([
+            moment.duration(0, "minute"),
+            moment.duration(0, "day"),
+            moment.duration(0, "year")],
+            "y [years], d [days], h [hours], m [minutes], s [seconds]",
+            { trim: "all" }
+        ), ["", "", ""]);
+        deepEqual(moment.duration.format([
+            moment.duration(0, "minute"),
+            moment.duration(0, "day"),
+            moment.duration(1, "year")],
+            "y [years], d [days], h [hours], m [minutes], s [seconds]",
+            { trim: "all" }
+        ), ["0 years", "0 years", "1 year"]);
     });
 });
+
+// trim
+// "final" - "large final" or "both final".
+// "all"
+// "left"
+// "right"
+// `false`
+// `true`
+// `null`
+
+// stopTrim: array,
+// stopTrim: string,
+// stopTrim: *,
+
+// largest: ,
+
+// maxValue: ,
+// minValue: ,
+
+// precision: positive,
+// precision: negative,
+
+// default trunc
+// trunc: true,
+
+// Force first moment token with a value to render at full length
+// even when template is trimmed and first moment token has length of 1.
+// forceLength: true,
+// forceLength: false,
+
+// userLocale: "de-DE", (with grouped output)
+// usePlural: false,
+// useLeftUnits: true,
+// default useGrouping
+// useGrouping: false,
+// useSignificantDigits: true
+// template function
+
+
+// Document adding a new locale with just a single section updated.
