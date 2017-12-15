@@ -888,6 +888,8 @@ moment.updateLocale('en', {
 
 The duration extensions for a new locale might look something like the following example, which includes an additional unit label type, a custom time-notation template, and an additional form of plural.
 
+This example provides new values for *all* of the duration locale extensions. In a new locale, you can include updates for one or more of the duration locale extensions, and any that you do not include will automatically fall back to the `"en"` versions in this plugin. e.g. your locale could update only the `durationLabelsShort` object, or only the `durationPluralKey` function, if those were the only differences from the default `"en"` locale configuration.
+
 New types of duration labels must have a key that begins with `durationLabels` and must be enumerated in `durationLabelTypes`.
 
 This locale uses a single token `"s"` for the singular label, a double token `"ss"` for the plural label when the value is `2`, and a triple token `"sss"` for the plural lable for values greater than `3`. For brevity, only labels for the `seconds` type are included.
