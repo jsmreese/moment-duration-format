@@ -1004,12 +1004,29 @@ $(document).ready(function() {
             { trim: "all" }
         ), ["0 years", "0 years", "1 year"]);
     });
+
+    test("stopTrim", function () {
+        deepEqual(moment.duration.format([
+            moment.duration(1, "hour"),
+            moment.duration(1, "week")],
+            "y [years], M [months], w [weeks], d [days], h [hours], m [minutes], s [seconds]",
+            { trim: "both", stopTrim: "M m" }
+        ), ["0 months, 0 weeks, 0 days, 1 hour, 0 minutes", "0 months, 1 week, 0 days, 0 hours, 0 minutes"]);
+        deepEqual(moment.duration.format([
+            moment.duration(1, "hour"),
+            moment.duration(1, "week")],
+            "y [years], M [months], w [weeks], d [days], h [hours], m [minutes], s [seconds]",
+            { trim: "both", stopTrim: ["M", "m"] }
+        ), ["0 months, 0 weeks, 0 days, 1 hour, 0 minutes", "0 months, 1 week, 0 days, 0 hours, 0 minutes"]);
+        deepEqual(moment.duration.format([
+            moment.duration(1, "hour"),
+            moment.duration(1, "week")],
+            "y [years], *M [months], w [weeks], d [days], h [hours], *m [minutes], s [seconds]",
+            { trim: "both" }
+        ), ["0 months, 0 weeks, 0 days, 1 hour, 0 minutes", "0 months, 1 week, 0 days, 0 hours, 0 minutes"]);
+    });
 });
 
-
-// stopTrim: array,
-// stopTrim: string,
-// stopTrim: *,
 
 // largest: ,
 
@@ -1034,6 +1051,3 @@ $(document).ready(function() {
 // useGrouping: false,
 // useSignificantDigits: true
 // template function
-
-
-// Document adding a new locale with just a single section updated.
