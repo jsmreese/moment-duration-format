@@ -988,7 +988,7 @@ $(document).ready(function() {
             moment.duration(1, "year")],
             "y [years], d [days], h [hours], m [minutes], s [seconds]",
             { trim: "all" }
-        ), ["0 years, 0 days, 0 hours, 1 minute", "0 years, 1 day, 0 hours, 0 minutes", "1 year, 0 days, 0 hours, 0 minutes"]);
+        ), ["0 years, 0 days, 1 minute", "0 years, 1 day, 0 minutes", "1 year, 0 days, 0 minutes"]);
         deepEqual(moment.duration.format([
             moment.duration(0, "minute"),
             moment.duration(0, "day"),
@@ -1006,14 +1006,6 @@ $(document).ready(function() {
     });
 });
 
-// trim
-// "final" - "large final" or "both final".
-// "all"
-// "left"
-// "right"
-// `false`
-// `true`
-// `null`
 
 // stopTrim: array,
 // stopTrim: string,
