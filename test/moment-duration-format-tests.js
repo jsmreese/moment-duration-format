@@ -1025,16 +1025,110 @@ $(document).ready(function() {
             { trim: "both" }
         ), ["0 months, 0 weeks, 0 days, 1 hour, 0 minutes", "0 months, 1 week, 0 days, 0 hours, 0 minutes"]);
     });
+
+    test("largest", function () {
+        deepEqual(moment.duration.format([
+            moment.duration(24, "hours"),
+            moment.duration(1, "hours"),
+            moment.duration(10, "minutes"),
+            moment.duration(1, "weeks")],
+            "y [years], M [months], w [weeks], d [days], h [hours], m [minutes], s [seconds]",
+            { largest: 2 }
+        ), ["0 weeks, 1 day", "0 weeks, 0 days", "0 weeks, 0 days", "1 week, 0 days"]);
+        deepEqual(moment.duration.format([
+            moment.duration(24, "hours"),
+            moment.duration(1, "hours"),
+            moment.duration(4.12345, "years"),
+            moment.duration(10, "minutes"),
+            moment.duration(1, "weeks")],
+            "y [years], M [months], w [weeks], d [days], h [hours], m [minutes], s [seconds]",
+            { largest: 2 }
+        ), [
+            "0 years, 0 months",
+            "0 years, 0 months",
+            "4 years, 1 month",
+            "0 years, 0 months",
+            "0 years, 0 months"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(24, "hours"),
+            moment.duration(1, "hours"),
+            moment.duration(4.12345, "years"),
+            moment.duration(10, "minutes"),
+            moment.duration(1, "weeks")],
+            "y [years], M [months], w [weeks], d [days], h [hours], m [minutes], s [seconds]",
+            { largest: 4 }
+        ), [
+            "0 years, 0 months, 0 weeks, 1 day",
+            "0 years, 0 months, 0 weeks, 0 days",
+            "4 years, 1 month, 2 weeks, 1 day",
+            "0 years, 0 months, 0 weeks, 0 days",
+            "0 years, 0 months, 1 week, 0 days"
+        ]);
+    });
+
+    test("precision", function () {
+        deepEqual(moment.duration.format([
+            moment.duration(100.1234, "second"),
+            moment.duration(100.1234, "minute"),
+            moment.duration(100.1234, "hour")],
+            "d [days] hh:mm:ss",
+            { precision: 2 }
+        ), [
+            "0 days 00:01:40.12",
+            "0 days 01:40:07.40",
+            "4 days 04:07:24.24"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(100.1234, "second"),
+            moment.duration(100, "minute"),
+            moment.duration(100, "hour")],
+            "d [days] hh:mm:ss",
+            { precision: 2 }
+        ), [
+            "0 days 00:01:40.12",
+            "0 days 01:40:00.00",
+            "4 days 04:00:00.00"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(123456, "second"),
+            moment.duration(123456, "minute"),
+            moment.duration(123456, "hour")],
+            "y [years], d [days]",
+            { precision: -2 }
+        ), [
+            "0 years, 0 days",
+            "0 years, 100 days",
+            "14 years, 0 days"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(123456, "second"),
+            moment.duration(123456, "minute"),
+            moment.duration(123456, "hour")],
+            "y [years], d [days]",
+            { precision: -1 }
+        ), [
+            "0 years, 0 days",
+            "0 years, 90 days",
+            "14 years, 30 days"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(123456, "second"),
+            moment.duration(123456, "minute"),
+            moment.duration(123456, "hour")],
+            "h [hours]",
+            { precision: -2 }
+        ), [
+            "0 hours",
+            "2,100 hours",
+            "123,500 hours"
+        ]);
+    });
+
 });
-
-
-// largest: ,
 
 // maxValue: ,
 // minValue: ,
-
-// precision: positive,
-// precision: negative,
 
 // default trunc
 // trunc: true,
