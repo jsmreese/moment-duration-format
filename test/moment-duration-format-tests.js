@@ -941,6 +941,21 @@ $(document).ready(function() {
         moment.locale("en");
     });
 
+    test("Rounded value bubbling", function () {
+        equal(moment.duration(
+            moment('2017-12-17T02:00:00+00:00') -
+            moment('2017-12-17T00:00:30+00:00')
+        ).format('h:mm'), "2:00"); // returns: '1:60' instead of '2:00'
+        equal(moment.duration({ hours: 2, seconds: -30 }).format("h:mm"), "2:00"); // "1:60"
+        equal(moment.duration(7170, "seconds").format("h:mm"), "2:00"); // "1:60"
+        equal(moment.duration(2879, "minutes").format("d[d] h[h]"), "2d 0h"); // "1d 24h"
+        equal(moment.duration(2879, "minutes").format("d[d] h[h]", { trim: "all" }), "2d"); // "1d 24h"
+        equal(moment.duration(335, "hours").format("w[w], d[d]"), "2w, 0d"); // "1w, 7d"
+        equal(moment.duration(335, "hours").format("w[w], d[d]", { trim: "all" }), "2w"); // "1w, 7d"
+        equal(moment.duration({ days: 7, seconds: -30 }).format("w[w] d[d] h:mm", { trim: "all" }), "1w"); // "6d 23:60"
+        equal(moment.duration({ hours: 2, seconds: -60 }).format("h:mm", { precision: 2, useSignificantDigits: true }), "2:00"); // 1:60
+    });
+
     module("moment.duration.format");
 
     test("Basic Use", function () {
