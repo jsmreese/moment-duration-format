@@ -1125,10 +1125,66 @@ $(document).ready(function() {
         ]);
     });
 
+    test("maxValue", function () {
+        deepEqual(moment.duration.format([
+            moment.duration(61, "seconds"),
+            moment.duration(59, "seconds"),
+            moment.duration(1.1, "minutes"),
+            moment.duration(0.9, "minutes"),
+            moment.duration(0.017, "hours"),
+            moment.duration(0.016, "hours")],
+            "m [minutes]",
+            { maxValue: 1 }
+        ), [
+            "> 1 minute",
+            "1 minute",
+            "> 1 minute",
+            "1 minute",
+            "> 1 minute",
+            "1 minute"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(1, "seconds"),
+            moment.duration(59, "seconds"),
+            moment.duration(1.25, "minutes"),
+            moment.duration(10, "minutes"),
+            moment.duration(10.01, "minutes"),
+            moment.duration(100, "minutes")],
+            "m:ss",
+            { maxValue: 10, trim: false }
+        ), [
+            "0:01",
+            "0:59",
+            "1:15",
+            "10:00",
+            "> 10:00",
+            "> 10:00"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(1, "seconds"),
+            moment.duration(59, "seconds"),
+            moment.duration(1.25, "minutes"),
+            moment.duration(10, "minutes"),
+            moment.duration(10.01, "minutes"),
+            moment.duration(100, "minutes")],
+            "m [minutes], s [seconds]",
+            { maxValue: 10 }
+        ), [
+            "0 minutes, 1 second",
+            "0 minutes, 59 seconds",
+            "1 minute, 15 seconds",
+            "10 minutes, 0 seconds",
+            "> 10 minutes",
+            "> 10 minutes"
+        ]);
+    });
+
 });
 
-// maxValue: ,
+// maxValue: ,neg dur
 // minValue: ,
+
+// negative durations, mixed pos/neg
 
 // default trunc
 // trunc: true,
