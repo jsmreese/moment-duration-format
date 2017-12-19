@@ -552,14 +552,18 @@ moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", {
 
 #### minValue
 
-Use `minValue` to render generalized output for small duration values, e.g. `"< 5 minutes"`. `minValue` must be a positive integer and is applied to the least-magnitude moment token in the format template. This option affects the operation of `trim`, and is affected by `trunc`.
+Use `minValue` to render generalized output for small duration values, e.g. `"< 5 minutes"`. `minValue` must be a positive integer and is applied to the least-magnitude moment token in the format template.
 
 ```javascript
 moment.duration(59, "seconds").format("h [hours], m [minutes]", {
     minValue: 1
 });
 // "< 1 minute"
+```
 
+This option can be used in conjunction with `trim`, and is not affected by `trunc`.
+
+``` javascript
 moment.duration(59, "seconds").format("h [hours], m [minutes]", {
     minValue: 1,
     trim: "both"
@@ -577,7 +581,13 @@ moment.duration(59, "seconds").format("h [hours], m [minutes]", {
     trunc: true,
     trim: "all"
 });
-// ""
+// "< 1 minute"
+
+moment.duration(59, "seconds").format("h [hours], m [minutes]", {
+    minValue: 1,
+    trim: false
+});
+// "< 0 hours, 1 minute"
 ```
 
 `minValue` can be used with negative durations, where it has the same effect on the least-magnitude moment token's absolute value.
@@ -589,20 +599,9 @@ moment.duration(-59, "seconds").format("h [hours], m [minutes]", {
 // "> -1 minute"
 ```
 
-When `minValue` is reached, only the least-magnitude moment token is output, regardless of `trim` and `largest`.
-
-```javascript
-moment.duration(59, "seconds").format("h [hours], m [minutes]", {
-    minValue: 1,
-    trim: false,
-    largest: 2
-});
-// "< 1 minute"
-```
-
 #### maxValue
 
-Use `maxValue` to render generalized output for large duration values, e.g. `"> 60 days"`. `maxValue` must be a positive integer and is applied to the greatest-magnitude moment token in the format template. As with `minValue`, this option affects the operation of `trim`, is affected by `trunc`, and can be used with negative durations.
+Use `maxValue` to render generalized output for large duration values, e.g. `"> 60 days"`. `maxValue` must be a positive integer and is applied to the greatest-magnitude moment token in the format template. As with `minValue`, this option can be used in conjunction with `trim`, is not affected by `trunc`, and can be used with negative durations.
 
 ```javascript
 moment.duration(15, "days").format("w [weeks]", {
@@ -616,15 +615,15 @@ moment.duration(-15, "days").format("w [weeks]]", {
 // "< -2 weeks"
 ```
 
-When `maxValue` is reached, only the greatest-magnitude moment token is output, regardless of `trim` and `largest`.
+`maxValue` can be used with `trim` and `largest`, but when the maximum value is reached, all lesser-magnitude token values are forced to `0`.
 
 ```javascript
-moment.duration(15, "days").format("w [weeks], d [days]", {
+moment.duration(15.5, "days").format("w [weeks], d [days], h [hours]", {
     maxValue: 2,
     trim: false,
     largest: 2
 });
-// "> 2 weeks"
+// "> 2 weeks, 0 days"
 ```
 
 #### forceLength

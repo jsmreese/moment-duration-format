@@ -586,6 +586,10 @@ $(document).ready(function() {
         equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trunc: true, trim: "all" }), "< 1 minute");
         equal(moment.duration(-59, "seconds").format("h [hours], m [minutes]", { minValue: 1 }), "> -1 minute");
         equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trim: false, largest: 2 }), "< 1 minute");
+        equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", {
+            minValue: 1,
+            trim: false
+        }), "< 0 hours, 1 minute");
     });
 
     test("maxValue", function () {
@@ -597,6 +601,12 @@ $(document).ready(function() {
         equal(moment.duration(15, "days").format("w [weeks], d [days]", { maxValue: 2, trim: false }), "> 2 weeks, 0 days");
         equal(moment.duration(15, "days").format("w [weeks], d [days]", { maxValue: 2, largest: 2 }), "> 2 weeks");
         equal(moment.duration(15, "days").format("w [weeks], d [days]", { maxValue: 2 }), "> 2 weeks");
+        equal(moment.duration(15.5, "days").format("w [weeks], d [days], h [hours]", {
+            maxValue: 2,
+            trim: false,
+            largest: 2
+        }),
+        "> 2 weeks, 0 days");
     });
 
     test("stopTrim", function () {
