@@ -954,6 +954,8 @@ $(document).ready(function() {
         equal(moment.duration(335, "hours").format("w[w], d[d]", { trim: "all" }), "2w"); // "1w, 7d"
         equal(moment.duration({ days: 7, seconds: -30 }).format("w[w] d[d] h:mm", { trim: "all" }), "1w"); // "6d 23:60"
         equal(moment.duration({ hours: 2, seconds: -60 }).format("h:mm", { precision: 2, useSignificantDigits: true }), "2:00"); // 1:60
+        equal(moment.duration({ hours: 24, seconds: -30 }).format("ww[w] dd[d] hh:mm", { trim: "all", forceLength: true }), "01d"); // "23:60"
+        equal(moment.duration({ days: 7, seconds: -30 }).format("w[w] m[m]", { trim: "all" }), "1w"); // "10,080m"
     });
 
     module("moment.duration.format");
