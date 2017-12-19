@@ -579,16 +579,24 @@ $(document).ready(function() {
         }), "2 min");
     });
 
-    test("minValue and maxValue", function () {
+    test("minValue", function () {
         equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1 }), "< 1 minute");
         equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trim: "both" }), "< 1 minute");
         equal(moment.duration(3629, "seconds").format("h [hours], m [minutes]", { minValue: 1, trim: "both" }), "1 hour");
-        equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trunc: true, trim: "all" }), "");
+        equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trunc: true, trim: "all" }), "< 1 minute");
         equal(moment.duration(-59, "seconds").format("h [hours], m [minutes]", { minValue: 1 }), "> -1 minute");
         equal(moment.duration(59, "seconds").format("h [hours], m [minutes]", { minValue: 1, trim: false, largest: 2 }), "< 1 minute");
+    });
+
+    test("maxValue", function () {
         equal(moment.duration(15, "days").format("w [weeks]", { maxValue: 2 }), "> 2 weeks");
         equal(moment.duration(-15, "days").format("w [weeks]", { maxValue: 2 }), "< -2 weeks");
-        equal(moment.duration(15, "days").format("w [weeks], d [days]", { maxValue: 2, trim: false, largest: 2 }), "> 2 weeks");
+        equal(moment.duration(10.01, "minutes").format("m:ss", { maxValue: 10, trim: false }), "> 10:00");
+        equal(moment.duration(10.01, "minutes").format("m:ss", { maxValue: 10, trim: "large" }), "> 10:00");
+        equal(moment.duration(10.01, "minutes").format("m:ss", { maxValue: 10, trim: "all" }), "> 10");
+        equal(moment.duration(15, "days").format("w [weeks], d [days]", { maxValue: 2, trim: false }), "> 2 weeks, 0 days");
+        equal(moment.duration(15, "days").format("w [weeks], d [days]", { maxValue: 2, largest: 2 }), "> 2 weeks");
+        equal(moment.duration(15, "days").format("w [weeks], d [days]", { maxValue: 2 }), "> 2 weeks");
     });
 
     test("stopTrim", function () {
@@ -1203,6 +1211,19 @@ $(document).ready(function() {
             "> 10:00"
         ]);
         deepEqual(moment.duration.format([
+            moment.duration(1, "minutes"),
+            moment.duration(10, "minutes"),
+            moment.duration(20, "minutes"),
+            moment.duration(100, "minutes")],
+            "m:ss",
+            { maxValue: 10, trim: false }
+        ), [
+            "1:00",
+            "10:00",
+            "> 10:00",
+            "> 10:00"
+        ]);
+        deepEqual(moment.duration.format([
             moment.duration(1, "seconds"),
             moment.duration(59, "seconds"),
             moment.duration(1.25, "minutes"),
@@ -1219,6 +1240,24 @@ $(document).ready(function() {
             "> 10 minutes",
             "> 10 minutes"
         ]);
+        deepEqual(moment.duration.format([
+            moment.duration(1, "seconds"),
+            moment.duration(59, "seconds"),
+            moment.duration(1.25, "minutes"),
+            moment.duration(10, "minutes"),
+            moment.duration(10.01, "minutes"),
+            moment.duration(100, "minutes")],
+            "m [minutes], s [seconds]",
+            { maxValue: 10, trim: "both" }
+        ), [
+            "0 minutes, 1 second",
+            "0 minutes, 59 seconds",
+            "1 minute, 15 seconds",
+            "10 minutes, 0 seconds",
+            "> 10 minutes, 0 seconds",
+            "> 10 minutes, 0 seconds"
+        ]);
+
     });
 
 });
