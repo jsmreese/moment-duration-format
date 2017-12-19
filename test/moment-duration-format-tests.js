@@ -246,8 +246,33 @@ $(document).ready(function() {
 
     test("Show only the largest `x` tokens", function () {
         equal(moment.duration(1.55, "days").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "1 day, 13 hours");
-        equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "1 day, 14 minutes");
-        equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 3 }), "1 day, 14 minutes, 24 seconds");
+        equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "1 day");
+        equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2, trim: false }), "1 day, 0 hours");
+        equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 3 }), "1 day, 14 minutes");
+        equal(moment.duration(1454.4, "minutes").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 3, trim: false }), "1 day, 0 hours, 14 minutes");
+        equal(moment.duration(1216800, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", {
+            largest: 3,
+            trim: "both"
+        }), "2 weeks, 0 days, 2 hours");
+
+        equal(moment.duration(1216800, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", {
+            largest: 3,
+            trim: "both",
+            stopTrim: "m"
+        }), "2 weeks, 0 days, 2 hours");
+
+        equal(moment.duration(1216800, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", {
+            largest: 4,
+            trim: false
+        }), "2 weeks, 0 days, 2 hours, 0 minutes");
+
+        equal(moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", {
+            largest: 2
+        }), "2 hours, 2 minutes");
+
+        equal(moment.duration(1216800, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", {
+            largest: 3
+        }), "2 weeks, 2 hours");
     });
 
     test("Trim both", function () {
@@ -512,12 +537,12 @@ $(document).ready(function() {
         equal(moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "both final" }), "");
         equal(moment.duration(0, "minutes").format("d[d] h[h] m[m] s[s]", { trim: "all" }), "");
         equal(moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "2 hours, 2 minutes");
-        equal(moment.duration(1216922, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", { largest: 2 }), "2 weeks, 2 hours");
+
         equal(moment.duration(23, "minutes").format("d[d] h:mm:ss", { stopTrim: "h" }), "0:23:00");
         equal(moment.duration(23, "minutes").format("d[d] *h:mm:ss"), "0:23:00");
         equal(moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: "d m" }), "0 days, 2 hours, 0 minutes");
         equal(moment.duration(2, "hours").format("y [years], *d [days], h [hours], *m [minutes], s [seconds]", { trim: "both" }), "0 days, 2 hours, 0 minutes");
-        equal(moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: "d m", largest: 2 }), "2 hours");
+        equal(moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: "d m", largest: 2 }), "0 days, 2 hours");
         equal(moment.duration(179, "seconds").format("m [minutes]"), "3 minutes");
         equal(moment.duration(3780, "seconds").format("h [hours]", 1), "1.1 hours");
         equal(moment.duration(179, "seconds").format("m [minutes]", { trunc: true }), "2 minutes");
@@ -568,7 +593,6 @@ $(document).ready(function() {
 
     test("stopTrim", function () {
         equal(moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: ["d", "m"] }), "0 days, 2 hours, 0 minutes");
-        equal(moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", { trim: "both", stopTrim: ["d", "m"], largest: 2 }), "2 hours");
     });
 
     test("Milliseconds token length === 2", function () {
@@ -1202,7 +1226,7 @@ $(document).ready(function() {
 // maxValue: ,neg dur
 // minValue: ,
 
-// negative durations, mixed pos/neg
+// negative durations, mixed pos/neg, with stopTrim
 
 // default trunc
 // trunc: true,

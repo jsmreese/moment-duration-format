@@ -427,7 +427,7 @@ Disables trimming.
 
 #### largest
 
-Set `largest` to a positive integer to output only the `n` largest-magnitude moment tokens that have a value. All lesser-magnitude or zero-value moment tokens will be ignored. Using the `largest` option overrides `trim` to `"all"` and disables `stopTrim`. This option takes effect even when `trim: false` is used.
+Set `largest` to a positive integer to output only the `n` largest-magnitude moment tokens, starting with the largest-magnitude token that has a value. Using the `largest` option defaults `trim` to `"all"`.
 
 ```javascript
 moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", {
@@ -435,10 +435,40 @@ moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [se
 });
 // "2 hours, 2 minutes"
 
-moment.duration(1216922, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", {
-    largest: 2
+moment.duration(1216800, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", {
+    largest: 3
 });
 // "2 weeks, 2 hours"
+```
+
+Setting `trim` to a different value, or using `stopTrim` can change the starting token as well as the remaining output.
+
+```
+moment.duration(1216800, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", {
+    largest: 3,
+    trim: "both"
+});
+// "2 weeks, 0 days, 2 hours"
+
+moment.duration(1216800, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", {
+    largest: 3,
+    trim: "both",
+    stopTrim: "m"
+});
+// "2 weeks, 0 days, 2 hours"
+
+moment.duration(1216800, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", {
+    largest: 4,
+    trim: false
+});
+// "2 weeks, 0 days, 2 hours, 0 minutes"
+
+moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", {
+    trim: "both",
+    stopTrim: "d m",
+    largest: 2
+});
+// "0 days 2 hours"
 ```
 
 #### stopTrim
@@ -470,17 +500,6 @@ moment.duration(2, "hours").format("y [years], *d [days], h [hours], *m [minutes
     trim: "both"
 });
 // "0 days, 2 hours, 0 minutes"
-```
-
-`stopTrim` is disabled when using `largest`.
-
-```javascript
-moment.duration(2, "hours").format("y [years], d [days], h [hours], m [minutes], s [seconds]", {
-    trim: "both",
-    stopTrim: "d m",
-    largest: 2
-});
-// "2 hours"
 ```
 
 #### trunc
