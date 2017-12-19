@@ -212,6 +212,7 @@ $(document).ready(function() {
 		equal(moment.duration(-65.667, "days").format("d", 2), "-65.67");
 		equal(moment.duration(-65.667, "days").format("d [days], h [hours]"), "-65 days, 16 hours");
         equal(moment.duration(-30, "seconds").format("m", 2), "-0.50");
+        equal(moment.duration(-600, 'seconds').format('hh:mm', {stopTrim: 'h m', forceLength: true}), "-00:10");
 	});
 
     test("Negative Durations that have zero value", function () {
