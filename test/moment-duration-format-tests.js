@@ -595,6 +595,7 @@ $(document).ready(function() {
         equal(moment.duration(59, "seconds").format("m:ss", { minValue: 60 }), "< 1:00");
         equal(moment.duration(3600, "seconds").format("h:mm:ss", { minValue: 3600 }), "1:00:00");
         equal(moment.duration(3599, "seconds").format("h:mm:ss", { minValue: 3600 }), "< 1:00:00");
+        equal(moment.duration(-60, "seconds").format("m:ss", { minValue: 60 }), "-1:00");
     });
 
     test("maxValue", function () {
@@ -1466,9 +1467,51 @@ $(document).ready(function() {
             "0d 02:24:00"
         ]);
     });
-
 });
 
+
+test("minValue, negative duration", function () {
+    deepEqual(moment.duration.format([
+        moment.duration(-1, "seconds"),
+        moment.duration(-59, "seconds"),
+        moment.duration(-59.9999, "seconds"),
+        moment.duration(-60, "seconds"),
+        moment.duration(-0.999, "minutes"),
+        moment.duration(-1, "minutes"),
+        moment.duration(-1.001, "minutes")],
+        "m:ss",
+        { minValue: 60 }
+    ), [
+        "> -1:00",
+        "> -1:00",
+        "> -1:00",
+        "-1:00",
+        "> -1:00",
+        "-1:00",
+        "-1:00"
+    ]);
+    deepEqual(moment.duration.format([
+        moment.duration(-1, "seconds"),
+        moment.duration(-3599, "seconds"),
+        moment.duration(-3601, "seconds"),
+        moment.duration(-59.9, "minutes"),
+        moment.duration(-60.1, "minutes"),
+        moment.duration(-937481, "seconds"),
+        moment.duration(-0.01, "days"),
+        moment.duration(-0.1, "days")],
+        "d[d] hh:mm:ss",
+        { minValue: 3600, trim: "large" }
+    ), [
+        "> -0d 01:00:00",
+        "> -0d 01:00:00",
+        "-0d 01:00:01",
+        "> -0d 01:00:00",
+        "-0d 01:00:06",
+        "-10d 20:24:41",
+        "> -0d 01:00:00",
+        "-0d 02:24:00"
+    ]);
+});
 // minValue: neg dur
 
 // negative durations, mixed pos/neg, with stopTrim
