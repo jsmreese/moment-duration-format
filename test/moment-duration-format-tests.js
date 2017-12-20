@@ -590,6 +590,11 @@ $(document).ready(function() {
             minValue: 1,
             trim: false
         }), "< 0 hours, 1 minute");
+        equal(moment.duration(60, "seconds").format("m:ss", { minValue: 60 }), "1:00");
+        equal(moment.duration(61, "seconds").format("m:ss", { minValue: 60 }), "1:01");
+        equal(moment.duration(59, "seconds").format("m:ss", { minValue: 60 }), "< 1:00");
+        equal(moment.duration(3600, "seconds").format("h:mm:ss", { minValue: 3600 }), "1:00:00");
+        equal(moment.duration(3599, "seconds").format("h:mm:ss", { minValue: 3600 }), "< 1:00:00");
     });
 
     test("maxValue", function () {
@@ -1267,13 +1272,204 @@ $(document).ready(function() {
             "> 10 minutes, 0 seconds",
             "> 10 minutes, 0 seconds"
         ]);
+    });
 
+    test("maxValue, negative durations", function () {
+        deepEqual(moment.duration.format([
+            moment.duration(-61, "seconds"),
+            moment.duration(-59, "seconds"),
+            moment.duration(-1.1, "minutes"),
+            moment.duration(-0.9, "minutes"),
+            moment.duration(-0.017, "hours"),
+            moment.duration(-0.016, "hours")],
+            "m [minutes]",
+            { maxValue: 1 }
+        ), [
+            "< -1 minute",
+            "-1 minute",
+            "< -1 minute",
+            "-1 minute",
+            "< -1 minute",
+            "-1 minute"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(-1, "seconds"),
+            moment.duration(-59, "seconds"),
+            moment.duration(-1.25, "minutes"),
+            moment.duration(-10, "minutes"),
+            moment.duration(-10.01, "minutes"),
+            moment.duration(-100, "minutes")],
+            "m:ss",
+            { maxValue: 10, trim: false }
+        ), [
+            "-0:01",
+            "-0:59",
+            "-1:15",
+            "-10:00",
+            "< -10:00",
+            "< -10:00"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(-1, "minutes"),
+            moment.duration(-10, "minutes"),
+            moment.duration(-20, "minutes"),
+            moment.duration(-100, "minutes")],
+            "m:ss",
+            { maxValue: 10, trim: false }
+        ), [
+            "-1:00",
+            "-10:00",
+            "< -10:00",
+            "< -10:00"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(-1, "seconds"),
+            moment.duration(-59, "seconds"),
+            moment.duration(-1.25, "minutes"),
+            moment.duration(-10, "minutes"),
+            moment.duration(-10.01, "minutes"),
+            moment.duration(-100, "minutes")],
+            "m [minutes], s [seconds]",
+            { maxValue: 10 }
+        ), [
+            "-0 minutes, 1 second",
+            "-0 minutes, 59 seconds",
+            "-1 minute, 15 seconds",
+            "-10 minutes, 0 seconds",
+            "< -10 minutes",
+            "< -10 minutes"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(-1, "seconds"),
+            moment.duration(-59, "seconds"),
+            moment.duration(-1.25, "minutes"),
+            moment.duration(-10, "minutes"),
+            moment.duration(-10.01, "minutes"),
+            moment.duration(-100, "minutes")],
+            "m [minutes], s [seconds]",
+            { maxValue: 10, trim: "both" }
+        ), [
+            "-0 minutes, 1 second",
+            "-0 minutes, 59 seconds",
+            "-1 minute, 15 seconds",
+            "-10 minutes, 0 seconds",
+            "< -10 minutes, 0 seconds",
+            "< -10 minutes, 0 seconds"
+        ]);
+    });
+
+    test("minValue", function () {
+        deepEqual(moment.duration.format([
+            moment.duration(61, "seconds"),
+            moment.duration(59, "seconds"),
+            moment.duration(1.1, "minutes"),
+            moment.duration(0.9, "minutes"),
+            moment.duration(0.017, "hours"),
+            moment.duration(0.016, "hours")],
+            "m [minutes]",
+            { minValue: 1 }
+        ), [
+            "1 minute",
+            "< 1 minute",
+            "1 minute",
+            "< 1 minute",
+            "1 minute",
+            "< 1 minute"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(10, "seconds"),
+            moment.duration(9.9999, "seconds"),
+            moment.duration(10.0001, "seconds"),
+            moment.duration(1, "minutes"),
+            moment.duration(1/6 - 0.0001, "minutes"),
+            moment.duration(1/6, "minutes")],
+            "m:ss",
+            { minValue: 10, trim: false }
+        ), [
+            "0:10",
+            "< 0:10",
+            "0:10",
+            "1:00",
+            "< 0:10",
+            "0:10"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(1, "minutes"),
+            moment.duration(599, "seconds"),
+            moment.duration(10, "minutes"),
+            moment.duration(9.99, "minutes")],
+            "h:mm",
+            { minValue: 10, trim: false }
+        ), [
+            "< 0:10",
+            "< 0:10",
+            "0:10",
+            "< 0:10"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(1, "seconds"),
+            moment.duration(59, "seconds"),
+            moment.duration(59.9999, "seconds"),
+            moment.duration(60, "seconds"),
+            moment.duration(0.999, "minutes"),
+            moment.duration(1, "minutes"),
+            moment.duration(1.001, "minutes")],
+            "m:ss",
+            { minValue: 60, trim: false }
+        ), [
+            "< 1:00",
+            "< 1:00",
+            "< 1:00",
+            "1:00",
+            "< 1:00",
+            "1:00",
+            "1:00"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(1, "seconds"),
+            moment.duration(59, "seconds"),
+            moment.duration(59.9999, "seconds"),
+            moment.duration(60, "seconds"),
+            moment.duration(0.999, "minutes"),
+            moment.duration(1, "minutes"),
+            moment.duration(1.001, "minutes")],
+            "m:ss",
+            { minValue: 60 }
+        ), [
+            "< 1:00",
+            "< 1:00",
+            "< 1:00",
+            "1:00",
+            "< 1:00",
+            "1:00",
+            "1:00"
+        ]);
+        deepEqual(moment.duration.format([
+            moment.duration(1, "seconds"),
+            moment.duration(3599, "seconds"),
+            moment.duration(3601, "seconds"),
+            moment.duration(59.9, "minutes"),
+            moment.duration(60.1, "minutes"),
+            moment.duration(937481, "seconds"),
+            moment.duration(0.01, "days"),
+            moment.duration(0.1, "days")],
+            "d[d] hh:mm:ss",
+            { minValue: 3600, trim: "large" }
+        ), [
+            "< 0d 01:00:00",
+            "< 0d 01:00:00",
+            "0d 01:00:01",
+            "< 0d 01:00:00",
+            "0d 01:00:06",
+            "10d 20:24:41",
+            "< 0d 01:00:00",
+            "0d 02:24:00"
+        ]);
     });
 
 });
 
-// maxValue: ,neg dur
-// minValue: ,
+// minValue: neg dur
 
 // negative durations, mixed pos/neg, with stopTrim
 

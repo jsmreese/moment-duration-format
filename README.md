@@ -427,7 +427,9 @@ Disables trimming.
 
 #### largest
 
-Set `largest` to a positive integer to output only the `n` largest-magnitude moment tokens, starting with the largest-magnitude token that has a value. Using the `largest` option defaults `trim` to `"all"`.
+Set `largest` to a positive integer to output only the `n` largest-magnitude moment tokens, starting with the largest-magnitude token that has a value.
+
+*Using the `largest` option defaults `trim` to `"all"`.*
 
 ```javascript
 moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", {
@@ -443,7 +445,7 @@ moment.duration(1216800, "seconds").format("y [years], w [weeks], d [days], h [h
 
 Setting `trim` to a different value, or using `stopTrim` can change the starting token as well as the remaining output.
 
-```
+```javascript
 moment.duration(1216800, "seconds").format("y [years], w [weeks], d [days], h [hours], m [minutes], s [seconds]", {
     largest: 3,
     trim: "both"
@@ -561,6 +563,15 @@ moment.duration(59, "seconds").format("h [hours], m [minutes]", {
 // "< 1 minute"
 ```
 
+The minimun value will bubble up to larger-magnitude units if they are present in the format template.
+
+```javascript
+moment.duration(59, "seconds").format("m:ss", {
+    minValue: 60
+});
+// "< 1:00"
+```
+
 This option can be used in conjunction with `trim`, and is not affected by `trunc`.
 
 ``` javascript
@@ -570,16 +581,10 @@ moment.duration(59, "seconds").format("h [hours], m [minutes]", {
 });
 // "< 1 minute"
 
-moment.duration(7229, "seconds").format("h [hours], m [minutes]", {
-    minValue: 1,
-    trim: "both"
-});
-// "2 hours"
-
 moment.duration(59, "seconds").format("h [hours], m [minutes]", {
     minValue: 1,
     trunc: true,
-    trim: "all"
+    trim: "both"
 });
 // "< 1 minute"
 
@@ -602,6 +607,8 @@ moment.duration(-59, "seconds").format("h [hours], m [minutes]", {
 #### maxValue
 
 Use `maxValue` to render generalized output for large duration values, e.g. `"> 60 days"`. `maxValue` must be a positive integer and is applied to the greatest-magnitude moment token in the format template. As with `minValue`, this option can be used in conjunction with `trim`, is not affected by `trunc`, and can be used with negative durations.
+
+*Using the `maxValue` option defaults `trim` to `"all"`.*
 
 ```javascript
 moment.duration(15, "days").format("w [weeks]", {
