@@ -58,11 +58,19 @@ var momentDurationFormatSetup = require("moment-duration-format");
 momentDurationFormatSetup(moment);
 typeof moment.duration.fn.format === "function"
 // true
+typeof moment.duration.format === "function"
+// true
 ```
 
 ### Basics
 
-The duration format method can format any moment duration. If no template or other arguments are provided, the default template function will generate a template string based on the duration's value.
+#### Formatting a Single Duration
+
+```javascript
+moment.duration.fn.format
+```
+
+The `duration.fn.format` method can format any moment duration. If no template or other arguments are provided, the default template function will generate a template string based on the duration's value.
 
 ```javascript
 moment.duration(123, "minutes").format();
@@ -72,12 +80,38 @@ moment.duration(123, "months").format();
 // "10 years, 3 months"
 ```
 
-The duration format method may be called with three optional arguments:
+The duration format method may be called with three optional arguments, and returns a formatted string.
+
 ```javascript
-moment.duration.format([template] [, precision] [, settings])
+moment.duration(value, units).format([template] [, precision] [, settings])
+// formattedString
 ```
 
-#### Invalid Durations
+#### Formatting Multiple Durations
+
+```javascript
+moment.duration.format
+```
+
+The `duration.format` method allows coordinated formatting of multiple moment durations at once. This function accepts an array of durations as its first argument, then the same three optional arguments as the `duration.fn.format` function. This function returns an array of formatted strings.
+
+```javascript
+moment.duration.format(durationsArray, [template] [, precision] [, settings]);
+// formattedStringsArray
+```
+
+All of the options that are available to the single duration format function can be used with the multiple duration format function. A single settings object is used to format each of the individual durations.
+
+```javascript
+moment.duration.format([
+    moment.duration(1, "second"),
+    moment.duration(1, "minute"),
+    moment.duration(1, "hour")
+], "d [days] hh:mm:ss");
+// ["0:00:01", "0:01:00", "1:00:00"]
+```
+
+##### Invalid Durations
 
 Invalid durations are treated as having a value of `0` for formatting.
 
@@ -133,7 +167,7 @@ moment.duration(15, "seconds").format("sss [s]");
 // "015 s"
 ```
 
-When the format template is trimmed, token length on the largest-magnitude rendered token can be trimmed as well. See sections *trim* and *forceLength* below for more details.
+When the format template is trimmed, token length on the largest-magnitude rendered token can be trimmed as well. See sections **trim** and **forceLength** below for more details.
 
 ```javascript
 moment.duration(123, "seconds").format("h:mm:ss");
@@ -429,7 +463,7 @@ Disables trimming.
 
 Set `largest` to a positive integer to output only the `n` largest-magnitude moment tokens, starting with the largest-magnitude token that has a value.
 
-*Using the `largest` option defaults `trim` to `"all"`.*
+**Using the `largest` option defaults `trim` to `"all"`.**
 
 ```javascript
 moment.duration(7322, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", {
@@ -624,7 +658,7 @@ moment.duration(90, "seconds").format("m", {
 
 Use `maxValue` to render generalized output for large duration values, e.g. `"> 60 days"`. `maxValue` must be a positive number and is applied to the greatest-magnitude moment token in the format template. As with `minValue`, this option can be used in conjunction with `trim`, is not affected by `trunc`, and can be used with negative durations.
 
-*Using the `maxValue` option defaults `trim` to `"all"`.*
+**Using the `maxValue` option defaults `trim` to `"all"`.**
 
 ```javascript
 moment.duration(15, "days").format("w [weeks]", {
@@ -694,7 +728,7 @@ moment.duration(123, "seconds").format("h:mm:ss", {
 
 When `useSignificantDigits` is set to `true`, the `precision` option determines the maximum significant digits to be rendered. Precision must be a positive integer. Significant digits extend across unit types, e.g. `"6 hours 37.5 minutes"` represents `4` significant digits. Enabling this option causes token length to be ignored.
 
-*Using the `useSignificantDigits` option defaults `trim` to `"all"`.*
+**Using the `useSignificantDigits` option defaults `trim` to `"all"`.**
 
 Setting `trunc` affects the operation of `useSignificantDigits`.
 
@@ -969,7 +1003,7 @@ moment.updateLocale('en', {
 
 The duration extensions for a new locale might look something like the following example, which includes an additional unit label type, a custom time-notation template, and an additional form of plural.
 
-This example provides new values for *all* of the duration locale extensions. In a new locale, you can include updates for one or more of the duration locale extensions, and any that you do not include will automatically fall back to the `"en"` versions in this plugin. e.g. your locale could update only the `durationLabelsShort` object, or only the `durationPluralKey` function, if those were the only differences from the default `"en"` locale configuration.
+This example provides new values for all of the duration locale extensions. In a new locale, you can include updates for one or more of the duration locale extensions, and any that you do not include will automatically fall back to the `"en"` versions in this plugin. e.g. your locale could update only the `durationLabelsShort` object, or only the `durationPluralKey` function, if those were the only differences from the default `"en"` locale configuration.
 
 New types of duration labels must have a key that begins with `durationLabels` and must be enumerated in `durationLabelTypes`.
 
@@ -1024,6 +1058,8 @@ moment.updateLocale('sample', {
     }
 });
 ```
+
+###### `durationPluralKey`
 
 The function for `durationPluralKey` is passed three arguments:
 
