@@ -1049,6 +1049,16 @@ test("Basic Use", function () {
         moment.duration(1, "day")],
         "d [days] hh:mm:ss"
     ), ["0 days 00:00:01", "0 days 00:01:00", "1 day 00:00:00"]);
+    deepEqual(moment.duration.format([
+        moment.duration(1, "minute"),
+        moment.duration(1, "hour"),
+        moment.duration(1, "day")
+    ], "y [years], w [weeks], d [days], h [hours], m [minutes]"),
+    [
+        "0 days, 0 hours, 1 minute",
+        "0 days, 1 hour, 0 minutes",
+        "1 day, 0 hours, 0 minutes"
+    ]);
 });
 
 test("trim", function () {

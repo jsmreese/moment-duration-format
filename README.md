@@ -323,6 +323,21 @@ moment.duration(123, "minutes").format("d[d] h:mm:ss", {
 // "0d 2:03:00"
 ```
 
+When formatting multiple durations using `moment.duration.format`, trimming for all of the durations is coordinated on the union of the set of durations.
+
+```javascript
+moment.duration.format([
+    moment.duration(1, "minute"),
+    moment.duration(1, "hour"),
+    moment.duration(1, "day")
+], "y [years], w [weeks], d [days], h [hours], m [minutes]");
+// [
+//    "0 days, 0 hours, 1 minute",
+//    "0 days, 1 hour, 0 minutes",
+//    "1 day, 0 hours, 0 minutes"
+// ]
+```
+
 `trim` can be a string, a delimited list of strings, an array of strings, or a boolean. Accepted values are as follows:
 
 - ##### `"large"`
