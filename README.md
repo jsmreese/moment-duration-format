@@ -554,7 +554,7 @@ moment.duration(59, "seconds").format("d [days], h [hours], m [minutes]", {
 
 #### minValue
 
-Use `minValue` to render generalized output for small duration values, e.g. `"< 5 minutes"`. `minValue` must be a positive integer and is applied to the least-magnitude moment token in the format template.
+Use `minValue` to render generalized output for small duration values, e.g. `"< 5 minutes"`. `minValue` must be a positive number and is applied to the least-magnitude moment token in the format template.
 
 ```javascript
 moment.duration(59, "seconds").format("h [hours], m [minutes]", {
@@ -604,9 +604,25 @@ moment.duration(-59, "seconds").format("h [hours], m [minutes]", {
 // "> -1 minute"
 ```
 
+If `minValue` is a non-integer number, `precision` should be set as well so that the formatted output makes sense.
+
+```javascript
+moment.duration(89, "seconds").format("m", {
+    minValue: 1.5,
+    precision: 1
+});
+// "< 1.5"
+
+moment.duration(90, "seconds").format("m", {
+    minValue: 1.5,
+    precision: 1
+});
+// "1.5"
+```
+
 #### maxValue
 
-Use `maxValue` to render generalized output for large duration values, e.g. `"> 60 days"`. `maxValue` must be a positive integer and is applied to the greatest-magnitude moment token in the format template. As with `minValue`, this option can be used in conjunction with `trim`, is not affected by `trunc`, and can be used with negative durations.
+Use `maxValue` to render generalized output for large duration values, e.g. `"> 60 days"`. `maxValue` must be a positive number and is applied to the greatest-magnitude moment token in the format template. As with `minValue`, this option can be used in conjunction with `trim`, is not affected by `trunc`, and can be used with negative durations.
 
 *Using the `maxValue` option defaults `trim` to `"all"`.*
 
@@ -631,6 +647,22 @@ moment.duration(15.5, "days").format("w [weeks], d [days], h [hours]", {
     largest: 2
 });
 // "> 2 weeks, 0 days"
+```
+
+If `maxValue` is a non-integer number, `precision` should be set as well so that the formatted output makes sense.
+
+```javascript
+moment.duration(89, "seconds").format("m", {
+    minValue: 1.5,
+    precision: 1
+});
+// "< 1.5"
+
+moment.duration(90, "seconds").format("m", {
+    minValue: 1.5,
+    precision: 1
+});
+// "1.5"
 ```
 
 #### forceLength
