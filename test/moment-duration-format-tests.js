@@ -1627,17 +1627,181 @@ test("useSignificantDigits", function () {
     ]);
 });
 
-// default trunc
-// trunc: true,
+test("trunc", function () {
+    deepEqual(moment.duration.format([
+        moment.duration(10, "seconds"),
+        moment.duration(100, "seconds"),
+        moment.duration(1000, "seconds"),
+        moment.duration(10000, "seconds"),
+        moment.duration(100000, "seconds"),
+        moment.duration(1000000, "seconds")],
+        "y[y] M[m] d[d] h[h]",
+        { trunc: true, precision: 0 }
+    ), [
+        "0d 0h",
+        "0d 0h",
+        "0d 0h",
+        "0d 2h",
+        "1d 3h",
+        "11d 13h"
+    ]);
+    deepEqual(moment.duration.format([
+        moment.duration(10, "seconds"),
+        moment.duration(100, "seconds"),
+        moment.duration(1000, "seconds"),
+        moment.duration(10000, "seconds"),
+        moment.duration(100000, "seconds"),
+        moment.duration(1000000, "seconds")],
+        "y[y] M[m] d[d] h[h]",
+        { trunc: true, precision: 2 }
+    ), [
+        "0d 0.00h",
+        "0d 0.02h",
+        "0d 0.27h",
+        "0d 2.77h",
+        "1d 3.77h",
+        "11d 13.77h"
+    ]);
+    deepEqual(moment.duration.format([
+        moment.duration(10, "seconds"),
+        moment.duration(100, "seconds"),
+        moment.duration(1000, "seconds"),
+        moment.duration(10000, "seconds"),
+        moment.duration(100000, "seconds"),
+        moment.duration(1000000, "seconds")],
+        "y[y] M[m] d[d] h[h]",
+        { trunc: true, precision: 4 }
+    ), [
+        "0d 0.0027h",
+        "0d 0.0277h",
+        "0d 0.2777h",
+        "0d 2.7777h",
+        "1d 3.7777h",
+        "11d 13.7777h"
+    ]);
+});
 
-// Force first moment token with a value to render at full length
-// even when template is trimmed and first moment token has length of 1.
-// forceLength: true,
-// forceLength: false,
+test("forceLength", function () {
+    deepEqual(moment.duration.format([
+        moment.duration(10, "seconds"),
+        moment.duration(100, "seconds"),
+        moment.duration(1000, "seconds"),
+        moment.duration(3000, "seconds")],
+        "h:mm:ss",
+        { forceLength: false }
+    ), [
+        "0:10",
+        "1:40",
+        "16:40",
+        "50:00"
+    ]);
+    deepEqual(moment.duration.format([
+        moment.duration(10, "seconds"),
+        moment.duration(100, "seconds"),
+        moment.duration(1000, "seconds"),
+        moment.duration(3000, "seconds")],
+        "h:mm:ss",
+        { forceLength: true }
+    ), [
+        "00:10",
+        "01:40",
+        "16:40",
+        "50:00"
+    ]);
+});
 
-// userLocale: "de-DE", (with grouped output)
-// usePlural: false,
-// useLeftUnits: true,
-// default useGrouping
-// useGrouping: false,
-// template function
+test("userLocale, usePlural, useGrouping, useLeftUnits", function () {
+    deepEqual(moment.duration.format([
+        moment.duration(1000, "seconds"),
+        moment.duration(3600, "seconds"),
+        moment.duration(10000, "seconds"),
+        moment.duration(100000, "seconds"),
+        moment.duration(1000000, "seconds"),
+        moment.duration(10000000, "seconds")],
+        "h [hour]",
+        { precision: 2 }
+    ), [
+        "0.28 hours",
+        "1.00 hours",
+        "2.78 hours",
+        "27.78 hours",
+        "277.78 hours",
+        "2,777.78 hours"
+    ]);
+    deepEqual(moment.duration.format([
+        moment.duration(1000, "seconds"),
+        moment.duration(3600, "seconds"),
+        moment.duration(10000, "seconds"),
+        moment.duration(100000, "seconds"),
+        moment.duration(1000000, "seconds"),
+        moment.duration(10000000, "seconds")],
+        "h [hour]",
+        { precision: 2, userLocale: "de-DE" }
+    ), [
+        "0,28 hours",
+        "1,00 hours",
+        "2,78 hours",
+        "27,78 hours",
+        "277,78 hours",
+        "2.777,78 hours"
+    ]);
+    deepEqual(moment.duration.format([
+        moment.duration(1000, "seconds"),
+        moment.duration(3600, "seconds"),
+        moment.duration(10000, "seconds"),
+        moment.duration(100000, "seconds"),
+        moment.duration(1000000, "seconds"),
+        moment.duration(10000000, "seconds")],
+        "h [hour]",
+        { precision: 2, useGrouping: false, usePlural: false }
+    ), [
+        "0.28 hour",
+        "1.00 hour",
+        "2.78 hour",
+        "27.78 hour",
+        "277.78 hour",
+        "2777.78 hour"
+    ]);
+    deepEqual(moment.duration.format([
+        moment.duration(1000, "seconds"),
+        moment.duration(3600, "seconds"),
+        moment.duration(10000, "seconds"),
+        moment.duration(100000, "seconds"),
+        moment.duration(1000000, "seconds"),
+        moment.duration(10000000, "seconds")],
+        "[hour] h",
+        { precision: 2, useLeftUnits: true }
+    ), [
+        "hours 0.28",
+        "hours 1.00",
+        "hours 2.78",
+        "hours 27.78",
+        "hours 277.78",
+        "hours 2,777.78"
+    ]);
+});
+
+test("Template function", function () {
+    deepEqual(moment.duration.format([
+        moment.duration(1000, "seconds"),
+        moment.duration(3600, "seconds"),
+        moment.duration(10000, "seconds"),
+        moment.duration(100000, "seconds"),
+        moment.duration(1000000, "seconds"),
+        moment.duration(10000000, "seconds")],
+        function () {
+            if (this.duration.asSeconds() > 10000) {
+                return "d [days], h [hours]";
+            }
+
+            return "hh:mm:ss";
+        }
+    ), [
+        "00:16:40",
+        "01:00:00",
+        "02:46:40",
+        "1 day, 4 hours",
+        "11 days, 14 hours",
+        "115 days, 18 hours"
+    ]);
+});
