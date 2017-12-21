@@ -497,6 +497,12 @@ test("useSignificantDigits", function () {
     equal(moment.duration(39, "hours").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, precision: 2 }), "1 day, 20 hours");
     equal(moment.duration(39, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, precision: 2 }), "39 seconds");
     equal(moment.duration(39, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, precision: 1 }), "40 seconds");
+    equal(moment.duration(12.55, "hours").format("h:mm", {
+        precision: 2,
+        useSignificantDigits: true,
+        trim: false
+    }),
+    "13:00");
 });
 
 test("useSignificantDigits and trunc", function () {
@@ -506,6 +512,12 @@ test("useSignificantDigits and trunc", function () {
     equal(moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, trunc: true, precision: 3 }), "1 day, 3 hours, 40 minutes");
     equal(moment.duration(35, "hours").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, trunc: true, precision: 2 }), "1 day, 10 hours");
     equal(moment.duration(39, "hours").format("d [days], h [hours], m [minutes], s [seconds]", { useSignificantDigits: true, trunc: true, precision: 2 }), "1 day, 10 hours");
+    equal(moment.duration(12.55, "hours").format("h:mm", {
+        precision: 2,
+        useSignificantDigits: true,
+        trim: false,
+        trunc: true
+    }), "12:00");
 });
 
 test("Documentation examples", function () {
@@ -1011,7 +1023,8 @@ test("Rounded value bubbling", function () {
     equal(moment.duration(335, "hours").format("w[w], d[d]"), "2w, 0d"); // "1w, 7d"
     equal(moment.duration(335, "hours").format("w[w], d[d]", { trim: "all" }), "2w"); // "1w, 7d"
     equal(moment.duration({ days: 7, seconds: -30 }).format("w[w] d[d] h:mm", { trim: "all" }), "1w"); // "6d 23:60"
-    equal(moment.duration({ hours: 2, seconds: -60 }).format("h:mm", { precision: 2, useSignificantDigits: true }), "2:00"); // 1:60
+    equal(moment.duration({ hours: 2, seconds: -60 }).format("h:mm", { precision: 2, useSignificantDigits: true }), "2"); // 1:60
+    equal(moment.duration({ hours: 2, seconds: -60 }).format("h:mm", { precision: 2, useSignificantDigits: true, trim: false }), "2:00"); // 1:60
     equal(moment.duration({ hours: 24, seconds: -30 }).format("ww[w] dd[d] hh:mm", { trim: "all", forceLength: true }), "01d"); // "23:60"
     equal(moment.duration({ days: 7, seconds: -30 }).format("w[w] m[m]", { trim: "all" }), "1w"); // "10,080m"
 });
@@ -1576,7 +1589,7 @@ test("useSignificantDigits", function () {
         "0d 0h 16m 40s",
         "0d 2h 46m 40s",
         "1d 3h 46m 40s",
-        "11d 13h 46m"
+        "11d 13h 47m 0s"
     ]);
     deepEqual(moment.duration.format([
         moment.duration(10, "seconds"),
@@ -1593,7 +1606,7 @@ test("useSignificantDigits", function () {
         "0d 0h 16m 40s",
         "0d 2h 46m 40s",
         "1d 3h 46m 40s",
-        "11d 13h 50m"
+        "11d 13h 50m 0s"
     ]);
     deepEqual(moment.duration.format([
         moment.duration(10, "seconds"),
@@ -1609,8 +1622,8 @@ test("useSignificantDigits", function () {
         "0d 0h 1m 40s",
         "0d 0h 16m 40s",
         "0d 2h 46m 40s",
-        "1d 3h 46m",
-        "11d 13h"
+        "1d 3h 47m 0s",
+        "11d 14h 0m 0s"
     ]);
 });
 
@@ -1627,5 +1640,4 @@ test("useSignificantDigits", function () {
 // useLeftUnits: true,
 // default useGrouping
 // useGrouping: false,
-// useSignificantDigits: true
 // template function

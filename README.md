@@ -692,9 +692,14 @@ moment.duration(123, "seconds").format("h:mm:ss", {
 
 #### useSignificantDigits
 
-When `useSignificantDigits` is set to `true`, the `precision` option determines the maximum significant digits to be rendered. Precision must be a positive integer. Significant digits extend across unit types, e.g. `"6 hours 37.5 minutes"` represents `4` significant digits. Enabling this option causes token length to be ignored. See  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString.
+When `useSignificantDigits` is set to `true`, the `precision` option determines the maximum significant digits to be rendered. Precision must be a positive integer. Significant digits extend across unit types, e.g. `"6 hours 37.5 minutes"` represents `4` significant digits. Enabling this option causes token length to be ignored.
+
+*Using the `useSignificantDigits` option defaults `trim` to `"all"`.*
 
 Setting `trunc` affects the operation of `useSignificantDigits`.
+
+See the documentation for [toLocaleString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString) for more information on significant digits.
+
 ```javascript
 moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [seconds]", {
     useSignificantDigits: true,
@@ -727,6 +732,25 @@ moment.duration(99999, "seconds").format("d [days], h [hours], m [minutes], s [s
     precision: 6
 });
 // "1 day, 3 hours, 46 minutes, 39 seconds"
+```
+
+`useSignificantDigits` can be used together with `trim`.
+
+```javascript
+moment.duration(12.55, "hours").format("h:mm", {
+    precision: 2,
+    useSignificantDigits: true,
+    trim: false
+});
+// "13:00"
+
+moment.duration(12.55, "hours").format("h:mm", {
+    precision: 2,
+    useSignificantDigits: true,
+    trim: false,
+    trunc: true
+});
+// "12:00"
 ```
 
 ### Localization
