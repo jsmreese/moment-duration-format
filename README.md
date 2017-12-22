@@ -56,9 +56,9 @@ var moment = require("moment-timezone");
 var momentDurationFormatSetup = require("moment-duration-format");
 
 momentDurationFormatSetup(moment);
-typeof moment.duration.fn.format === "function"
+typeof moment.duration.fn.format === "function";
 // true
-typeof moment.duration.format === "function"
+typeof moment.duration.format === "function";
 // true
 ```
 
@@ -267,7 +267,8 @@ To ensure user-friendly formatted output, punctuation characters are trimmed fro
 
 `precision` (number) defines the number of decimal fraction or integer digits to display for the final value.
 
-The default precison value is `0`.
+The default precision value is `0`.
+
 ```javascript
 moment.duration(123, "minutes").format("h [hrs]");
 // "2 hrs"
@@ -612,7 +613,7 @@ moment.duration(59, "seconds").format("h [hours], m [minutes]", {
 // "< 1 minute"
 ```
 
-The minimun value will bubble up to larger-magnitude units if they are present in the format template.
+The minimum value will bubble up to larger-magnitude units if they are present in the format template.
 
 ```javascript
 moment.duration(59, "seconds").format("m:ss", {
@@ -1022,7 +1023,7 @@ This example provides new values for all of the duration locale extensions. In a
 
 New types of duration labels must have a key that begins with `durationLabels` and must be enumerated in `durationLabelTypes`.
 
-This locale uses a single token `"s"` for the singular label, a double token `"ss"` for the plural label when the value is `2`, and a triple token `"sss"` for the plural lable for values greater than `3`. For brevity, only labels for the `seconds` type are included.
+This locale uses a single token `"s"` for the singular label, a double token `"ss"` for the plural label when the value is `2`, and a triple token `"sss"` for the plural label for values greater than `3`. For brevity, only labels for the `seconds` type are included.
 
 Unit labels are replaced after the format template string is tokenized, so they need not be escaped. Time-notation templates are replaced before the format template string is tokenized, so they must be escaped.
 
