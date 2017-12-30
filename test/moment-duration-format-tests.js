@@ -16,6 +16,15 @@ test("Basic Use", function () {
 	equal(moment.duration(1, "years").format("Y"), "1");
 });
 
+test("Token length when `trim: false`", function () {
+    equal(moment.duration(1, 'seconds').format('hh:mm:ss', { trim: false }), "00:00:01");
+    equal(moment.duration(1, 'seconds').format('h:mm:ss', { trim: false }), "0:00:01");
+    equal(moment.duration(1, 'minutes').format('hh:mm:ss', { trim: false }), "00:01:00");
+    equal(moment.duration(1, 'minutes').format('h:mm:ss', { trim: false }), "0:01:00");
+    equal(moment.duration(1, 'minutes').format('hh:mm:ss'), "01:00");
+    equal(moment.duration(1, 'minutes').format('h:mm:ss'), "1:00");
+});
+
 test("Trim errors from years/months to weeks/days", function () {
     equal(moment.duration(1, "year").format("y [years], d [days], h [hours]"), "1 year, 0 days, 0 hours");
     equal(moment.duration(1, "year").format("y [years], M [months], d [days], h [hours]"), "1 year, 0 months, 0 days, 0 hours");
