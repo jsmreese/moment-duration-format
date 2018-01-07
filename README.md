@@ -14,7 +14,7 @@ This plugin does not have any dependencies beyond Moment.js itself, and may be u
 
 Version 2 of this plugin uses `Number#toLocaleString` to render formatted output. Unfortunately, many environments do not fully implement the full suite of options in the `toLocaleString` spec -- and some provide a buggy implementation. I'm working on feature-testing for `toLocaleString` and adding a fallback to the plugin. In the meantime, please test with version 2 in all of your expected environments or use version 1 if that works for you.
 
-I'm also adding automated testing with ![Browserstack](https://p3.zdusercontent.com/attachment/1015988/Y0ZmOS3862TDx3JYOUTMIixSG?token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..xr8Y-gqQNBDnpIjxOFtAtA.JHb-wwL0uWT5ChR01yhMKp2lvM0iMdeYdoJYLCqs_DIiod7HmRoaGnRMoptV1GlrwF2Mo73Oj1d08E3rM7RHQPzwP3M10g4aN-vWcC2K743sf1qUKE_2TGVaz1HLkfUxF49U5hfE6AZ9V9ALE-Nu-GwfR0xcJVBz-FeV-H7YseaX_fXsO4pt1F3DjcwqhM1pcKfxoC5wYc2CHQnnqp1xS67KfTA6kuMiSDovZqSQpvg5VYZqAlDmxpKkZvOmzP_yEptqk4CDkl5IMItvxPjjaw.w7SKsx3c665glH7fgdcSIw)
+I'm also adding automated testing with <a  style="border:0;height:64px;vertical-align:middle;" href="https://www.browserstack.com"><img style="border:0;height:64px;vertical-align:middle;" src="https://p3.zdusercontent.com/attachment/1015988/Y0ZmOS3862TDx3JYOUTMIixSG?token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..xr8Y-gqQNBDnpIjxOFtAtA.JHb-wwL0uWT5ChR01yhMKp2lvM0iMdeYdoJYLCqs_DIiod7HmRoaGnRMoptV1GlrwF2Mo73Oj1d08E3rM7RHQPzwP3M10g4aN-vWcC2K743sf1qUKE_2TGVaz1HLkfUxF49U5hfE6AZ9V9ALE-Nu-GwfR0xcJVBz-FeV-H7YseaX_fXsO4pt1F3DjcwqhM1pcKfxoC5wYc2CHQnnqp1xS67KfTA6kuMiSDovZqSQpvg5VYZqAlDmxpKkZvOmzP_yEptqk4CDkl5IMItvxPjjaw.w7SKsx3c665glH7fgdcSIw" height="64"></a>
 
 ---
 
