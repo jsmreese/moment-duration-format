@@ -139,10 +139,18 @@ test("Output To Greater Units", function () {
 });
 
 test("Using Only Settings Argument", function () {
-	equal(moment.duration(1234.55, "hours").format({
+	equal(moment.duration(1234.54, "hours").format({
 		template: "d [days], h [hours]",
 		precision: 1
-	}), "51 days, 10.6 hours");
+	}), "51 days, 10.5 hours");
+});
+
+test("Floating point errors in Moment.js", function () {
+    equal(moment.duration(123.55, "hours").format("d[d] h[h]", 1), "5d 3.6h");
+    equal(moment.duration(1234.55, "hours").format({
+        template: "d [days], h [hours]",
+        precision: 1
+    }), "51 days, 10.6 hours");
 });
 
 test("Zero Value Duration", function () {
@@ -488,8 +496,8 @@ test("useLeftUnits", function () {
 test("userLocale and useGrouping", function () {
 	equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "en-GB", precision: 2 }), "100,000.10");
     equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "en-GB", precision: 2, useGrouping: false }), "100000.10");
-    equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "de-DE", precision: 2 }), "100.000,10");
-    equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "de-DE", precision: 2, useGrouping: false }), "100000,10");
+    equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "de-DE", precision: 2, decimalSeparator: ",", groupingSeparator: "." }), "100.000,10");
+    equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "de-DE", precision: 2, useGrouping: false, decimalSeparator: "," }), "100000,10");
     equal(moment.duration(100000.1, "seconds").format("s", { userLocale: "en", precision: 2 }), "100,000.10");
 });
 
@@ -584,7 +592,7 @@ test("Documentation examples", function () {
     equal(moment.duration(7322, "seconds").format("_ h, _ m, _ s", { useLeftUnits: true }), "hrs 2, mins 2, secs 2");
     equal(moment.duration(1234, "seconds").format("s [seconds]"), "1,234 seconds");
     equal(moment.duration(1234, "seconds").format("s [seconds]", { useGrouping: false }), "1234 seconds");
-    equal(moment.duration(1234567, "seconds").format("m [minutes]", 3, { userLocale: "de-DE" }), "20.576,117 minutes");
+    equal(moment.duration(1234567, "seconds").format("m [minutes]", 3, { userLocale: "de-DE", decimalSeparator: ",", groupingSeparator: "." }), "20.576,117 minutes");
 });
 
 test("Pluralize singular unit labels", function () {
@@ -668,7 +676,8 @@ test("Remove leading/trailing space, comma, colon, dot", function () {
 });
 
 test("Invalid durations", function () {
-    equal(moment.duration(NaN, "second").format(), "0 seconds");
+    equal(moment.duration(NaN, "seconds").format(), "0 seconds");
+    equal(moment.duration(NaN, "years").format("y"), "0");
 });
 
 test("Custom Locale labels, label types, pluralizer", function () {
@@ -1036,6 +1045,27 @@ test("Rounded value bubbling", function () {
     equal(moment.duration({ hours: 2, seconds: -60 }).format("h:mm", { precision: 2, useSignificantDigits: true, trim: false }), "2:00"); // 1:60
     equal(moment.duration({ hours: 24, seconds: -30 }).format("ww[w] dd[d] hh:mm", { trim: "all", forceLength: true }), "01d"); // "23:60"
     equal(moment.duration({ days: 7, seconds: -30 }).format("w[w] m[m]", { trim: "all" }), "1w"); // "10,080m"
+});
+
+test("forceFormatFallback", function () {
+    equal(moment.duration(100000000000, "seconds").format("m", {
+        forceFormatFallback: true,
+        precision: 2,
+        decimalSeparator: "*",
+        groupingSeparator: "^",
+        grouping: [3, 2]
+    }), "1^66^66^66^666*67");
+    equal(moment.duration(100000000000000000000000, "seconds").format("m", {
+        forceFormatFallback: true,
+        precision: 10,
+        useSignificantDigits: true
+    }), "1,666,666,667,000,000,000,000");
+    equal(moment.duration(100000000000000000000000, "seconds").format("m", {
+        forceFormatFallback: true,
+        precision: 10,
+        useSignificantDigits: true,
+        useGrouping: false
+    }), "1666666667000000000000");
 });
 
 module("moment.duration.format");
@@ -1755,7 +1785,7 @@ test("userLocale, usePlural, useGrouping, useLeftUnits", function () {
         moment.duration(1000000, "seconds"),
         moment.duration(10000000, "seconds")],
         "h [hour]",
-        { precision: 2, userLocale: "de-DE" }
+        { precision: 2, userLocale: "de-DE", decimalSeparator: ",", groupingSeparator: "." }
     ), [
         "0,28 hours",
         "1,00 hours",
