@@ -145,6 +145,14 @@ test("Using Only Settings Argument", function () {
 	}), "51 days, 10.5 hours");
 });
 
+test("Floating point errors in Moment.js", function () {
+    equal(moment.duration(123.55, "hours").format("d[d] h[h]", 1), "5d 3.6h");
+    equal(moment.duration(1234.55, "hours").format({
+        template: "d [days], h [hours]",
+        precision: 1
+    }), "51 days, 10.6 hours");
+});
+
 test("Zero Value Duration", function () {
 	equal(moment.duration(0, "minutes").format("m"), "0");
 	equal(moment.duration(0, "minutes").format("mm"), "00");
