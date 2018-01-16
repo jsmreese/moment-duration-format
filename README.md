@@ -10,15 +10,41 @@ This plugin does not have any dependencies beyond Moment.js itself, and may be u
 
 ---
 
-## Important Note
+## Formatting Numbers and Testing
 
 Where it is available and functional, this plugin uses `Number#toLocaleString` to render formatted numerical output. Unfortunately, many environments do not fully implement the full suite of options in the `toLocaleString` spec, and some provide a buggy implementation.
 
-This plugin runs a feature test for `toLocaleString`, and will revert to a fallback function to render formatted numerical output if the feature test fails. To force this plugin to always use the fallback function, set `useToLocaleString` to `false`. The fallback function output can be localized using options detailed below.
+This plugin runs a feature test for `toLocaleString`, and will revert to a fallback function to render formatted numerical output if the feature test fails. To force this plugin to always use the fallback number format function, set `useToLocaleString` to `false`. The fallback number format function output can be localized using options detailed at the bottom of this page. You should, in general, specify the fallback number formatting options if the default `"en"` locale formatting would be unacceptable on some devices or in some environments.
 
 This plugin is tested using BrowserStack on a range of Android devices with OS versions from 2.2 to 7, and on a range of iOS devices with OS versions from 4.3 to 11. Also tested on Chrome, Firefox, IE 8-11, and Edge browsers.
 
 <a href="https://www.browserstack.com"><img src="https://p3.zdusercontent.com/attachment/1015988/Y0ZmOS3862TDx3JYOUTMIixSG?token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..xr8Y-gqQNBDnpIjxOFtAtA.JHb-wwL0uWT5ChR01yhMKp2lvM0iMdeYdoJYLCqs_DIiod7HmRoaGnRMoptV1GlrwF2Mo73Oj1d08E3rM7RHQPzwP3M10g4aN-vWcC2K743sf1qUKE_2TGVaz1HLkfUxF49U5hfE6AZ9V9ALE-Nu-GwfR0xcJVBz-FeV-H7YseaX_fXsO4pt1F3DjcwqhM1pcKfxoC5wYc2CHQnnqp1xS67KfTA6kuMiSDovZqSQpvg5VYZqAlDmxpKkZvOmzP_yEptqk4CDkl5IMItvxPjjaw.w7SKsx3c665glH7fgdcSIw" height="64"></a>
+
+Version 2.2.0 of this plugin has two known formatting issues:
+
+- In Microsoft Edge, IE11, and Windows Phone browsers, `toLocaleString` incorrectly rounds in select cases because JavaScript uses floating point numbers. (#95)
+
+```javascript
+moment.duration(3.55, "hours").format("h", 1);
+// "3.5" instead of "3.6"
+
+moment.duration(123.55, "hours").format("d[d] h[h]", 1);
+// "5d 3.5h" instead of "5d 3.6h"
+```
+
+- In HTC device browsers, a zero-value token may be rendered as `0.0` rather than `0` when using significant digits output.
+
+```javascript
+moment.duration.format([
+    moment.duration(10, "seconds"),
+    moment.duration(1000000, "seconds")],
+    "y[y] M[m] d[d] h[h] m[m] s[s]",
+    { useSignificantDigits: true, precision: 4 }
+);
+// ["0.0d 0.0h 0.0m 10s", "11d 14h 0.0m 0.0s"] instead of ["0d 0h 0m 10s", "11d 14h 0m 0s"]
+```
+
+Please raise and issue if you notice formatting issues or anomalies in any environment!
 
 ---
 
@@ -1103,28 +1129,41 @@ Number. The integer portion of the token's value.
 
 Number. The decimal fraction portion of the token's value.
 
-### Localization and the Fallback Format Function
+### Localization and the Fallback Number Format Function
+
+You can (and likely should) set the localization options for the fallback number format function if the default `"en"` locale formatting is not acceptable on some devices or in some environments.
 
 #### `useToLocaleString`
 
 Set this option to `false` to ignore the `toLocaleString` feature test and force the use of the `formatNumber` fallback function included in this plugin.
 
-The following options will have no effect when `toLocaleString` is used. The grouping separator, decimal separator, and integer digit grouping will be determined by the user locale.
+The fallback number format options will have no effect when `toLocaleString` is used. The grouping separator, decimal separator, and integer digit grouping will be determined by the user locale.
+
+```javascript
+moment.duration(100000.1, "seconds").format("s", {
+    userLocale: "de-DE",
+    precision: 2,
+    decimalSeparator: ",",
+    groupingSeparator: "."
+});
+// "100.000,10" on all devices and in all environemnts.
+```
 
 #### `groupingSeparator`
 
-The integer digit grouping separator used when using the fallback formatNumber function. Default value is a `,` character.
+The integer digit grouping separator used when using the fallback number format function. Default value is a `,` character.
 
 #### `decimalSeparator`
 
-The decimal separator used when using the fallback formatNumber function. Default value is a `.` character.
+The decimal separator used when using the fallback number format function. Default value is a `.` character.
 
 #### `grouping`
 
-The integer digit grouping used when using the fallback formatNumber function. Must be an array. The default value of `[3]` gives the standard 3-digit thousand/million/billion digit groupings for the "en" locale. Setting this option to `[3, 2]` would generate the thousand/lakh/crore digit groupings used in the "en-IN" locale.
+The integer digit grouping used when using the fallback number format function. Must be an array. The default value of `[3]` gives the standard 3-digit thousand/million/billion digit groupings for the "en" locale. Setting this option to `[3, 2]` would generate the thousand/lakh/crore digit groupings used in the "en-IN" locale.
 
 ```javascript
-// Some sort of strange hybrid french-indian locale...
+// Force the use of the fallback number format function. Do not use toLocaleString.
+// We're in some sort of strange hybrid french-indian locale...
 moment.duration(100000000000, "seconds").format("m", {
     useToLocaleString: false,
     precision: 2,
