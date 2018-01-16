@@ -10,11 +10,13 @@ This plugin does not have any dependencies beyond Moment.js itself, and may be u
 
 ---
 
-## Important Note :warning:
+## Important Note
 
-Version 2 of this plugin uses `Number#toLocaleString` to render formatted output. Unfortunately, many environments do not fully implement the full suite of options in the `toLocaleString` spec, and some provide a buggy implementation. I'm working on feature-testing for `toLocaleString` and adding a fallback to the plugin. In the meantime, please test with version 2 in all of your expected environments or use version 1 if that works for you.
+Where it is available and functional, this plugin uses `Number#toLocaleString` to render formatted numerical output. Unfortunately, many environments do not fully implement the full suite of options in the `toLocaleString` spec, and some provide a buggy implementation.
 
-I'm also adding automated testing with BrowserStack.
+This plugin runs a feature test for `toLocaleString`, and will revert to a fallback function to render formatted numerical output if the feature test fails. To force this plugin to always use the fallback function, set `useToLocaleString` to `false`. The fallback function output can be localized using options detailed below.
+
+This plugin is tested using BrowserStack on a range of Android devices with OS versions from 2.2 to 7, and on a range of iOS devices with OS versions from 4.3 to 11. Also tested on Chrome, Firefox, IE 8-11, and Edge browsers.
 
 <a href="https://www.browserstack.com"><img src="https://p3.zdusercontent.com/attachment/1015988/Y0ZmOS3862TDx3JYOUTMIixSG?token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..xr8Y-gqQNBDnpIjxOFtAtA.JHb-wwL0uWT5ChR01yhMKp2lvM0iMdeYdoJYLCqs_DIiod7HmRoaGnRMoptV1GlrwF2Mo73Oj1d08E3rM7RHQPzwP3M10g4aN-vWcC2K743sf1qUKE_2TGVaz1HLkfUxF49U5hfE6AZ9V9ALE-Nu-GwfR0xcJVBz-FeV-H7YseaX_fXsO4pt1F3DjcwqhM1pcKfxoC5wYc2CHQnnqp1xS67KfTA6kuMiSDovZqSQpvg5VYZqAlDmxpKkZvOmzP_yEptqk4CDkl5IMItvxPjjaw.w7SKsx3c665glH7fgdcSIw" height="64"></a>
 
@@ -815,7 +817,7 @@ moment.duration(12.55, "hours").format("h:mm", {
 
 ### Localization
 
-Formatted numerical output is rendered using [`toLocaleString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString).
+Formatted numerical output is rendered using [`toLocaleString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString) if that built-in function is available and passes a feature test on plugin initialization. If the feature test fails, a fallback format function is used. See below for details on localizing output from the fallback format function.
 
 Unit labels are automatically localized and pluralized. Unit labels are detected using the [locale set in moment.js](https://momentjs.com/docs/#/i18n/), which can be different from the locale of user's environment. This plugin uses custom extensions to the moment.js locale object, which can be easily added for any locale (see below).
 
@@ -948,17 +950,6 @@ moment.duration(1234, "seconds").format("s [seconds]", {
     useGrouping: false
 });
 // "1234 seconds"
-```
-
-#### Decimal Separator
-
-Previous versions of the plugin used a `decimalSeparator` option. That option is no longer used and will have no effect. Decimal separators are rendered using `toLocalString` and the user's locale.
-
-```javascript
-moment.duration(1234567, "seconds").format("m [minutes]", 3, {
-    userLocale: "de-DE"
-});
-// "20.576,117 minutes"
 ```
 
 #### Extending Moment's `locale` object
@@ -1111,3 +1102,35 @@ Number. The integer portion of the token's value.
 - `decimalValue`
 
 Number. The decimal fraction portion of the token's value.
+
+### Localization and the Fallback Format Function
+
+#### `useToLocaleString`
+
+Set this option to `false` to ignore the `toLocaleString` feature test and force the use of the `formatNumber` fallback function included in this plugin.
+
+The following options will have no effect when `toLocaleString` is used. The grouping separator, decimal separator, and integer digit grouping will be determined by the user locale.
+
+#### `groupingSeparator`
+
+The integer digit grouping separator used when using the fallback formatNumber function. Default value is a `,` character.
+
+#### `decimalSeparator`
+
+The decimal separator used when using the fallback formatNumber function. Default value is a `.` character.
+
+#### `grouping`
+
+The integer digit grouping used when using the fallback formatNumber function. Must be an array. The default value of `[3]` gives the standard 3-digit thousand/million/billion digit groupings for the "en" locale. Setting this option to `[3, 2]` would generate the thousand/lakh/crore digit groupings used in the "en-IN" locale.
+
+```javascript
+// Some sort of strange hybrid french-indian locale...
+moment.duration(100000000000, "seconds").format("m", {
+    useToLocaleString: false,
+    precision: 2,
+    decimalSeparator: ",",
+    groupingSeparator: " ",
+    grouping: [3, 2]
+});
+// "1 66 66 66 666,67");
+```
