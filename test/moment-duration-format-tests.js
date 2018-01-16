@@ -145,11 +145,17 @@ test("Using Only Settings Argument", function () {
 	}), "51 days, 10.5 hours");
 });
 
-test("Floating point errors in Moment.js", function () {
+test("Floating point errors", function () {
+    equal(moment.duration(3.55, "hours").format("h", 1), "3.6");
+});
+
+test("Floating point errors from Moment.js output", function () {
     equal(moment.duration(123.55, "hours").format("d[d] h[h]", 1), "5d 3.6h");
+    equal(moment.duration(123.55, "hours").format("d[d] h[h]", 1, { useToLocaleString: false }), "5d 3.6h");
     equal(moment.duration(1234.55, "hours").format({
         template: "d [days], h [hours]",
-        precision: 1
+        precision: 1,
+        useToLocaleString: false
     }), "51 days, 10.6 hours");
 });
 
@@ -1049,19 +1055,19 @@ test("Rounded value bubbling", function () {
 
 test("forceFormatFallback", function () {
     equal(moment.duration(100000000000, "seconds").format("m", {
-        forceFormatFallback: true,
+        useToLocaleString: false,
         precision: 2,
         decimalSeparator: "*",
         groupingSeparator: "^",
         grouping: [3, 2]
     }), "1^66^66^66^666*67");
     equal(moment.duration(100000000000000000000000, "seconds").format("m", {
-        forceFormatFallback: true,
+        useToLocaleString: false,
         precision: 10,
         useSignificantDigits: true
     }), "1,666,666,667,000,000,000,000");
     equal(moment.duration(100000000000000000000000, "seconds").format("m", {
-        forceFormatFallback: true,
+        useToLocaleString: false,
         precision: 10,
         useSignificantDigits: true,
         useGrouping: false
@@ -1618,7 +1624,7 @@ test("Mixed positive and negative durations", function () {
         "-0m 1d 00:00",
         "0m 0d 00:00",
         "0m 0d 01:00",
-        "0m 1d 00:00",
+        "0m 1d 00:00"
     ]);
 });
 
