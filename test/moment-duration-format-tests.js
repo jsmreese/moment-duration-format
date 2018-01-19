@@ -508,6 +508,8 @@ test("userLocale and useGrouping", function () {
 });
 
 test("useSignificantDigits", function () {
+    equal(moment.duration(0, "seconds").format("s", { useSignificantDigits: true, precision: 0 }), "0");
+    equal(moment.duration(0, "seconds").format("s", { useSignificantDigits: true, precision: 0, useToLocaleString: false }), "0");
 	equal(moment.duration(99999, "seconds").format("s", { useSignificantDigits: true, precision: 2 }), "100,000");
     equal(moment.duration(99.99, "seconds").format("s", { useSignificantDigits: true, precision: 3 }), "100");
     equal(moment.duration(99.9944, "seconds").format("s", { useSignificantDigits: true, precision: 5 }), "99.994");
@@ -541,6 +543,13 @@ test("useSignificantDigits and trunc", function () {
         trim: false,
         trunc: true
     }), "12:00");
+});
+
+test("useSignificantDigits and trim: false", function () {
+    equal(moment.duration(10, "seconds").format("h[h] m[m] s[s]",
+    { useSignificantDigits: true, trim: false }), "0h 0m 10s");
+    equal(moment.duration(10, "seconds").format("h[h] m[m] s[s]",
+    { useSignificantDigits: true, precision: 4, trim: false }), "0h 0m 10s");
 });
 
 test("Documentation examples", function () {
@@ -1629,6 +1638,12 @@ test("Mixed positive and negative durations", function () {
 });
 
 test("useSignificantDigits", function () {
+    deepEqual(moment.duration.format([
+        moment.duration(10, "seconds"),
+        moment.duration(1000000, "seconds")],
+        "y[y] M[m] d[d] h[h] m[m] s[s]",
+        { useSignificantDigits: true, precision: 4, useToLocaleString: false }
+    ), ["0d 0h 10s", "11d 14h 0s"]);
     deepEqual(moment.duration.format([
         moment.duration(10, "seconds"),
         moment.duration(100, "seconds"),
