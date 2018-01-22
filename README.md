@@ -20,30 +20,6 @@ This plugin is tested using BrowserStack on a range of Android devices with OS v
 
 <a href="https://www.browserstack.com"><img src="https://p3.zdusercontent.com/attachment/1015988/Y0ZmOS3862TDx3JYOUTMIixSG?token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..xr8Y-gqQNBDnpIjxOFtAtA.JHb-wwL0uWT5ChR01yhMKp2lvM0iMdeYdoJYLCqs_DIiod7HmRoaGnRMoptV1GlrwF2Mo73Oj1d08E3rM7RHQPzwP3M10g4aN-vWcC2K743sf1qUKE_2TGVaz1HLkfUxF49U5hfE6AZ9V9ALE-Nu-GwfR0xcJVBz-FeV-H7YseaX_fXsO4pt1F3DjcwqhM1pcKfxoC5wYc2CHQnnqp1xS67KfTA6kuMiSDovZqSQpvg5VYZqAlDmxpKkZvOmzP_yEptqk4CDkl5IMItvxPjjaw.w7SKsx3c665glH7fgdcSIw" height="64"></a>
 
-Version 2.2.0 of this plugin has two known formatting bugs:
-
-- In Microsoft Edge, IE11, and Windows Phone browsers, `toLocaleString` incorrectly rounds in select cases because JavaScript uses floating point numbers. (#95)
-
-```javascript
-moment.duration(3.55, "hours").format("h", 1);
-// "3.5" instead of "3.6"
-
-moment.duration(123.55, "hours").format("d[d] h[h]", 1);
-// "5d 3.5h" instead of "5d 3.6h"
-```
-
-- In HTC device browsers, a zero-value token may be rendered as `0.0` rather than `0` when using significant digits output.
-
-```javascript
-moment.duration.format([
-    moment.duration(10, "seconds"),
-    moment.duration(1000000, "seconds")],
-    "y[y] M[m] d[d] h[h] m[m] s[s]",
-    { useSignificantDigits: true, precision: 4 }
-);
-// ["0.0d 0.0h 0.0m 10s", "11d 14h 0.0m 0.0s"] instead of ["0d 0h 0m 10s", "11d 14h 0m 0s"]
-```
-
 Please raise an issue if you notice formatting issues or anomalies in any environment!
 
 ---
