@@ -250,6 +250,7 @@ test("Negative Durations with leading text", function () {
 
 test("Negative Durations and Trimming", function () {
 	equal(moment.duration(-42, "seconds").format("h:mm:ss"), "-42");
+    equal(moment.duration(-360000, "milliseconds").format("hh:mm", { trim: false }), "-00:06");
 });
 
 test("Stop Trimming with the * Character", function () {
