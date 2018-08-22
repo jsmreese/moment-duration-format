@@ -12,9 +12,9 @@ This plugin does not have any dependencies beyond Moment.js itself, and may be u
 
 ## Formatting Numbers and Testing
 
-Where it is available and functional, this plugin uses `Number#toLocaleString` to render formatted numerical output. Unfortunately, many environments do not fully implement the full suite of options in the `toLocaleString` spec, and some provide a buggy implementation.
+Where it is available and functional, this plugin uses either `Intl.NumberFormat#format` or `Number#toLocaleString` to render formatted numerical output. Unfortunately, many environments do not fully implement the full suite of options in their respective specs, and some provide a buggy implementation.
 
-This plugin runs a feature test for `toLocaleString`, and will revert to a fallback function to render formatted numerical output if the feature test fails. To force this plugin to always use the fallback number format function, set `useToLocaleString` to `false`. The fallback number format function output can be localized using options detailed at the bottom of this page. You should, in general, specify the fallback number formatting options if the default `"en"` locale formatting would be unacceptable on some devices or in some environments.
+This plugin runs a feature test for each formatter, and will revert to a fallback function to render formatted numerical output if the feature test fails. To force this plugin to always use the fallback number format function, set `useToLocaleString` to `false`. The fallback number format function output can be localized using options detailed at the bottom of this page. You should, in general, specify the fallback number formatting options if the default `"en"` locale formatting would be unacceptable on some devices or in some environments.
 
 This plugin is tested using BrowserStack on a range of Android devices with OS versions from 2.2 to 7, and on a range of iOS devices with OS versions from 4.3 to 11. Also tested on Chrome, Firefox, IE 8-11, and Edge browsers.
 
@@ -42,9 +42,9 @@ The ideas below are logged as issues and tagged with the [3.0.0 milestone](https
 
 - The fallback number formatting localization options should be included with the Moment Locale object extensions this plugin already adds for localizing duration unit labels. This would put all of the localization configuration in one place.
 
-- moment-duration-format and its fallback number formatting function do not follow the same API as `Number#toLocaleString` for significant digits and faction digits. The fallback function should be updated to use the `toLocaleString` API, and the plugin should expose the `toLocaleString` API options directly rather than hiding some of the options and masking them behind `precision` and `useSignificantDigits` options.
+- moment-duration-format and its fallback number formatting function do not follow the same API as `Number#toLocaleString` for significant digits and faction digits. The fallback function should be updated to use the `toLocaleString` API, and the plugin should expose the API options directly rather than hiding some of the options and masking them behind `precision` and `useSignificantDigits` options.
 
-- Exposing the fallback number formatting function as well as the `toLocaleString` feature test function would facilitate testing and allow them to be used outside of the context of formatting durations.
+- Exposing the fallback number formatting function as well as the formatter feature test function would facilitate testing and allow them to be used outside of the context of formatting durations.
 
 ---
 
@@ -843,7 +843,7 @@ moment.duration(12.55, "hours").format("h:mm", {
 
 ### Localization
 
-Formatted numerical output is rendered using [`toLocaleString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString) if that built-in function is available and passes a feature test on plugin initialization. If the feature test fails, a fallback format function is used. See below for details on localizing output from the fallback format function.
+Formatted numerical output is rendered using [`Intl.NumberFormat#format`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat/format) or [`toLocaleString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString) where available, as long as they pass a feature test on plugin initialization. If the feature tests fail, a fallback format function is used. See below for details on localizing output from the fallback format function.
 
 Unit labels are automatically localized and pluralized. Unit labels are detected using the [locale set in moment.js](https://momentjs.com/docs/#/i18n/), which can be different from the locale of user's environment. This plugin uses custom extensions to the moment.js locale object, which can be easily added for any locale (see below).
 
@@ -1135,9 +1135,9 @@ You can (and likely should) set the localization options for the fallback number
 
 #### `useToLocaleString`
 
-Set this option to `false` to ignore the `toLocaleString` feature test and force the use of the `formatNumber` fallback function included in this plugin.
+Set this option to `false` to ignore the `Intl.NumberFormat` and `toLocaleString` feature tests and force the use of the `formatNumber` fallback function included in this plugin.
 
-The fallback number format options will have no effect when `toLocaleString` is used. The grouping separator, decimal separator, and integer digit grouping will be determined by the user locale.
+The fallback number format options will have no effect when `Intl.NumberFormat` or `toLocaleString` are used. The grouping separator, decimal separator, and integer digit grouping will be determined by the user locale.
 
 ```javascript
 moment.duration(100000.1, "seconds").format("s", {
@@ -1162,7 +1162,7 @@ The decimal separator used when using the fallback number format function. Defau
 The integer digit grouping used when using the fallback number format function. Must be an array. The default value of `[3]` gives the standard 3-digit thousand/million/billion digit groupings for the "en" locale. Setting this option to `[3, 2]` would generate the thousand/lakh/crore digit groupings used in the "en-IN" locale.
 
 ```javascript
-// Force the use of the fallback number format function. Do not use toLocaleString.
+// Force the use of the fallback number format function. Do not use toLocaleString or Intl.NumberFormat.
 // We're in some sort of strange hybrid french-indian locale...
 moment.duration(100000000000, "seconds").format("m", {
     useToLocaleString: false,
