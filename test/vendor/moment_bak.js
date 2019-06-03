@@ -1,4 +1,8 @@
 //! moment.js
+//! version : 2.19.1
+//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
+//! license : MIT
+//! momentjs.com
 
 ;(function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -655,7 +659,8 @@ var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
 
 // any word (or two) characters or numbers including two/three word month in arabic.
 // includes scottish gaelic two word and hyphenated months
-var matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFF07\uFF10-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i;
+var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+
 
 var regexes = {};
 
@@ -809,7 +814,7 @@ function get (mom, unit) {
 
 function set$1 (mom, unit, value) {
     if (mom.isValid() && !isNaN(value)) {
-        if (unit === 'FullYear' && isLeapYear(mom.year()) && mom.month() === 1 && mom.date() === 29) {
+        if (unit === 'FullYear' && isLeapYear(mom.year())) {
             mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value, mom.month(), daysInMonth(value, mom.month()));
         }
         else {
@@ -1764,11 +1769,15 @@ function localeMeridiem (hours, minutes, isLower) {
 // MOMENTS
 
 // Setting the hour should keep the time, because the user explicitly
-// specified which hour they want. So trying to maintain the same hour (in
+// specified which hour he wants. So trying to maintain the same hour (in
 // a new timezone) makes sense. Adding/subtracting hours does not follow
 // this rule.
 var getSetHour = makeGetSet('Hours', true);
 
+// months
+// week
+// weekdays
+// meridiem
 var baseConfig = {
     calendar: defaultCalendar,
     longDateFormat: defaultLongDateFormat,
@@ -1822,7 +1831,7 @@ function chooseLocale(names) {
         }
         i++;
     }
-    return globalLocale;
+    return null;
 }
 
 function loadLocale(name) {
@@ -1857,12 +1866,6 @@ function getSetGlobalLocale (key, values) {
             // moment.duration._locale = moment._locale = data;
             globalLocale = data;
         }
-        else {
-            if ((typeof console !==  'undefined') && console.warn) {
-                //warn user if arguments are passed but the locale could not be set
-                console.warn('Locale ' + key +  ' not found. Did you forget to load it?');
-            }
-        }
     }
 
     return globalLocale._abbr;
@@ -1870,7 +1873,7 @@ function getSetGlobalLocale (key, values) {
 
 function defineLocale (name, config) {
     if (config !== null) {
-        var locale, parentConfig = baseConfig;
+        var parentConfig = baseConfig;
         config.abbr = name;
         if (locales[name] != null) {
             deprecateSimple('defineLocaleOverride',
@@ -1883,19 +1886,14 @@ function defineLocale (name, config) {
             if (locales[config.parentLocale] != null) {
                 parentConfig = locales[config.parentLocale]._config;
             } else {
-                locale = loadLocale(config.parentLocale);
-                if (locale != null) {
-                    parentConfig = locale._config;
-                } else {
-                    if (!localeFamilies[config.parentLocale]) {
-                        localeFamilies[config.parentLocale] = [];
-                    }
-                    localeFamilies[config.parentLocale].push({
-                        name: name,
-                        config: config
-                    });
-                    return null;
+                if (!localeFamilies[config.parentLocale]) {
+                    localeFamilies[config.parentLocale] = [];
                 }
+                localeFamilies[config.parentLocale].push({
+                    name: name,
+                    config: config
+                });
+                return null;
             }
         }
         locales[name] = new Locale(mergeConfigs(parentConfig, config));
@@ -1922,11 +1920,10 @@ function defineLocale (name, config) {
 
 function updateLocale(name, config) {
     if (config != null) {
-        var locale, tmpLocale, parentConfig = baseConfig;
+        var locale, parentConfig = baseConfig;
         // MERGE
-        tmpLocale = loadLocale(name);
-        if (tmpLocale != null) {
-            parentConfig = tmpLocale._config;
+        if (locales[name] != null) {
+            parentConfig = locales[name]._config;
         }
         config = mergeConfigs(parentConfig, config);
         locale = new Locale(config);
@@ -2031,7 +2028,7 @@ function currentDateArray(config) {
 // note: all values past the year are optional and will default to the lowest possible value.
 // [year, month, day , hour, minute, second, millisecond]
 function configFromArray (config) {
-    var i, date, input = [], currentDate, expectedWeekday, yearToUse;
+    var i, date, input = [], currentDate, yearToUse;
 
     if (config._d) {
         return;
@@ -2081,8 +2078,6 @@ function configFromArray (config) {
     }
 
     config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
-    expectedWeekday = config._useUTC ? config._d.getUTCDay() : config._d.getDay();
-
     // Apply timezone offset from input. The actual utcOffset can be changed
     // with parseZone.
     if (config._tzm != null) {
@@ -2094,7 +2089,7 @@ function configFromArray (config) {
     }
 
     // check for mismatching day of week
-    if (config._w && typeof config._w.d !== 'undefined' && config._w.d !== expectedWeekday) {
+    if (config._w && typeof config._w.d !== 'undefined' && config._w.d !== config._d.getDay()) {
         getParsingFlags(config).weekdayMismatch = true;
     }
 }
@@ -3243,7 +3238,7 @@ function isSameOrBefore (input, units) {
 function diff (input, units, asFloat) {
     var that,
         zoneDelta,
-        output;
+        delta, output;
 
     if (!this.isValid()) {
         return NaN;
@@ -3302,24 +3297,19 @@ function toString () {
     return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
 }
 
-function toISOString(keepOffset) {
+function toISOString() {
     if (!this.isValid()) {
         return null;
     }
-    var utc = keepOffset !== true;
-    var m = utc ? this.clone().utc() : this;
+    var m = this.clone().utc();
     if (m.year() < 0 || m.year() > 9999) {
-        return formatMoment(m, utc ? 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYYYY-MM-DD[T]HH:mm:ss.SSSZ');
+        return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
     }
     if (isFunction(Date.prototype.toISOString)) {
         // native implementation is ~50x faster, use it when we can
-        if (utc) {
-            return this.toDate().toISOString();
-        } else {
-            return new Date(this.valueOf() + this.utcOffset() * 60 * 1000).toISOString().replace('Z', formatMoment(m, 'Z'));
-        }
+        return this.toDate().toISOString();
     }
-    return formatMoment(m, utc ? 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYY-MM-DD[T]HH:mm:ss.SSSZ');
+    return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
 }
 
 /**
@@ -3675,7 +3665,7 @@ addRegexToken('Do', function (isStrict, locale) {
 
 addParseToken(['D', 'DD'], DATE);
 addParseToken('Do', function (input, array) {
-    array[DATE] = toInt(input.match(match1to2)[0]);
+    array[DATE] = toInt(input.match(match1to2)[0], 10);
 });
 
 // MOMENTS
@@ -3870,26 +3860,48 @@ proto.toString          = toString;
 proto.unix              = unix;
 proto.valueOf           = valueOf;
 proto.creationData      = creationData;
+
+// Year
 proto.year       = getSetYear;
 proto.isLeapYear = getIsLeapYear;
+
+// Week Year
 proto.weekYear    = getSetWeekYear;
 proto.isoWeekYear = getSetISOWeekYear;
+
+// Quarter
 proto.quarter = proto.quarters = getSetQuarter;
+
+// Month
 proto.month       = getSetMonth;
 proto.daysInMonth = getDaysInMonth;
+
+// Week
 proto.week           = proto.weeks        = getSetWeek;
 proto.isoWeek        = proto.isoWeeks     = getSetISOWeek;
 proto.weeksInYear    = getWeeksInYear;
 proto.isoWeeksInYear = getISOWeeksInYear;
+
+// Day
 proto.date       = getSetDayOfMonth;
 proto.day        = proto.days             = getSetDayOfWeek;
 proto.weekday    = getSetLocaleDayOfWeek;
 proto.isoWeekday = getSetISODayOfWeek;
 proto.dayOfYear  = getSetDayOfYear;
+
+// Hour
 proto.hour = proto.hours = getSetHour;
+
+// Minute
 proto.minute = proto.minutes = getSetMinute;
+
+// Second
 proto.second = proto.seconds = getSetSecond;
+
+// Millisecond
 proto.millisecond = proto.milliseconds = getSetMillisecond;
+
+// Offset
 proto.utcOffset            = getSetOffset;
 proto.utc                  = setOffsetToUTC;
 proto.local                = setOffsetToLocal;
@@ -3900,8 +3912,12 @@ proto.isLocal              = isLocal;
 proto.isUtcOffset          = isUtcOffset;
 proto.isUtc                = isUtc;
 proto.isUTC                = isUtc;
+
+// Timezone
 proto.zoneAbbr = getZoneAbbr;
 proto.zoneName = getZoneName;
+
+// Deprecations
 proto.dates  = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
 proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
 proto.years  = deprecate('years accessor is deprecated. Use year instead', getSetYear);
@@ -3932,15 +3948,19 @@ proto$1.relativeTime    = relativeTime;
 proto$1.pastFuture      = pastFuture;
 proto$1.set             = set;
 
+// Month
 proto$1.months            =        localeMonths;
 proto$1.monthsShort       =        localeMonthsShort;
 proto$1.monthsParse       =        localeMonthsParse;
 proto$1.monthsRegex       = monthsRegex;
 proto$1.monthsShortRegex  = monthsShortRegex;
+
+// Week
 proto$1.week = localeWeek;
 proto$1.firstDayOfYear = localeFirstDayOfYear;
 proto$1.firstDayOfWeek = localeFirstDayOfWeek;
 
+// Day of Week
 proto$1.weekdays       =        localeWeekdays;
 proto$1.weekdaysMin    =        localeWeekdaysMin;
 proto$1.weekdaysShort  =        localeWeekdaysShort;
@@ -3950,6 +3970,7 @@ proto$1.weekdaysRegex       =        weekdaysRegex;
 proto$1.weekdaysShortRegex  =        weekdaysShortRegex;
 proto$1.weekdaysMinRegex    =        weekdaysMinRegex;
 
+// Hours
 proto$1.isPM = localeIsPM;
 proto$1.meridiem = localeMeridiem;
 
@@ -4056,7 +4077,6 @@ getSetGlobalLocale('en', {
 });
 
 // Side effect imports
-
 hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', getSetGlobalLocale);
 hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', getLocale);
 
@@ -4107,9 +4127,6 @@ function absCeil (number) {
     }
 }
 
-var abs$1 = Math.abs;
-var floor = Math.floor;
-
 function bubble () {
     var milliseconds = this._milliseconds;
     var days         = this._days;
@@ -4157,53 +4174,15 @@ function bubble () {
     return this;
 }
 
-// Converting between Months and Days
-//
-// 400 years have 146097 days, taking into account leap year rules.
-// 400 years have 4800 months (12 * 400).
-// Each month has 30.436875 days on average (146097 / 4800), but any
-// single month has a whole number of days.
-//
-// To calculate the number of days for a given number of months,
-// multiply months by 30.436875 then make a modified round on the result.
-// AbsFloor the result, unless the result comes to within 12 hours of
-// the next whole month... then Round the result.
-// 12 hours in terms of the average month is 0.0164274420419588 months.
-//
-// Both calculations below are based on this logic, which is meant to
-// respect leap year effects on large-value durations and also to give
-// intuitive and symmetric conversions.
-//
-// These calculations are symmetric for converting whole months to days
-// and back again for all 4800 months in the 400-year cycle, and give
-// the correct value of exactly 146097 days for 4800 months.
-var AVERAGE_DAYS_PER_MONTH = 30.436875;
-
-// CHECK HOW THIS WORKS WITH NEGATIVE...
-// NEED TO ABS DAYS FIRST?
 function daysToMonths (days) {
-    var posneg = days < 0 ? -1 : 1;
-    var absDays = abs$1(days);
-    var fractionOfAverageMonth = absDays / AVERAGE_DAYS_PER_MONTH;
-    var wholeMonths = floor(fractionOfAverageMonth);
-    var daysInWholeMonths = monthsToDays(wholeMonths);
-    var leftoverDays = absDays - daysInWholeMonths;
-    var daysInNextWholeMonth = monthsToDays(wholeMonths + 1) - daysInWholeMonths;
-    var fractionOfNextMonth = (leftoverDays / daysInNextWholeMonth);
-
-    return posneg * (wholeMonths + fractionOfNextMonth);
+    // 400 years have 146097 days (taking into account leap year rules)
+    // 400 years have 12 months === 4800
+    return days * 4800 / 146097;
 }
 
 function monthsToDays (months) {
-    var posneg = months < 0 ? -1 : 1;
-    var absMonths = abs$1(months);
-    var wholeMonths = floor(absMonths);
-    var monthFraction = absMonths - wholeMonths;
-    var daysInWholeMonths = floor(wholeMonths * AVERAGE_DAYS_PER_MONTH);
-    var daysInNextMonth = floor((wholeMonths + 1) * AVERAGE_DAYS_PER_MONTH) - daysInWholeMonths;
-    var daysInMonthFraction = monthFraction * daysInNextMonth;
-
-    return posneg * (daysInWholeMonths + daysInMonthFraction);
+    // the reverse of daysToMonths
+    return months * 146097 / 4800;
 }
 
 function as (units) {
@@ -4375,7 +4354,7 @@ function humanize (withSuffix) {
     return locale.postformat(output);
 }
 
-var abs$2 = Math.abs;
+var abs$1 = Math.abs;
 
 function sign(x) {
     return ((x > 0) - (x < 0)) || +x;
@@ -4393,9 +4372,9 @@ function toISOString$1() {
         return this.localeData().invalidDate();
     }
 
-    var seconds = abs$2(this._milliseconds) / 1000;
-    var days         = abs$2(this._days);
-    var months       = abs$2(this._months);
+    var seconds = abs$1(this._milliseconds) / 1000;
+    var days         = abs$1(this._days);
+    var months       = abs$1(this._months);
     var minutes, hours, years;
 
     // 3600 seconds -> 60 minutes -> 1 hour
@@ -4473,6 +4452,7 @@ proto$2.toJSON         = toISOString$1;
 proto$2.locale         = locale;
 proto$2.localeData     = localeData;
 
+// Deprecations
 proto$2.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', toISOString$1);
 proto$2.lang = lang;
 
@@ -4497,7 +4477,7 @@ addParseToken('x', function (input, array, config) {
 // Side effect imports
 
 
-hooks.version = '2.21.0';
+hooks.version = '2.19.1';
 
 setHookCallback(createLocal);
 
@@ -4528,19 +4508,6 @@ hooks.relativeTimeRounding  = getSetRelativeTimeRounding;
 hooks.relativeTimeThreshold = getSetRelativeTimeThreshold;
 hooks.calendarFormat        = getCalendarFormat;
 hooks.prototype             = proto;
-
-// currently HTML5 input type only supports 24-hour formats
-hooks.HTML5_FMT = {
-    DATETIME_LOCAL: 'YYYY-MM-DDTHH:mm',             // <input type="datetime-local" />
-    DATETIME_LOCAL_SECONDS: 'YYYY-MM-DDTHH:mm:ss',  // <input type="datetime-local" step="1" />
-    DATETIME_LOCAL_MS: 'YYYY-MM-DDTHH:mm:ss.SSS',   // <input type="datetime-local" step="0.001" />
-    DATE: 'YYYY-MM-DD',                             // <input type="date" />
-    TIME: 'HH:mm',                                  // <input type="time" />
-    TIME_SECONDS: 'HH:mm:ss',                       // <input type="time" step="1" />
-    TIME_MS: 'HH:mm:ss.SSS',                        // <input type="time" step="0.001" />
-    WEEK: 'YYYY-[W]WW',                             // <input type="week" />
-    MONTH: 'YYYY-MM'                                // <input type="month" />
-};
 
 return hooks;
 
