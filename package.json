@@ -1,6 +1,6 @@
 {
 	"name": "moment-duration-format",
-	"version": "2.3.2",
+	"version": "2.3.3",
 	"description": "A moment.js plugin for formatting durations.",
 	"main": "lib/moment-duration-format.js",
 	"repository": {
