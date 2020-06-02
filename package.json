@@ -19,5 +19,8 @@
 	"bugs": {
 		"url": "https://github.com/jsmreese/moment-duration-format/issues"
 	},
-	"homepage": "https://github.com/jsmreese/moment-duration-format"
+	"homepage": "https://github.com/jsmreese/moment-duration-format",
+	"peerDependencies": {
+		"moment": "*"
+	}
 }
