@@ -7,6 +7,9 @@
 		"type": "git",
 		"url": "git://github.com/jsmreese/moment-duration-format.git"
 	},
+	"dependencies": {
+		"moment": "2.29.1"
+	},
 	"authors": [
 		"John Madhavan-Reese <jsmreese@gmail.com>"
 	],
